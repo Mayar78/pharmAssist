@@ -1,0 +1,34 @@
+<nav class="sidebar shadow-sm" [class.open]="isSidebarOpen">
+
+  <div class="sidebar-header" (click)="toggleSidebar()">
+    <img src="./../../../assets/imgs/logo.png" alt="logo" class="logo">
+
+    
+    <div class="nav-title">
+      PharmAssist
+    </div>
+  </div>
+
+  @if (isSidebarOpen) {
+    <ul class="nav-links">
+      <li>
+        <a routerLink="/main/AllProducts" routerLinkActive="active-link" class="p-1 text-center firstFont"><i class="fa-solid fa-capsules pe-1 "></i>Medicines</a>
+      </li>
+      <li>
+         <a routerLink="" routerLinkActive="active-link" class="p-1 text-center firstFont"><i class="fa-solid fa-file pe-1 "></i>Request</a>
+      </li>
+      <li>
+        <a routerLink="" routerLinkActive="active-link" class="p-1 text-center firstFont"><i class="fa-regular fa-circle-check pe-1"></i>Order</a>
+      </li>
+       <li>
+        <a routerLink="" routerLinkActive="active-link" class="p-1 text-center firstFont"><i class="fa-solid fa-cart-shopping pe-1"></i>Cart</a>
+      </li>
+        <li>
+        <a routerLink="" routerLinkActive="active-link" class="p-1 text-center firstFont"><i class="fa-solid fa-comments pe-1"></i>ChatBot</a>
+      </li>
+        <li>
+        <a routerLink="" routerLinkActive="active-link" class="p-1 text-center firstFont"><i class="fa-solid fa-user pe-1"></i>Profile</a>
+      </li>
+    </ul>
+  }
+</nav>

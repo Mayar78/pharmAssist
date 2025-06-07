@@ -1,0 +1,84 @@
+.text-main {
+  color: #007b8a;
+}
+
+.btn-main {
+  background-color: #007b8a;
+  color: white;
+  border: none;
+  transition: background-color 0.3s ease;
+  border-radius: 0;
+}
+
+.btn-main:hover {
+  background-color: #005f6b;
+}
+
+/* Search input style */
+.search-container {
+  width: fit-content;
+}
+
+.search-container input {
+  padding-left: 2.5rem;
+  font-size: 0.95rem;
+}
+
+/* Product card styling */
+.product-card {
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Add to cart button animation */
+.add-to-cart-btn {
+  position: absolute;
+  bottom: -100%;
+  left: 0;
+  right: 0;
+  opacity: 0;
+  transition: all 0.4s ease;
+  border-radius: 0;
+}
+
+/* Show button on hover */
+.product-card:hover .add-to-cart-btn {
+  bottom: 0;
+  opacity: 1;
+}
+
+/* Wishlist icon styling (optional) */
+.heart-icon {
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+  .btn-main {
+    background-color: var(--main-color);
+    padding: 7px 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.5s;
+  }
+  .product .btn-main{
+    transform: translateY(200%) ;
+    transition: transform .5s;
+  }
+  .product:hover .btn-main{
+    transform: translateY(0%) ;
+  }
+   .navbar-brand{
+    font-family: var(--main-font);
+    font-weight: 900;
+    color: var(--main-color);
+    letter-spacing: 1px;
+    font-size: 55px;
+  }
+  .navbar-brand:hover{
+    color: #106ab3;
+
+  }

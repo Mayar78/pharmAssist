@@ -1,0 +1,33 @@
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+  <div class="otp-card text-center w-100 animate-in">
+    <img src="../../../assets/imgs/4309037.webp" class="otp-img mx-auto d-block" alt="OTP Image" />
+
+    <h3 class="font-weight-bold mt-3">OTP Verification</h3>
+    <p class="text-muted">Enter the verification code we just sent to your email address.</p>
+
+    <form [formGroup]="otpForm" (ngSubmit)="onSubmit()">
+      <div id="otp" class="d-flex justify-content-center flex-wrap mb-3">
+        <input type="text" maxlength="1" class="otp-input" formControlName="otp1" #otpInput>
+        <input type="text" maxlength="1" class="otp-input" formControlName="otp2" #otpInput>
+        <input type="text" maxlength="1" class="otp-input" formControlName="otp3" #otpInput>
+        <input type="text" maxlength="1" class="otp-input" formControlName="otp4" #otpInput>
+        <input type="text" maxlength="1" class="otp-input" formControlName="otp5" #otpInput>
+      </div> 
+      
+      <!-- زر إعادة الإرسال مع العد التنازلي -->
+      <div class="d-flex justify-content-center gap-2 mb-3">
+        <button 
+          type="button" 
+          class="btn btn-secondary border-1" 
+          (click)="resendOtp()" 
+          [disabled]="resendDisabled">
+          {{ resendDisabled ? 'Resend available in ' + resendTimer + 's' : 'Resend' }}
+        </button> 
+        <button type="submit" class="btn submit-btn w-auto border-1">Submit</button>
+      </div>
+
+     
+    </form>
+
+  </div>
+</div>

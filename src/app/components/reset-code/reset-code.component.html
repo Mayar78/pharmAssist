@@ -1,0 +1,56 @@
+<section class="d-flex justify-content-center align-items-center min-vh-100">
+  <div class="container bg-secondary-subtle p-5 my-5 rounded shadow-sm">
+    <div class="row">
+      <h1 class="text-main fs-3 fw-bolder text-center">Reset Password Code</h1>
+      <p class="text-muted fa-bold">Enter the code sent to your email</p>
+
+      @if (errorMsg) {
+        <p class="alert alert-danger my-2 p-2 fs-6 fw-bold rounded">
+          {{ errorMsg }}
+        </p>
+      }
+
+      <form [formGroup]="resetCodeForm" (ngSubmit)="resetCode()">
+        <div class="my-2">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="otp"
+            placeholder="Ex: 12345"
+            [ngClass]="{
+              'is-valid':
+                !resetCodeForm.get('otp')?.errors &&
+                (resetCodeForm.get('otp')?.touched || resetCodeForm.get('otp')?.dirty),
+              'is-invalid':
+                resetCodeForm.get('otp')?.errors &&
+                (resetCodeForm.get('otp')?.touched || resetCodeForm.get('otp')?.dirty)
+            }"
+          />
+        </div>
+
+        @if(resetCodeForm.get('otp')?.errors && resetCodeForm.get('otp')?.touched) {
+          <div class="alert alert-danger my-2 p-2 fs-6 fw-bold rounded">
+            @if(resetCodeForm.get('otp')?.getError('required')) {
+              <p class="m-0">Code is required</p>
+            } 
+            @else if (resetCodeForm.get('otp')?.getError('pattern')) {
+              <p class="m-0">Code must be 5 digits</p>
+            }
+          </div>
+        }
+
+        <button
+          [disabled]="resetCodeForm.invalid || loading"
+          type="submit"
+          class="btn-main w-50 mx-auto d-block"
+        >
+          @if(loading) {
+            <span><i class="fa-solid fa-circle-notch fa-spin"></i> Verifying...</span>
+          } @else {
+            <span>Verify Code</span>
+          }
+        </button>
+      </form>
+    </div>
+  </div>
+</section>

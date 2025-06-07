@@ -1,0 +1,77 @@
+.verify-container {
+  position: relative;
+  max-width: 400px;
+  margin: 100px auto;
+  text-align: center;
+  padding: 40px 20px;
+  background-color: white;
+  border-radius: 20px;
+  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+:host{
+    background-color: #3a5af9;
+}
+.checkmark-icon {
+  font-size: 80px;
+  color: #3a5af9;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.verified-title {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.verified-message {
+  color: #888;
+  margin-bottom: 30px;
+}
+
+.background-particles {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background-color: #3a5af9;
+  border-radius: 50%;
+  animation: float 3s infinite ease-in-out;
+  opacity: 0.7;
+}
+
+/* حركة الجزيئات */
+@keyframes float {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateY(-10px) scale(1.2);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.8;
+  }
+}
+
+/* تخصيص كل نقطة يدويًا */
+.particle:nth-child(1)  { top: 10%; left: 40%; animation-delay: 0s;   animation-duration: 3s; }
+.particle:nth-child(2)  { top: 20%; left: 20%; animation-delay: 0.2s; animation-duration: 4s; }
+.particle:nth-child(3)  { top: 60%; left: 60%; animation-delay: 0.4s; animation-duration: 3.5s; }
+.particle:nth-child(4)  { top: 40%; left: 70%; animation-delay: 0.1s; animation-duration: 4.2s; }
+.particle:nth-child(5)  { top: 20%; left: 55%; animation-delay: 0.3s; animation-duration: 3.8s; }
+.particle:nth-child(6)  { top: 40%; left: 35%; animation-delay: 0.5s; animation-duration: 4s; }
+.particle:nth-child(7)  { top: 25%; left: 25%; animation-delay: 0.6s; animation-duration: 3.3s; }
+.particle:nth-child(8)  { top: 25%; left: 75%; animation-delay: 0.7s; animation-duration: 3.6s; }
+.particle:nth-child(9)  { top: 65%; left: 45%; animation-delay: 0.8s; animation-duration: 3.7s; }
+.particle:nth-child(10) { top: 35%; left: 50%; animation-delay: 0.9s; animation-duration: 3.4s; }
+/* أضف الباقي حسب الحاجة حتى 20 نقطة */

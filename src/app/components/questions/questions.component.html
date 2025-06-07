@@ -1,0 +1,36 @@
+<div class="pa">
+  <div class="home-overlay text-center">
+    <label
+      [for]="'textarea' + currentIndex"
+      class="form-label"
+      (click)="preventScroll($event)">
+      {{ questions[currentIndex] }}
+    </label>
+
+    <textarea
+      class="form-control"
+      [(ngModel)]="answers[currentIndex]"
+      [id]="'textarea' + currentIndex"
+      placeholder="Answer to help us provide personalized care.."
+      rows="6"
+      (input)="checkAnswer()"
+      (click)="preventScroll($event)">
+    </textarea>
+
+    <div class="d-flex justify-content-center mt-4">
+      <button
+        type="button"
+        class="btn me-2"
+        (click)="skip()">
+        Skip
+      </button>
+
+      <button type="button"
+        class="btn"
+        [disabled]="!answers[currentIndex]" 
+        (click)="next()">
+        Next
+      </button>
+    </div>
+  </div>
+</div>

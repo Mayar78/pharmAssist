@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Lilita+One&display=swap');
+
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f9f9f9;
+}
+
+.pa {
+  height: 100vh;
+  width: 100%;
+  padding: 60px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url("./../../../assets/imgs/login.jpg");
+  background-size: cover;
+  background-position: center;
+  animation: fadeSlideUp 0.6s ease;
+}
+
+@keyframes fadeSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.home-overlay {
+  background-color: rgba(255, 255, 255, 0.85);
+  padding: 40px 20px;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  width: 100%;
+  text-align: center;
+}
+
+label.form-label {
+  font-family: 'Lilita One', sans-serif;
+  font-weight: 600;
+  color: #2c3e50; /* لون أوضح */
+  margin-bottom: 20px;
+  font-size: 22px;
+  display: block;
+  text-transform: capitalize;
+  text-shadow: none;
+  transition: all 0.3s ease;
+}
+
+label.form-label:hover {
+  color: #1abc9c;
+}
+
+textarea.form-control {
+  width: 350px; /* أصغر */
+  height: 200px; /* أقصر */
+  border-radius: 20px;
+  margin: 0 auto; /* يضمن التوسيط الأفقي */
+  font-family: inherit;
+  color: rgb(80, 80, 80);
+  line-height: 2;
+  resize: none;
+  border: 1px solid #ccc;
+  padding: 15px;
+  text-align: center;
+  display: block;
+  background: #fff;
+}
+
+.btn {
+  width: 150px;
+  height: 50px;
+  color: #fff;
+  background-color: #7bcee3; /* ممكن تعدلي var(--main-color) هنا */
+  border: none;
+  border-radius: 10px;
+  font-size: 20px;
+  cursor: pointer;
+  margin: 0 5px;
+  transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #5eb5cd;
+}

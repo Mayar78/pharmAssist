@@ -1,0 +1,32 @@
+
+  <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top shadow-sm" [class]="isScrolling == false ? 'scrollPading' : '' ">
+    <div class="container position-relative">
+      <a class="navbar-brand" routerLink="login">
+        <img src="./../../../assets/imgs/logo.png" alt="logo" class="logo">
+      </a>
+      <div class="navdot">
+        <a class="navbar-brand" href="#">PharmAssist</a>
+      </div>
+      
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item me-3">
+            <a class="nav-link text-main fw-bold nav-links " routerLink="explore" routerLinkActive="active-link">Explore</a>
+          </li>
+          <li class="nav-item me-3">
+            <a class="nav-link text-main fw-bold nav-links " routerLink="login" routerLinkActive="active-link">Login</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link text-main fw-bolder nav-links" routerLink="register" routerLinkActive="active-link">Register</a>
+          </li>
+
+        </ul>
+      
+      </div>
+    </div>
+  </nav>

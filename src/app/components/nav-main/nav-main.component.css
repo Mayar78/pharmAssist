@@ -1,0 +1,114 @@
+/* Sidebar container */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 80px;
+  background-color: #f8f9fa;
+  overflow-x: hidden;
+  z-index: 999;
+  padding-top: 20px;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  transition: width 0.4s ease;
+}
+
+/* Expanded sidebar */
+.sidebar.open {
+  width: 250px;
+}
+
+/* Header (Logo + Title) */
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 10px;
+  transition: all 0.3s ease;
+}
+
+.sidebar .logo {
+  width: 80px;
+  height: 55px;
+  margin-right: 10px;
+}
+
+/* Title (hidden by default, animated in when sidebar opens) */
+.nav-title {
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: all 0.3s ease;
+  font-family: var(--main-font);
+  font-weight: 900;
+  color: var(--main-color);
+  letter-spacing: 1px;
+  font-size: 25px;
+  white-space: nowrap;
+}
+
+.sidebar.open .nav-title {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Navigation links container */
+.nav-links {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 20px;
+}
+
+/* Animate links with fade+slide when sidebar opens */
+.nav-links li {
+  padding: 10px 20px;
+  opacity: 0;
+  transform: translateX(-20px);
+  animation: fadeSlideIn 0.4s forwards;
+}
+
+/* Delay each link slightly */
+.nav-links li:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.nav-links li:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.nav-links li:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.nav-links li:nth-child(4) {
+  animation-delay: 0.4s;
+}
+.nav-links li:nth-child(5) {
+  animation-delay: 0.5s;
+}
+.nav-links li:nth-child(6) {
+  animation-delay: 0.6s;
+}
+
+
+
+@keyframes fadeSlideIn {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Link styling */
+.nav-links a {
+  text-decoration: none;
+  color: var(--main-color);
+  font-weight: bold;
+  display: block;
+  transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: var(--primary-color);
+}
+
+/* Active link */
+.active-link {
+  color: var(--primary-color);
+}

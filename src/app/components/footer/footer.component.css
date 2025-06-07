@@ -1,0 +1,86 @@
+body {
+    background-color: #f0f4ff;
+  }
+
+  .subscription-container {
+    position: relative;
+    overflow-x: hidden;
+  }
+  
+  .subscription-card {
+    background-color: #2d94ea;
+    max-width: 100.8%;
+    color: white;
+    padding: 40px 30px;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .subscription-img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+ 
+  .overflow-image {
+    position: absolute;
+    left: 50px;     
+    top: -100px;       
+    width: 270px;
+    z-index: 2;
+ 
+  }
+  
+
+  
+  .form-wrapper {
+    background-color: white;
+    border-radius: 30px;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .form-wrapper input {
+    border: none;
+    box-shadow: none;
+    border-radius: 30px;
+  }
+  
+  .form-wrapper input:focus {
+    outline: none;
+    box-shadow: none;
+  }
+  
+  .form-wrapper .btn {
+    white-space: nowrap;
+    border-radius: 30px;
+    background-color: var(--main-color);
+  }
+  .input-group{
+    width: 75%;
+  }
+  .input-group .form-control {
+    border-radius: 0;
+    transition: all 0.3s ease;
+  }
+  
+  .input-group .form-control:focus {
+     box-shadow: none;
+     border-color: rgba(0, 0, 0, 0); 
+  }
+  
+  .input-group-text {
+    border: 1px solid #ced4da;
+    background-color: #fff;
+  }
+  
+  .btn-primary {
+    transition: all 0.3s ease;
+  }
+  
+  .btn-primary:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
