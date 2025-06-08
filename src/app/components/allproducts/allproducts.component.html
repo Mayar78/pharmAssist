@@ -1,32 +1,50 @@
 <div class="container my-4 bg-light rounded-1">
   <h1 class="navbar-brand fw-bold text-center mb-4">Our Products</h1>
 
-   <div class="d-flex justify-content-end mb-4">
+  <div class="d-flex justify-content-end mb-4">
     <div class="search-container position-relative">
-      <i class="fa fa-search position-absolute top-50 start-0 translate-middle-y text-muted ms-2"></i>
-      <input type="text" [(ngModel)]="Searchvalue"
-             placeholder="Search by name..."
-             class="form-control ps-5 rounded-pill shadow-sm"
-             style="width: 350px;">
+      <i
+        class="fa fa-search position-absolute top-50 start-0 translate-middle-y text-muted ms-2"
+      ></i>
+      <input
+        type="text"
+        [(ngModel)]="Searchvalue"
+        placeholder="Search by name..."
+        class="form-control ps-5 rounded-pill shadow-sm"
+        style="width: 350px"
+      />
     </div>
   </div>
 
   <div class="row">
     @for (product of productsData | search : Searchvalue; track product.id) {
     <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-      <div class="product card h-100 shadow-sm border-0 rounded-3 p-2 position-relative">
-    
-        <div [routerLink]="['/main/productdetails', product.id]" class="cursor-pointer">
+      <div
+        class="product card h-100 shadow-sm border-0 rounded-3 p-2 position-relative"
+      >
+        <div
+          [routerLink]="['/main/productdetails', product.id]"
+          class="cursor-pointer"
+        >
           <div class="product-img mb-2">
-            <img [src]="product.pictureUrl" [alt]="product.name" class="w-100 rounded" style="height: 200px; object-fit: cover;">
+            <img
+              [src]="product.pictureUrl"
+              [alt]="product.name"
+              class="w-100 rounded"
+              style="height: 200px; object-fit: cover"
+            />
           </div>
 
           <div class="product-caption">
             <h6 class="text-muted mb-1">{{ product.description }}</h6>
-            <h5 class="fw-bold">{{ product.name.split(' ').slice(0,2).join(' ') }}</h5>
+            <h5 class="fw-bold">
+              {{ product.name.split(" ").slice(0, 2).join(" ") }}
+            </h5>
 
             <div class="d-flex justify-content-between align-items-center mt-2">
-              <span class="fw-semibold text-success">{{ product.price | currency:'GBP' }}</span>
+              <span class="fw-semibold text-success">{{
+                product.price | currency : "GBP"
+              }}</span>
             </div>
           </div>
         </div>

@@ -15,13 +15,13 @@ import { Iproduct } from '../../core/interfaces/iproduct';
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,        // هذا يحل مشكلة ngModel
-    RouterLink,       // هذا يحل مشكلة [routerLink]
+    FormsModule, // هذا يحل مشكلة ngModel
+    RouterLink, // هذا يحل مشكلة [routerLink]
     CurrencyPipe,
-    SearchPipe
+    SearchPipe,
   ],
   templateUrl: './allproducts.component.html',
-  styleUrl: './allproducts.component.css'
+  styleUrl: './allproducts.component.css',
 })
 export class AllproductsComponent {
   constructor(private _ProductService: ProductsService) {}
@@ -34,10 +34,10 @@ export class AllproductsComponent {
   ngOnInit(): void {
     this._ProductService.getAllProduct().subscribe({
       next: (res) => {
-        console.log(res.data);
+        console.log('All Products', res.data);
         this.productsData = res.data;
       },
-      error: (error) => console.log(error)
+      error: (error) => console.log(error),
     });
   }
 
