@@ -1,65 +1,108 @@
 @if (detailsData) {
-    <section class="my-4 p-3">
-        <div class="container">
-            <div class="row align-items-center ">
-                <div class="col-12 col-md-3 product p-2">
-                    <owl-carousel-o [options]="detailsSlider" >
-                        @for (img of detailsData.pictureUrl; track $index) {
-                        <ng-template carouselSlide>
-                            <img [src]="img" [alt]="detailsData.name" class="w-100 ">
-                        </ng-template>
-                        }
-                    </owl-carousel-o>
+<section class="product-details-section py-5">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Product Images -->
+            <div class="col-lg-6 col-md-6">
+                <div class="product-gallery">
+                    <div class="main-image-container">
+                        <owl-carousel-o [options]="detailsSlider" class="product-carousel">
+                            @for (img of detailsData.pictureUrl; track $index) {
+                            <ng-template carouselSlide>
+                                <div class="image-wrapper">
+                                    <img [src]="img" [alt]="detailsData.name" class="product-image">
+                                </div>
+                            </ng-template>
+                            }
+                        </owl-carousel-o>
+                    </div>
                 </div>
-    
-                
-                <div class="col-12 col-md-9 p-3 ">
-                    <div class="details">
-                        
-                        <p class="fw-bold my-2">{{detailsData.description}}</p>
-                      
-                        <h2 class="my-2 fs-4 fw-bold">{{detailsData.name}}</h2>
+            </div>
 
-                        
-                    </div>
-    
-                  
+            <!-- Product Information -->
+            <div class="col-lg-6 col-md-6">
+                <div class="product-info">
+                    <!-- Product Name -->
+                    <h1 class="product-title">{{detailsData.name}}</h1>
                     
-                    <div class="d-flex justify-content-between mt-2">
-                        <span>{{detailsData.price | currency : 'GBP'}}  </span>
-                        <!-- <div class="small">
-    
-                            @for (star of [1,2,3,4,5].slice(0,detailsData.ratingsAverage); track $index) {
-                            <span><i class="fa-solid fa-star rating-color"></i></span>
-                            }
-                            @if(detailsData.ratingsAverage%1!=0){
-                            <span><i class="fa-solid fa-star-half-stroke rating-color"></i></span>
-                            }
-                            <span>{{detailsData.ratingsAverage}}</span>
-    
-                        </div> -->
-
-                      
+                    <!-- Product Description -->
+                    <p class="product-description">{{detailsData.description}}</p>
+                    
+                    <!-- Rating -->
+                    <div class="product-rating mb-3">
+                        <div class="stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <span class="rating-text">(4.8 out of 5)</span>
                     </div>
                     
-                   <div class="my-4">
-                    <!-- @if (isProductInWishlist(detailsData._id)) {
-                        <i
-                          class="heart-icon fa-solid fa-heart text-main position-absolute p-2 shadow-sm cursor-pointer"
-                          (click)="removeFromWishlist(detailsData._id)"
-                        ></i
-                        >} @else {
-                        <i
-                          class="heart-icon fa-regular fa-heart text-main position-absolute p-2 shadow-sm cursor-pointer"
-                          (click)="addToWishlist(detailsData._id)"
-                        ></i>
-                        } -->
-                   </div>
-                    <button class="w-100 btn-main mt-5">Add to cart <i class="fa-solid fa-cart-shopping"></i></button>
-    
+                    <!-- Price -->
+                    <div class="price-section mb-4">
+                        <span class="current-price">{{detailsData.price | currency : 'EGP'}}</span>
+                        <!-- <span class="original-price">{{detailsData.originalPrice | currency : 'EGP'}}</span> -->
+                    </div>
+                    
+                    <!-- Product Features -->
+                    <div class="product-features mb-4">
+                        <div class="feature-item">
+                            <i class="fas fa-shield-alt text-success"></i>
+                            <span>Quality Guaranteed</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-truck text-primary"></i>
+                            <span>Free Delivery</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-undo text-warning"></i>
+                            <span>Easy Returns</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Quantity and Add to Cart -->
+                    <div class="purchase-section">
+                        <div class="quantity-selector mb-3">
+                            <label class="form-label">Quantity:</label>
+                            <div class="input-group quantity-input">
+                                <button class="btn btn-outline-secondary" type="button" (click)="decreaseQuantity()">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <input type="number" class="form-control text-center" 
+                                       [value]="quantity" 
+                                       (change)="updateQuantity($event)" 
+                                       min="1">
+                                <button class="btn btn-outline-secondary" type="button" (click)="increaseQuantity()">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <button class="btn btn-primary btn-add-cart" (click)="addToCart()">
+                                <i class="fas fa-shopping-cart me-2"></i>
+                                Add to Cart
+                            </button>
+                           
+                        </div>
+                    </div>
+                    
+                    <!-- Additional Info -->
+                    <div class="additional-info mt-4">
+                        <div class="info-item">
+                            <strong>SKU:</strong> 
+                            <span>{{detailsData.id || 'N/A'}}</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Availability:</strong> 
+                            <span class="badge bg-success">In Stock</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 }
-<!-- (click)="addCart(detailsData._id)"  -->
