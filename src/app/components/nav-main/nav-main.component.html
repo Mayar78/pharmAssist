@@ -1,34 +1,89 @@
-<nav class="sidebar shadow-sm" [class.open]="isSidebarOpen">
-
-  <div class="sidebar-header" (click)="toggleSidebar()">
-    <img src="./../../../assets/imgs/logo.png" alt="logo" class="logo">
-
+<!-- Sidebar Container - With Toggle Functionality -->
+<nav class="sidebar" [class.open]="isSidebarOpen">
+  
+  <!-- Sidebar Header - With Toggle Button -->
+  <div class="sidebar-header" (click)="toggleSidebar()" [attr.aria-expanded]="isSidebarOpen">
     
+    <!-- Logo Container -->
+    <div class="logo-container">
+      <img src="assets/logo.png"
+           alt="App Logo"
+           class="logo"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <i class="fa-solid fa-pills" style="display: none; font-size: 1.5rem;"></i>
+    </div>
+    
+    <!-- App Title (toggle visibility) -->
     <div class="nav-title">
-      PharmAssist
+      <h1 class="app-name">PharmaCare</h1>
+      <p class="app-tagline">Your Health Partner</p>
+    </div>
+    
+    <!-- Toggle Icon -->
+    <div class="toggle-icon">
+      <i class="fa-solid fa-chevron-right"></i>
     </div>
   </div>
 
-  @if (isSidebarOpen) {
+  <!-- Navigation Content -->
+  <div class="nav-content">
+    
+    <!-- Welcome Section (toggle visibility) -->
+    <div class="welcome-section" *ngIf="isSidebarOpen">
+      <div class="user-avatar">
+        <i class="fa-solid fa-user"></i>
+      </div>
+      <div class="welcome-text">
+        <p class="greeting">Welcome back,</p>
+        <p class="user-name">John Doe</p>
+      </div>
+    </div>
+
+    <!-- Navigation Links -->
     <ul class="nav-links">
-      <li>
-        <a routerLink="/main/AllProducts" routerLinkActive="active-link" class="p-1 text-center firstFont"><i class="fa-solid fa-capsules pe-1 "></i>Medicines</a>
-      </li>
-      <li>
-         <a routerLink="" routerLinkActive="active-link" class="p-1 text-center firstFont"><i class="fa-solid fa-file pe-1 "></i>Request</a>
-      </li>
-      <li>
-        <a routerLink="" routerLinkActive="active-link" class="p-1 text-center firstFont"><i class="fa-regular fa-circle-check pe-1"></i>Order</a>
-      </li>
-       <li>
-        <a routerLink="" routerLinkActive="active-link" class="p-1 text-center firstFont"><i class="fa-solid fa-cart-shopping pe-1"></i>Cart</a>
-      </li>
-        <li>
-        <a routerLink="" routerLinkActive="active-link" class="p-1 text-center firstFont"><i class="fa-solid fa-comments pe-1"></i>ChatBot</a>
-      </li>
-        <li>
-        <a routerLink="" routerLinkActive="active-link" class="p-1 text-center firstFont"><i class="fa-solid fa-user pe-1"></i>Profile</a>
+      <li class="nav-item"
+          *ngFor="let item of navItems; let i = index"
+          [style.animation-delay]="getAnimationDelay(i)">
+        
+        <a class="nav-link"
+           [class.active]="item.isActive"
+           [attr.data-tooltip]="getTooltipText(item)"
+           (click)="navigateToRoute(item)"
+           [attr.aria-label]="item.label"
+           role="menuitem"
+           tabindex="0"
+           (keydown.enter)="navigateToRoute(item)"
+           (keydown.space)="navigateToRoute(item)">
+          
+          <!-- Icon -->
+          <div class="nav-icon" [class]="item.id">
+            <i [class]="item.icon"></i>
+          </div>
+          
+          <!-- Label (toggle visibility) -->
+          <span class="nav-label">
+            {{ item.label }}
+          </span>
+        </a>
       </li>
     </ul>
-  }
+  </div>
+
+  <!-- Sidebar Footer (toggle visibility) -->
+  <div class="sidebar-footer">
+    
+    <!-- App Version -->
+    <div class="app-version" *ngIf="isSidebarOpen">
+      <i class="fa-solid fa-code-branch"></i>
+      <span>Version 2.1.0</span>
+    </div>
+    
+    <!-- Support Link -->
+    <div class="support-link" *ngIf="isSidebarOpen">
+      <a href="#" class="support-btn">
+        <i class="fa-solid fa-headset"></i>
+        <span>Help & Support</span>
+      </a>
+    </div>
+  </div>
 </nav>

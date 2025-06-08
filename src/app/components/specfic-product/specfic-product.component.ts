@@ -1,106 +1,238 @@
-import { Component, inject } from '@angular/core';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ProductsService } from '../../core/services/products.service';
 import { ToastrService } from 'ngx-toastr';
 import { Iproduct } from '../../core/interfaces/iproduct';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { CurrencyPipe } from '@angular/common';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-specfic-product',
   standalone: true,
-  imports: [CarouselModule , CurrencyPipe],
+  imports: [CarouselModule, CurrencyPipe],
   templateUrl: './specfic-product.component.html',
   styleUrl: './specfic-product.component.css'
 })
-export class SpecficProductComponent {
-detailsSlider: OwlOptions = {
-    autoplay:true,
-    autoplayTimeout:1000,
+export class SpecficProductComponent implements OnInit, OnDestroy {
+  
+  // Carousel Configuration
+  detailsSlider: OwlOptions = {
     loop: true,
     mouseDrag: true,
     touchDrag: true,
     pullDrag: false,
-    dots: false,
+    dots: true,
     navSpeed: 700,
-    navText: ['', ''],
+    navText: [
+      '<i class="fas fa-chevron-left"></i>',
+      '<i class="fas fa-chevron-right"></i>'
+    ],
     responsive: {
       0: {
         items: 1
       },
       400: {
-        items: 2
+        items: 1
       },
       740: {
-        items: 3
+        items: 1
       },
       940: {
-        items: 4
+        items: 1
       }
     },
-    nav: false,
+    nav: true,
+    autoplay: true,
+    autoplayTimeout: 3000,
+    autoplayHoverPause: true,
+    animateOut: 'fadeOut',
+    animateIn: 'fadeIn'
+  };
+
+  // Dependency Injection
+  private readonly _activatedRoute = inject(ActivatedRoute);
+  private readonly _toastrService = inject(ToastrService);
+  private readonly _destroy$ = new Subject<void>();
+
+  // Component Properties
+  productId: string | null = null;
+  detailsData: Iproduct | null = null;
+  quantity: number = 1;
+  isLoading: boolean = false;
+  wishlistIds: string[] = [];
+
+  constructor(
+    private _productService: ProductsService,
+    private _spinnerService: NgxSpinnerService
+  ) {}
+
+  ngOnInit(): void {
+    this.getProductIdFromRoute();
   }
-  constructor(private _ProductService:ProductsService,   
-  ){}
-  private readonly _ar = inject(ActivatedRoute);
-  private readonly _ToastrService = inject(ToastrService);
+
+  ngOnDestroy(): void {
+    this._destroy$.next();
+    this._destroy$.complete();
+  }
+
+  /**
+   * Get product ID from route parameters
+   */
+  private getProductIdFromRoute(): void {
+    this._activatedRoute.paramMap
+      .pipe(takeUntil(this._destroy$))
+      .subscribe({
+        next: (params) => {
+          this.productId = params.get('PId');
+          if (this.productId) {
+            this.getProductDetails();
+          } else {
+            this._toastrService.error('Product ID not found', 'Error');
+          }
+        },
+        error: (error) => {
+          console.error('Error getting route parameters:', error);
+          this._toastrService.error('Failed to load product', 'Error');
+        }
+      });
+  }
+
+  /**
+   * Fetch product details from service
+   */
+  private getProductDetails(): void {
+    if (!this.productId) return;
+
+    this.isLoading = true;
+    this._spinnerService.show();
+
+    this._productService.getProductDetails(this.productId)
+      .pipe(takeUntil(this._destroy$))
+      .subscribe({
+        next: (response) => {
+          this.detailsData = response;
+          this.isLoading = false;
+          this._spinnerService.hide();
+          console.log('Product details loaded:', response);
+        },
+        error: (error) => {
+          console.error('Error fetching product details:', error);
+          this.isLoading = false;
+          this._spinnerService.hide();
+          this._toastrService.error('Failed to load product details', 'Error');
+        }
+      });
+  }
+
+  /**
+   * Increase product quantity
+   */
+  increaseQuantity(): void {
+    this.quantity++;
+  }
+
+  /**
+   * Decrease product quantity
+   */
+  decreaseQuantity(): void {
+    if (this.quantity > 1) {
+      this.quantity--;
+    }
+  }
+
+  /**
+   * Update quantity from input field
+   */
+  updateQuantity(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    const value = parseInt(target.value);
+    
+    if (value >= 1) {
+      this.quantity = value;
+    } else {
+      this.quantity = 1;
+      target.value = '1';
+    }
+  }
+
+  /**
+   * Add product to cart
+   */
+  addToCart(): void {
+    if (!this.detailsData) {
+      this._toastrService.warning('Product not loaded', 'Warning');
+      return;
+    }
+
+    // Uncomment and implement when cart service is ready
+    // this._cartService.addProductToCart(this.detailsData.id, this.quantity)
+    //   .pipe(takeUntil(this._destroy$))
+    //   .subscribe({
+    //     next: (response) => {
+    //       this._toastrService.success(response.message, 'Success');
+    //       console.log('Product added to cart:', response);
+    //     },
+    //     error: (error) => {
+    //       console.error('Error adding to cart:', error);
+    //       this._toastrService.error('Failed to add product to cart', 'Error');
+    //     }
+    //   });
+
+    // Temporary success message
+    this._toastrService.success(
+      `${this.detailsData.name} added to cart (Quantity: ${this.quantity})`,
+      'Success'
+    );
+    
+    console.log('Adding to cart:', {
+      product: this.detailsData,
+      quantity: this.quantity
+    });
+  }
 
   
-  productId!:string|null;
-  detailsData:Iproduct | null = null;
-  // whishlistData!: Iwishlist[];
-    whishlistIds!: string[];
+  addToWishlist(): void {
+    if (!this.detailsData) {
+      this._toastrService.warning('Product not loaded', 'Warning');
+      return;
+    }
 
-  // addCart(id:string):void{
-  //   this._CartService.addProductToCart(id).subscribe({
-  //     next:(res)=>{
-  //       this._ToastrService.success(res.message, 'Success')
-  //       console.log(res);
-  //    },
-  //    error:(err)=>{console.log(err);
-  //    },
-  //   })
-  // }
-  ngOnInit(): void {
-    this._ar.paramMap.subscribe({
-      next:(pInfo)=>{console.log(pInfo.get('PId'));
-      this.productId=pInfo.get('PId')
-      }
-    })
-
-    // this._WishlistService.getWishlist().subscribe({
-    //   next: (res) => {
-    //     this.whishlistData = res.data;
-    //     this.whishlistIds = this.whishlistData.map((item) => item._id);
-    //   },
-    // });
-    this._ProductService.getProductDetails(this.productId).subscribe({
-      next:(res)=>{console.log("data",res);
-      this.detailsData = res;
-      },
-      error:(err)=>{console.log(err);
-      }
-    })
+  
+    this._toastrService.success(`${this.detailsData.name} added to wishlist`, 'Success');
+    console.log('Adding to wishlist:', this.detailsData);
   }
 
-  // addToWishlist(p_id: string) {
-  //   this._WishlistService.addProductToWishlist(p_id).subscribe({
-  //     next: (res) => {
-  //       this._ToastrService.success(res.message, 'Success');
-  //       this.whishlistIds = res.data;
-  //     },
-  //   })
-  // }
-  // removeFromWishlist(p_id: string) {
-  //   this._WishlistService.removeItemFromWishlist(p_id).subscribe({
-  //     next: (res) => {
-  //       this._ToastrService.success(res.message, 'Success');
-  //       this.whishlistIds = res.data;
-  //     },
-  //   });
-  // }
+  
+  /**
+   * Get product rating as array for displaying stars
+   */
+  getRatingStars(rating: number = 5): boolean[] {
+    return Array(5).fill(false).map((_, index) => index < rating);
+  }
 
-  // isProductInWishlist(productId: string): boolean {
-  //   return this.whishlistIds.includes(productId);}
+  /**
+   * Share product
+   */
+  shareProduct(): void {
+    if (!this.detailsData) return;
 
+    if (navigator.share) {
+      navigator.share({
+        title: this.detailsData.name,
+        text: this.detailsData.description,
+        url: window.location.href,
+      });
+    } else {
+      // Fallback - copy to clipboard
+      navigator.clipboard.writeText(window.location.href)
+        .then(() => {
+          this._toastrService.success('Product link copied to clipboard', 'Success');
+        })
+        .catch(() => {
+          this._toastrService.error('Failed to copy link', 'Error');
+        });
+    }
+  }
 }
