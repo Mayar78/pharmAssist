@@ -1,4 +1,10 @@
-import { Component, OnInit, OnDestroy, HostListener, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  HostListener,
+  inject,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { Subject, takeUntil, filter } from 'rxjs';
@@ -17,13 +23,11 @@ interface NavItem {
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './nav-main.component.html',
-  styleUrl: './nav-main.component.css'
+  styleUrl: './nav-main.component.css',
 })
 export class NavMainComponent implements OnInit, OnDestroy {
-  
   private readonly _destroy$ = new Subject<void>();
-  private readonly _router = inject(Router);
-  
+
   // Component Properties
   isSidebarOpen: boolean = false;
   isAnimating: boolean = false;
@@ -31,52 +35,51 @@ export class NavMainComponent implements OnInit, OnDestroy {
   isMobile: boolean = false;
   // username!:string;
 
-  username = sessionStorage.getItem('username')
-  
+  username = sessionStorage.getItem('username');
+
   // Navigation Items with enhanced properties
   navItems: NavItem[] = [
     {
       id: 'medicines',
       label: 'medicines',
       icon: 'fa-solid fa-capsules',
-      route: '/main/AllProducts'
+      route: '/main/AllProducts',
     },
     {
       id: 'request',
       label: 'request',
       icon: 'fa-solid fa-file-medical',
       route: '/main/request',
-      badge: 3
+      badge: 3,
     },
     {
       id: 'orders',
       label: 'orders',
       icon: 'fa-solid fa-clipboard-list',
-      route: '/main/orders'
+      route: '/main/orders',
     },
     {
       id: 'cart',
       label: 'cart',
       icon: 'fa-solid fa-cart-shopping',
       route: '/main/cart',
-      badge: 5
+      badge: 5,
     },
     {
       id: 'chatbot',
       label: 'chatbot',
       icon: 'fa-solid fa-robot',
-      route: '/main/chatbot'
+      route: '/main/chatbot',
     },
     {
       id: 'profile',
       label: 'profile',
       icon: 'fa-solid fa-user-circle',
-      route: '/main/profile'
+      route: '/main/profile',
     },
-   
   ];
 
-  constructor() {
+  constructor(private _router: Router) {
     this.checkScreenSize();
   }
 
@@ -98,9 +101,13 @@ export class NavMainComponent implements OnInit, OnDestroy {
     // Add staggered animations to nav items
     setTimeout(() => {
       this.navItems.forEach((_, index) => {
-        const element = document.querySelector(`.nav-item:nth-child(${index + 1})`);
+        const element = document.querySelector(
+          `.nav-item:nth-child(${index + 1})`
+        );
         if (element) {
-          (element as HTMLElement).style.animationDelay = `${(index + 1) * 0.1}s`;
+          (element as HTMLElement).style.animationDelay = `${
+            (index + 1) * 0.1
+          }s`;
         }
       });
     }, 100);
@@ -112,7 +119,9 @@ export class NavMainComponent implements OnInit, OnDestroy {
   private trackRouteChanges(): void {
     this._router.events
       .pipe(
-        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        filter(
+          (event): event is NavigationEnd => event instanceof NavigationEnd
+        ),
         takeUntil(this._destroy$)
       )
       .subscribe((event: NavigationEnd) => {
@@ -134,7 +143,7 @@ export class NavMainComponent implements OnInit, OnDestroy {
    * Update active states for navigation items
    */
   private updateActiveStates(): void {
-    this.navItems.forEach(item => {
+    this.navItems.forEach((item) => {
       item.isActive = this.currentRoute.includes(item.route);
     });
   }
@@ -143,7 +152,7 @@ export class NavMainComponent implements OnInit, OnDestroy {
    * Announce route changes for screen readers
    */
   private announceRouteChange(): void {
-    const activeItem = this.navItems.find(item => item.isActive);
+    const activeItem = this.navItems.find((item) => item.isActive);
     if (activeItem) {
       // Announce to screen readers
       const announcement = `تم الانتقال إلى ${activeItem.label}`;
@@ -156,22 +165,22 @@ export class NavMainComponent implements OnInit, OnDestroy {
    */
   toggleSidebar(): void {
     if (this.isAnimating) return;
-    
+
     this.isAnimating = true;
     this.isSidebarOpen = !this.isSidebarOpen;
-    
+
     // Add body class for overlay
     if (this.isSidebarOpen && this.isMobile) {
       document.body.classList.add('sidebar-open');
     } else {
       document.body.classList.remove('sidebar-open');
     }
-    
+
     // Reset animation flag after transition
     setTimeout(() => {
       this.isAnimating = false;
     }, 300);
-    
+
     // Announce state change
     const state = this.isSidebarOpen ? 'مفتوح' : 'مغلق';
     this.announceToScreenReader(`شريط التنقل ${state}`);
@@ -194,24 +203,27 @@ export class NavMainComponent implements OnInit, OnDestroy {
     if (item.route && !this.isAnimating) {
       // Add loading state
       this.isAnimating = true;
-      
+
       // Navigate with smooth transition
-      this._router.navigate([item.route]).then(() => {
-        // Close sidebar on mobile after navigation
-        if (this.isMobile) {
+      this._router
+        .navigate([item.route])
+        .then(() => {
+          // Close sidebar on mobile after navigation
+          if (this.isMobile) {
+            setTimeout(() => {
+              this.closeSidebar();
+            }, 150);
+          }
+
+          // Reset animation state
           setTimeout(() => {
-            this.closeSidebar();
-          }, 150);
-        }
-        
-        // Reset animation state
-        setTimeout(() => {
+            this.isAnimating = false;
+          }, 300);
+        })
+        .catch((error) => {
+          console.error('Navigation error:', error);
           this.isAnimating = false;
-        }, 300);
-      }).catch(error => {
-        console.error('Navigation error:', error);
-        this.isAnimating = false;
-      });
+        });
     }
   }
 
@@ -219,26 +231,8 @@ export class NavMainComponent implements OnInit, OnDestroy {
    * Handle logout with confirmation
    */
   logout(): void {
-    // Show confirmation dialog
-    if (confirm('هل أنت متأكد من تسجيل الخروج؟')) {
-      // Add logout animation
-      const logoutBtn = document.querySelector('.logout-btn');
-      if (logoutBtn) {
-        logoutBtn.classList.add('loading');
-      }
-      
-      // Simulate logout process
-      setTimeout(() => {
-        // Clear any stored data
-        localStorage.clear();
-        sessionStorage.clear();
-        
-        // Redirect to login
-        this._router.navigate(['/login']).then(() => {
-          this.announceToScreenReader('تم تسجيل الخروج بنجاح');
-        });
-      }, 1000);
-    }
+    sessionStorage.removeItem('token');
+    this._router.navigate(['/auth/login']);
   }
 
   /**
@@ -257,7 +251,7 @@ export class NavMainComponent implements OnInit, OnDestroy {
     const target = event.target as HTMLElement;
     const sidebar = document.querySelector('.sidebar');
     const clickedInside = sidebar?.contains(target);
-    
+
     // Close sidebar if clicked outside on mobile
     if (!clickedInside && this.isSidebarOpen && this.isMobile) {
       this.closeSidebar();
@@ -282,7 +276,7 @@ export class NavMainComponent implements OnInit, OnDestroy {
       event.preventDefault();
       this.toggleSidebar();
     }
-    
+
     // Close sidebar with Escape
     if (event.key === 'Escape' && this.isSidebarOpen) {
       this.closeSidebar();
@@ -294,7 +288,7 @@ export class NavMainComponent implements OnInit, OnDestroy {
    */
   private checkScreenSize(): void {
     this.isMobile = window.innerWidth <= 768;
-    
+
     if (this.isMobile) {
       // Close sidebar on mobile by default
       this.isSidebarOpen = false;
@@ -339,9 +333,9 @@ export class NavMainComponent implements OnInit, OnDestroy {
     announcement.style.height = '1px';
     announcement.style.overflow = 'hidden';
     announcement.textContent = message;
-    
+
     document.body.appendChild(announcement);
-    
+
     setTimeout(() => {
       document.body.removeChild(announcement);
     }, 1000);
@@ -383,11 +377,11 @@ export class NavMainComponent implements OnInit, OnDestroy {
     // Add keyboard shortcuts help
     const shortcuts = {
       'Ctrl + B': 'Toggle Sidebar',
-      'Escape': 'Close Sidebar',
+      Escape: 'Close Sidebar',
       'Arrow Keys': 'Navigate Menu',
-      'Enter/Space': 'Select Item'
+      'Enter/Space': 'Select Item',
     };
-    
+
     // Store shortcuts for help modal if needed
     (window as any).keyboardShortcuts = shortcuts;
   }
@@ -406,7 +400,7 @@ export class NavMainComponent implements OnInit, OnDestroy {
    * Get badge count for nav items
    */
   getBadgeCount(itemId: string): number | undefined {
-    const item = this.navItems.find(nav => nav.id === itemId);
+    const item = this.navItems.find((nav) => nav.id === itemId);
     return item?.badge;
   }
 
@@ -414,7 +408,7 @@ export class NavMainComponent implements OnInit, OnDestroy {
    * Update badge count dynamically
    */
   updateBadgeCount(itemId: string, count: number): void {
-    const item = this.navItems.find(nav => nav.id === itemId);
+    const item = this.navItems.find((nav) => nav.id === itemId);
     if (item) {
       item.badge = count > 0 ? count : undefined;
     }
@@ -441,7 +435,7 @@ export class NavMainComponent implements OnInit, OnDestroy {
       sidebarOpen: this.isSidebarOpen,
       theme: localStorage.getItem('theme'),
       lastRoute: this.currentRoute,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   }
 
