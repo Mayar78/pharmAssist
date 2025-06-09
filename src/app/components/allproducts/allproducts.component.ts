@@ -1,3 +1,5 @@
+import { NgxSpinnerService } from 'ngx-spinner';
+
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -8,7 +10,6 @@ import { Subject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs';
 import { CurrencyPipe } from '@angular/common';
 import { SearchPipe } from '../../core/pipes/search.pipe';
 import { Iproduct } from '../../core/interfaces/iproduct';
-import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-allproducts',
@@ -39,7 +40,7 @@ export class AllproductsComponent implements OnInit, OnDestroy {
 
   constructor(
     private _productsService: ProductsService,
-    private _spinnerService: NgxSpinnerService
+    private _NgxSpinnerService: NgxSpinnerService
   ) {}
 
   ngOnInit(): void {
@@ -57,7 +58,7 @@ export class AllproductsComponent implements OnInit, OnDestroy {
    */
   private loadProducts(): void {
     this.isLoading = true;
-    this._spinnerService.show();
+    this._NgxSpinnerService.show();
 
     this._productsService
       .getAllProduct()
@@ -69,12 +70,12 @@ export class AllproductsComponent implements OnInit, OnDestroy {
           this.filteredProducts = [...this.productsData];
           this.totalProducts = this.productsData.length;
           this.isLoading = false;
-          this._spinnerService.hide();
+          this._NgxSpinnerService.hide();
         },
         error: (error) => {
           console.error('Error loading products:', error);
           this.isLoading = false;
-          this._spinnerService.hide();
+          this._NgxSpinnerService.hide();
           this._toastrService.error('Failed to load products', 'Error');
         },
       });
