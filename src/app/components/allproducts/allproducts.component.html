@@ -1,198 +1,269 @@
 <!-- Loading Spinner -->
-<div *ngIf="isLoading" class="loading-container">
-  <div class="spinner-border text-primary" role="status">
-    <span class="visually-hidden">Loading...</span>
-  </div>
-</div>
-
-<!-- Main Content -->
-<div class="products-container" *ngIf="!isLoading">
-  <!-- Header Section -->
-  <div class="products-header">
-    <div class="container">
-      <div class="row align-items-center">
-        <div class="col-md-6">
-          <h1 class="page-title">All Products</h1>
-          <p class="page-subtitle">Discover our amazing collection</p>
-        </div>
-        <div class="col-md-6 text-md-end">
-          <span class="products-count">{{ getProductsCountText() }}</span>
-        </div>
-      </div>
+<section class="ms-5">
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
     </div>
   </div>
 
-  <!-- Filters and Controls -->
-  <div class="filters-section">
-    <div class="container">
-      <div class="row align-items-center">
-        <!-- Search Box -->
-        <div class="col-lg-4 col-md-6 mb-3">
-          <div class="search-box">
-            <div class="input-group">
-              <span class="input-group-text">
-                <i class="fas fa-search"></i>
-              </span>
-              <input
-                type="text"
-                class="form-control"
-                placeholder="Search products..."
-                [(ngModel)]="searchValue"
-                (input)="onSearchChange()"
-              />
-              <button
-                class="btn btn-outline-secondary"
-                type="button"
-                *ngIf="searchValue"
-                (click)="clearSearch()"
-              >
-                <i class="fas fa-times"></i>
-              </button>
-            </div>
+  <!-- Main Content -->
+  <div class="products-container" *ngIf="!isLoading">
+    <!-- Header Section -->
+    <div class="products-header">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-md-6">
+            <h1 class="page-title">All Products</h1>
+            <p class="page-subtitle">Discover our amazing collection</p>
           </div>
-        </div>
-
-        <!-- Sort Controls -->
-        <div class="col-lg-4 col-md-6 mb-3">
-          <div class="sort-controls">
-            <label class="form-label">Sort by:</label>
-            <div class="btn-group" role="group">
-              <button
-                type="button"
-                class="btn btn-outline-primary"
-                [class.active]="sortBy === 'name'"
-                (click)="sortProducts('name')"
-              >
-                Name
-                <i
-                  class="fas fa-sort-alpha-down"
-                  *ngIf="sortBy === 'name' && sortOrder === 'asc'"
-                ></i>
-                <i
-                  class="fas fa-sort-alpha-up"
-                  *ngIf="sortBy === 'name' && sortOrder === 'desc'"
-                ></i>
-              </button>
-              <button
-                type="button"
-                class="btn btn-outline-primary"
-                [class.active]="sortBy === 'price'"
-                (click)="sortProducts('price')"
-              >
-                Price
-                <i
-                  class="fas fa-sort-numeric-down"
-                  *ngIf="sortBy === 'price' && sortOrder === 'asc'"
-                ></i>
-                <i
-                  class="fas fa-sort-numeric-up"
-                  *ngIf="sortBy === 'price' && sortOrder === 'desc'"
-                ></i>
-              </button>
-              <button
-                type="button"
-                class="btn btn-outline-primary"
-                [class.active]="sortBy === 'rating'"
-                (click)="sortProducts('rating')"
-              >
-                Rating
-                <i class="fas fa-star" *ngIf="sortBy === 'rating'"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- View Mode Toggle -->
-        <div class="col-lg-4 col-md-12 mb-3">
-          <div class="view-controls text-lg-end">
-            <label class="form-label">View:</label>
-            <div class="btn-group" role="group">
-              <button
-                type="button"
-                class="btn btn-outline-secondary"
-                [class.active]="viewMode === 'grid'"
-                (click)="viewMode = 'grid'"
-              >
-                <i class="fas fa-th"></i>
-              </button>
-              <button
-                type="button"
-                class="btn btn-outline-secondary"
-                [class.active]="viewMode === 'list'"
-                (click)="viewMode = 'list'"
-              >
-                <i class="fas fa-list"></i>
-              </button>
-            </div>
+          <div class="col-md-6 text-md-end">
+            <span class="products-count">{{ getProductsCountText() }}</span>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Products Grid/List -->
-  <div class="products-section">
-    <div class="container">
-      <!-- Empty State -->
-      <div
-        *ngIf="filteredProducts.length === 0"
-        class="empty-state text-center"
-      >
-        <div class="empty-icon">
-          <i class="fas fa-search fa-3x text-muted"></i>
+    <!-- Filters and Controls -->
+    <div class="filters-section">
+      <div class="container">
+        <div class="row align-items-center">
+          <!-- Search Box -->
+          <div class="col-lg-4 col-md-6 mb-3">
+            <div class="search-box">
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="fas fa-search"></i>
+                </span>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Search products..."
+                  [(ngModel)]="searchValue"
+                  (input)="onSearchChange()"
+                />
+                <button
+                  class="btn btn-outline-secondary"
+                  type="button"
+                  *ngIf="searchValue"
+                  (click)="clearSearch()"
+                >
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sort Controls -->
+          <div class="col-lg-4 col-md-6 mb-3">
+            <div class="sort-controls">
+              <label class="form-label">Sort by:</label>
+              <div class="btn-group" role="group">
+                <button
+                  type="button"
+                  class="btn btn-outline-primary"
+                  [class.active]="sortBy === 'name'"
+                  (click)="sortProducts('name')"
+                >
+                  Name
+                  <i
+                    class="fas fa-sort-alpha-down"
+                    *ngIf="sortBy === 'name' && sortOrder === 'asc'"
+                  ></i>
+                  <i
+                    class="fas fa-sort-alpha-up"
+                    *ngIf="sortBy === 'name' && sortOrder === 'desc'"
+                  ></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-primary"
+                  [class.active]="sortBy === 'price'"
+                  (click)="sortProducts('price')"
+                >
+                  Price
+                  <i
+                    class="fas fa-sort-numeric-down"
+                    *ngIf="sortBy === 'price' && sortOrder === 'asc'"
+                  ></i>
+                  <i
+                    class="fas fa-sort-numeric-up"
+                    *ngIf="sortBy === 'price' && sortOrder === 'desc'"
+                  ></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-primary"
+                  [class.active]="sortBy === 'rating'"
+                  (click)="sortProducts('rating')"
+                >
+                  Rating
+                  <i class="fas fa-star" *ngIf="sortBy === 'rating'"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- View Mode Toggle -->
+          <div class="col-lg-4 col-md-12 mb-3">
+            <div class="view-controls text-lg-end">
+              <label class="form-label">View:</label>
+              <div class="btn-group" role="group">
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  [class.active]="viewMode === 'grid'"
+                  (click)="viewMode = 'grid'"
+                >
+                  <i class="fas fa-th"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  [class.active]="viewMode === 'list'"
+                  (click)="viewMode = 'list'"
+                >
+                  <i class="fas fa-list"></i>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-        <h3>No products found</h3>
-        <p class="text-muted">Try adjusting your search criteria</p>
-        <button
-          class="btn btn-primary"
-          (click)="clearSearch()"
-          *ngIf="searchValue"
-        >
-          Clear Search
-        </button>
-        <button
-          class="btn btn-outline-primary"
-          (click)="retryLoad()"
-          *ngIf="!searchValue"
-        >
-          Retry Loading
-        </button>
       </div>
+    </div>
 
-      <!-- Grid View -->
-      <div
-        *ngIf="viewMode === 'grid' && filteredProducts.length > 0"
-        class="products-grid"
-      >
-        <div class="row">
+    <!-- Products Grid/List -->
+    <div class="products-section">
+      <div class="container">
+        <!-- Empty State -->
+        <div
+          *ngIf="filteredProducts.length === 0"
+          class="empty-state text-center"
+        >
+          <div class="empty-icon">
+            <i class="fas fa-search fa-3x text-muted"></i>
+          </div>
+          <h3>No products found</h3>
+          <p class="text-muted">Try adjusting your search criteria</p>
+          <button
+            class="btn btn-primary"
+            (click)="clearSearch()"
+            *ngIf="searchValue"
+          >
+            Clear Search
+          </button>
+          <button
+            class="btn btn-outline-primary"
+            (click)="retryLoad()"
+            *ngIf="!searchValue"
+          >
+            Retry Loading
+          </button>
+        </div>
+
+        <!-- Grid View -->
+        <div
+          *ngIf="viewMode === 'grid' && filteredProducts.length > 0"
+          class="products-grid"
+        >
+          <div class="row">
+            <div
+              class="col-xl-3 col-lg-4 col-md-6 col-sm-6 mb-4"
+              *ngFor="let product of getPaginatedProducts()"
+            >
+              <div class="product-card">
+                <!-- Product Image -->
+                <div
+                  class="product-image"
+                  [routerLink]="['/main/productdetails', product.id]"
+                >
+                  <img
+                    [src]="product.pictureUrl"
+                    [alt]="product.name"
+                    class="img-fluid"
+                    loading="lazy"
+                  />
+                </div>
+
+                <!-- Product Info -->
+                <div class="product-info">
+                  <h5
+                    class="product-title"
+                    [routerLink]="['/product', product.id]"
+                  >
+                    {{ product.name }}
+                  </h5>
+                  <p class="product-description">
+                    {{ product.description | slice : 0 : 80 }}...
+                  </p>
+
+                  <!-- Rating -->
+                  <div class="product-rating">
+                    <span class="stars">
+                      <i
+                        *ngFor="let star of getRatingStars(); let i = index"
+                        class="fas fa-star"
+                        [class.filled]="star"
+                      ></i>
+                    </span>
+                    <span class="rating-text">(4.5)</span>
+                  </div>
+
+                  <!-- Price and Actions -->
+                  <div class="product-footer">
+                    <div class="price">
+                      <span class="current-price">{{
+                        product.price | currency : "EGP" : "symbol" : "1.0-2"
+                      }}</span>
+                    </div>
+                    <button
+                      class="btn btn-primary btn-sm add-to-cart-btn"
+                      (click)="addToCart(product, $event)"
+                    >
+                      <i class="fas fa-shopping-cart"></i>
+                      Add to Cart
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- List View -->
+        <div
+          *ngIf="viewMode === 'list' && filteredProducts.length > 0"
+          class="products-list"
+        >
           <div
-            class="col-xl-3 col-lg-4 col-md-6 col-sm-6 mb-4"
+            class="product-list-item"
             *ngFor="let product of getPaginatedProducts()"
           >
-            <div class="product-card">
+            <div class="row align-items-center">
               <!-- Product Image -->
-              <div
-                class="product-image"
-                [routerLink]="['/main/productdetails', product.id]"
-              >
-                <img
-                  [src]="product.pictureUrl"
-                  [alt]="product.name"
-                  class="img-fluid"
-                  loading="lazy"
-                />
+              <div class="col-md-2 col-sm-3">
+                <div
+                  class="product-image-list"
+                  [routerLink]="['/product', product.id]"
+                >
+                  <img
+                    [src]="product.pictureUrl"
+                    [alt]="product.name"
+                    class="img-fluid"
+                    loading="lazy"
+                  />
+                </div>
               </div>
 
-              <!-- Product Info -->
-              <div class="product-info">
+              <!-- Product Details -->
+              <div class="col-md-6 col-sm-5">
                 <h5
-                  class="product-title"
+                  class="product-title-list"
                   [routerLink]="['/product', product.id]"
                 >
                   {{ product.name }}
                 </h5>
-                <p class="product-description">
-                  {{ product.description | slice : 0 : 80 }}...
+                <p class="product-description-list">
+                  {{ product.description }}
                 </p>
 
                 <!-- Rating -->
@@ -206,16 +277,19 @@
                   </span>
                   <span class="rating-text">(4.5)</span>
                 </div>
+              </div>
 
-                <!-- Price and Actions -->
-                <div class="product-footer">
-                  <div class="price">
+              <!-- Price and Actions -->
+              <div class="col-md-4 col-sm-4">
+                <div class="product-actions-list text-end">
+                  <div class="price mb-2">
                     <span class="current-price">{{
                       product.price | currency : "EGP" : "symbol" : "1.0-2"
                     }}</span>
                   </div>
+
                   <button
-                    class="btn btn-primary btn-sm add-to-cart-btn"
+                    class="btn btn-primary btn-sm"
                     (click)="addToCart(product, $event)"
                   >
                     <i class="fas fa-shopping-cart"></i>
@@ -228,137 +302,67 @@
         </div>
       </div>
 
-      <!-- List View -->
-      <div
-        *ngIf="viewMode === 'list' && filteredProducts.length > 0"
-        class="products-list"
+      <!-- Pagination -->
+      <nav
+        *ngIf="getTotalPages() > 1"
+        class="pagination-nav"
+        aria-label="Products pagination"
       >
-        <div
-          class="product-list-item"
-          *ngFor="let product of getPaginatedProducts()"
-        >
-          <div class="row align-items-center">
-            <!-- Product Image -->
-            <div class="col-md-2 col-sm-3">
-              <div
-                class="product-image-list"
-                [routerLink]="['/product', product.id]"
+        <div class="d-flex justify-content-center">
+          <ul class="pagination">
+            <!-- Previous Button -->
+            <li class="page-item" [class.disabled]="currentPage === 1">
+              <button
+                class="page-link"
+                (click)="goToPage(currentPage - 1)"
+                [disabled]="currentPage === 1"
               >
-                <img
-                  [src]="product.pictureUrl"
-                  [alt]="product.name"
-                  class="img-fluid"
-                  loading="lazy"
-                />
-              </div>
-            </div>
+                <i class="fas fa-chevron-left"></i>
+              </button>
+            </li>
 
-            <!-- Product Details -->
-            <div class="col-md-6 col-sm-5">
-              <h5
-                class="product-title-list"
-                [routerLink]="['/product', product.id]"
+            <!-- Page Numbers -->
+            <li
+              class="page-item"
+              [class.active]="currentPage === page"
+              *ngFor="let page of getPageNumbers()"
+            >
+              <button class="page-link" (click)="goToPage(page)">
+                {{ page }}
+              </button>
+            </li>
+
+            <!-- Next Button -->
+            <li
+              class="page-item"
+              [class.disabled]="currentPage === getTotalPages()"
+            >
+              <button
+                class="page-link"
+                (click)="goToPage(currentPage + 1)"
+                [disabled]="currentPage === getTotalPages()"
               >
-                {{ product.name }}
-              </h5>
-              <p class="product-description-list">{{ product.description }}</p>
-
-              <!-- Rating -->
-              <div class="product-rating">
-                <span class="stars">
-                  <i
-                    *ngFor="let star of getRatingStars(); let i = index"
-                    class="fas fa-star"
-                    [class.filled]="star"
-                  ></i>
-                </span>
-                <span class="rating-text">(4.5)</span>
-              </div>
-            </div>
-
-            <!-- Price and Actions -->
-            <div class="col-md-4 col-sm-4">
-              <div class="product-actions-list text-end">
-                <div class="price mb-2">
-                  <span class="current-price">{{
-                    product.price | currency : "EGP" : "symbol" : "1.0-2"
-                  }}</span>
-                </div>
-
-                <button
-                  class="btn btn-primary btn-sm"
-                  (click)="addToCart(product, $event)"
-                >
-                  <i class="fas fa-shopping-cart"></i>
-                  Add to Cart
-                </button>
-              </div>
-            </div>
-          </div>
+                <i class="fas fa-chevron-right"></i>
+              </button>
+            </li>
+          </ul>
         </div>
-      </div>
+      </nav>
     </div>
-
-    <!-- Pagination -->
-    <nav
-      *ngIf="getTotalPages() > 1"
-      class="pagination-nav"
-      aria-label="Products pagination"
-    >
-      <div class="d-flex justify-content-center">
-        <ul class="pagination">
-          <!-- Previous Button -->
-          <li class="page-item" [class.disabled]="currentPage === 1">
-            <button
-              class="page-link"
-              (click)="goToPage(currentPage - 1)"
-              [disabled]="currentPage === 1"
-            >
-              <i class="fas fa-chevron-left"></i>
-            </button>
-          </li>
-
-          <!-- Page Numbers -->
-          <li
-            class="page-item"
-            [class.active]="currentPage === page"
-            *ngFor="let page of getPageNumbers()"
-          >
-            <button class="page-link" (click)="goToPage(page)">
-              {{ page }}
-            </button>
-          </li>
-
-          <!-- Next Button -->
-          <li
-            class="page-item"
-            [class.disabled]="currentPage === getTotalPages()"
-          >
-            <button
-              class="page-link"
-              (click)="goToPage(currentPage + 1)"
-              [disabled]="currentPage === getTotalPages()"
-            >
-              <i class="fas fa-chevron-right"></i>
-            </button>
-          </li>
-        </ul>
-      </div>
-    </nav>
   </div>
-</div>
 
-<!-- Error State (if needed) -->
-<div
-  *ngIf="!isLoading && productsData.length === 0"
-  class="error-state text-center"
->
-  <div class="error-icon">
-    <i class="fas fa-exclamation-triangle fa-3x text-warning"></i>
+  <!-- Error State (if needed) -->
+  <div
+    *ngIf="!isLoading && productsData.length === 0"
+    class="error-state text-center"
+  >
+    <div class="error-icon">
+      <i class="fas fa-exclamation-triangle fa-3x text-warning"></i>
+    </div>
+    <h3>Oops! Something went wrong</h3>
+    <p class="text-muted">We couldn't load the products. Please try again.</p>
+    <button class="btn btn-primary" (click)="retryLoad()">
+      <i class="fas fa-redo"></i> Try Again
+    </button>
   </div>
-  <h3>Oops! Something went wrong</h3>
-  <p class="text-muted">We couldn't load the products. Please try again.</p>
-  <button class="btn btn-primary" (click)="retryLoad()">
-    <i class="fas fa-redo"></i> Try Again
-  </button>
-</div>
+</section>

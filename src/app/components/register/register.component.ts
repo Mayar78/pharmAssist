@@ -55,6 +55,7 @@ export class RegisterComponent {
           this.responseMssg=response.message;
           this.loading=false;
           this.errorOrSuccess='success';
+          sessionStorage.setItem('username', this.registerForm.value.name)
           this.intervalId=setInterval( ()=>
           {
             this._Router.navigate(['/auth/CodeVerfication'], {
