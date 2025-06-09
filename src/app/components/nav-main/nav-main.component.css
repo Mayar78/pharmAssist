@@ -8,7 +8,7 @@
   --success-color: #10b981;
   --danger-color: #ef4444;
   --warning-color: #f59e0b;
-  
+
   /* Dark Theme Colors */
   --bg-primary: #0f172a;
   --bg-secondary: #1e293b;
@@ -18,7 +18,7 @@
   --text-muted: #64748b;
   --border-color: #334155;
   --shadow-color: rgba(0, 0, 0, 0.3);
-  
+
   /* Transitions */
   --transition-fast: 0.2s ease;
   --transition-normal: 0.3s ease;
@@ -32,10 +32,15 @@
   left: 0;
   height: 100vh;
   width: var(--sidebar-collapsed-width);
-  background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+  background: linear-gradient(
+    180deg,
+    var(--bg-primary) 0%,
+    var(--bg-secondary) 100%
+  );
   backdrop-filter: blur(20px);
   border-right: 1px solid var(--border-color);
-  transition: width var(--transition-normal), box-shadow var(--transition-normal);
+  transition: width var(--transition-normal),
+    box-shadow var(--transition-normal);
   z-index: 1000;
   display: flex;
   flex-direction: column;
@@ -55,19 +60,28 @@
   align-items: center;
   gap: 1rem;
   border-bottom: 1px solid var(--border-color);
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  background: linear-gradient(
+    135deg,
+    var(--primary-color),
+    var(--primary-hover)
+  );
   position: relative;
   overflow: hidden;
 }
 
 .sidebar-header::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 70%
+  );
   transform: translateX(-100%);
   transition: transform var(--transition-slow);
 }
@@ -198,7 +212,11 @@
 .avatar-circle {
   width: 50px;
   height: 50px;
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  background: linear-gradient(
+    135deg,
+    var(--primary-color),
+    var(--primary-hover)
+  );
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -272,13 +290,18 @@
 }
 
 .nav-link::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  /* background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  ); */
   transition: left var(--transition-normal);
 }
 
@@ -287,14 +310,18 @@
 }
 
 .nav-link:hover {
-  background: var(--bg-tertiary);
+  /* background: var(--bg-tertiary); */
   color: darkblue;
   transform: translateX(5px);
   border-color: var(--border-color);
 }
 
 .nav-link.active {
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  background: linear-gradient(
+    135deg,
+    var(--primary-color),
+    var(--primary-hover)
+  );
   color: var(--text-primary);
   box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
   border-color: var(--primary-color);
@@ -412,13 +439,18 @@
 }
 
 .logout-btn::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
   transition: left var(--transition-normal);
 }
 
@@ -429,7 +461,7 @@
 .logout-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
-  transition: all .5s;
+  transition: all 0.5s;
 }
 
 .logout-btn:active {
@@ -514,13 +546,22 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
 }
 
 /* Responsive Design */
@@ -530,7 +571,7 @@
     transform: translateX(-100%);
     transition: all var(--transition-normal);
   }
-  
+
   .sidebar.open {
     width: var(--sidebar-width);
     transform: translateX(0);
@@ -541,7 +582,7 @@
   .sidebar.open {
     width: 100vw;
   }
-  
+
   .nav-title {
     margin-right: 1rem;
   }
