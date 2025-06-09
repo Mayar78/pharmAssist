@@ -18,7 +18,7 @@ import { SpecficProductComponent } from './components/specfic-product/specfic-pr
 import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
-    { path: '', redirectTo: 'auth', pathMatch: 'full' },
+  { path: '', redirectTo: 'auth', pathMatch: 'full' },
 
     {
         path: 'auth', component: AuthComponent, children: [
