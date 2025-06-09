@@ -1,3 +1,3 @@
 export const enviroments ={
-    baseUrl : 'https://0915-197-36-1-241.ngrok-free.app',
+    baseUrl : 'https://8035-197-36-148-238.ngrok-free.app',
 }
