@@ -50,7 +50,7 @@ export class LoginComponent {
         .loginUser(this.loginForm.value)
         .subscribe({
           next: (res) => {
-            console.log(res);
+            console.log("response token" ,res.token);
 
             sessionStorage.setItem('token', res.token);
             this._AuthService.saveDecodedInfo();
@@ -58,7 +58,7 @@ export class LoginComponent {
             this.errorOrSuccess = 'success';
             this.loading = false;
             this.intervalId = setInterval(() => {
-              this._Router.navigate(['/main/home']);
+              this._Router.navigate(['/main/AllProducts']);
             }, 2000);
           },
           error: (error) => {

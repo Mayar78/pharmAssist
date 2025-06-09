@@ -1,18 +1,19 @@
+<!-- Live region for screen reader announcements -->
+<div id="live-region" aria-live="polite" aria-atomic="true" style="position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden;"></div>
+
 <!-- Enhanced Sidebar Container -->
 <nav class="sidebar" [class.open]="isSidebarOpen">
-  
   <!-- Sidebar Header -->
   <div class="sidebar-header">
-    
     <!-- Logo Container -->
     <div class="logo-container">
-      <img src="../../../assets/imgs/logo.png" 
-           alt="PharmaCare Logo" 
+      <img src="../../../assets/imgs/logo.png"
+           alt="PharmaCare Logo"
            class="logo"
            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
       <i class="fa-solid fa-pills backup-logo" style="display: none;"></i>
     </div>
-    
+
     <!-- App Title -->
     @if (isSidebarOpen) {
       <div class="nav-title">
@@ -20,20 +21,18 @@
         <p class="app-tagline">Your Health Partner</p>
       </div>
     }
-    
+
     <!-- Toggle Button -->
-    <button class="toggle-btn" 
-            (click)="toggleSidebar()" 
+    <button class="toggle-btn"
+            (click)="toggleSidebar()"
             [attr.aria-expanded]="isSidebarOpen"
             aria-label="Toggle navigation">
       <i class="fa-solid fa-bars"></i>
     </button>
-    
   </div>
 
   <!-- Navigation Content -->
   <div class="nav-content">
-    
     <!-- Welcome Section -->
     @if (isSidebarOpen) {
       <div class="welcome-section">
@@ -44,8 +43,8 @@
           <div class="online-indicator"></div>
         </div>
         <div class="welcome-text">
-          <p class="greeting">Welcome back,</p>
-          <p class="user-name">{{username}}</p>
+          <p class="greeting">{{ getUserGreeting() }},</p>
+          <p class="user-name">{{ username }}</p>
         </div>
       </div>
     }
@@ -54,26 +53,26 @@
     <ul class="nav-links">
       @for (item of navItems; track item.id; let i = $index) {
         <li class="nav-item" [style.animation-delay]="getAnimationDelay(i)">
-          <a class="nav-link" 
-             [class.active]="item.isActive"
-             [attr.data-tooltip]="!isSidebarOpen ? item.label : null"
-             (click)="navigateToRoute(item)"
-             [attr.aria-label]="item.label"
-             role="menuitem"
-             tabindex="0"
-             (keydown.enter)="navigateToRoute(item)"
-             (keydown.space)="navigateToRoute(item)">
-            
+          <a class="nav-link"
+              [class.active]="item.isActive"
+              [attr.data-tooltip]="!isSidebarOpen ? item.label : null"
+              (click)="navigateToRoute(item)"
+              [attr.aria-label]="item.label"
+              role="menuitem"
+              tabindex="0"
+              (keydown.enter)="navigateToRoute(item)"
+              (keydown.space)="navigateToRoute(item)">
+
             <!-- Icon Container -->
             <div class="nav-icon">
               <i [class]="item.icon"></i>
             </div>
-            
+
             <!-- Label -->
             @if (isSidebarOpen) {
               <span class="nav-label">{{ item.label }}</span>
             }
-            
+
             <!-- Active Indicator -->
             @if (item.isActive) {
               <div class="active-indicator"></div>
@@ -82,14 +81,11 @@
         </li>
       }
     </ul>
-    
- 
-
 
     <!-- Logout Button -->
     <div class="logout-container">
-      <button class="logout-btn" 
-              (click)="logout()" 
+      <button class="logout-btn"
+              (click)="logout()"
               [attr.data-tooltip]="!isSidebarOpen ? 'Logout' : null"
               aria-label="Logout">
         <div class="logout-icon">
@@ -100,12 +96,41 @@
         }
       </button>
     </div>
-    
   </div>
-  
 </nav>
 
 <!-- Overlay for mobile -->
 @if (isSidebarOpen && isMobile) {
   <div class="sidebar-overlay" (click)="closeSidebar()"></div>
+}
+
+<!-- Logout Confirmation Dialog -->
+@if (showLogoutConfirmation) {
+  <div class="logout-dialog-overlay" (click)="cancelLogout()"></div>
+  <div class="logout-dialog bg-white" role="dialog" aria-labelledby="logout-dialog-title">
+    <div class="logout-dialog-header">
+      <div class="logout-dialog-icon">
+        <i class="fa-solid fa-sign-out-alt"></i>
+      </div>
+      <h2 id="logout-dialog-title" class="logout-dialog-title">Confirm</h2>
+    </div>
+    
+    <p class="logout-dialog-message"> Are you sure you want to log out? The current session has been closed.</p>
+    
+    <div class="logout-dialog-actions">
+      <button class="dialog-btn dialog-btn-cancel" 
+              (click)="cancelLogout()"
+              [disabled]="logoutInProgress">
+        Cancel
+      </button>
+      <button class="dialog-btn dialog-btn-confirm" 
+              (click)="confirmLogout()"
+              [disabled]="logoutInProgress">
+        @if (logoutInProgress) {
+          <span class="spinner"></span>
+        }
+Log Out
+      </button>
+    </div>
+  </div>
 }

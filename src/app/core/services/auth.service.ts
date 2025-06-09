@@ -20,13 +20,12 @@ export class AuthService {
     return this._HttpClient.post(`${enviroments.baseUrl}/api/Accounts/Login`, userData)
   }
 
-
     saveDecodedInfo():void{
     if(sessionStorage.getItem('token') != null){
         this.decodedInfo = jwtDecode(sessionStorage.getItem('token') !)
     }
-    console.log(this.decodedInfo);
-    
+    console.log("Decoded Data",this.decodedInfo);
+
   }
 
   otp(email:object):Observable<any>{

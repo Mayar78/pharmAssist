@@ -1,12 +1,4 @@
-/* Loading Container */
-.loading-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 50vh;
-}
 
-/* Page Header */
 .products-header {
   background: linear-gradient(135deg, #667eea 0%, #764ba2b8 100%);
   color: white;
