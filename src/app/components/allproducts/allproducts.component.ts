@@ -6,10 +6,11 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { ProductsService } from '../../core/services/products.service';
-import { Subject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs';
+import { Subject, takeUntil, debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
 import { CurrencyPipe } from '@angular/common';
 import { SearchPipe } from '../../core/pipes/search.pipe';
 import { Iproduct } from '../../core/interfaces/iproduct';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-allproducts',
@@ -21,6 +22,8 @@ import { Iproduct } from '../../core/interfaces/iproduct';
 export class AllproductsComponent implements OnInit, OnDestroy {
   // Dependency Injection
   private readonly _toastrService = inject(ToastrService);
+  private readonly _CartService = inject(CartService);
+
   private readonly _destroy$ = new Subject<void>();
   private readonly _searchSubject = new Subject<string>(); // إضافة Subject للبحث
 
@@ -35,6 +38,7 @@ export class AllproductsComponent implements OnInit, OnDestroy {
   pageSize: number = 10;
   totalProducts: number = 0;
   totalPages: number = 0;
+  productSub!:Subscription
 
   // View State
   viewMode: 'grid' | 'list' = 'grid';
@@ -162,42 +166,39 @@ export class AllproductsComponent implements OnInit, OnDestroy {
   /**
    * Add product to cart
    */
-  addToCart(product: Iproduct, event: Event): void {
-    event.stopPropagation();
+  // addToCart(product: number, event: Event): void {
+  //   event.stopPropagation();
 
-    // Uncomment when cart service is implemented
-    // this._cartService.addProductToCart(product.id)
-    //   .pipe(takeUntil(this._destroy$))
-    //   .subscribe({
-    //     next: (response) => {
-    //       this._toastrService.success(response.message, 'Success');
-    //     },
-    //     error: (error) => {
-    //       this._toastrService.error('Failed to add product to cart', 'Error');
-    //     }
-    //   });
+  
+  //   this._CartService.addProductToCart(product.toString())
+  //     .pipe(takeUntil(this._destroy$))
+  //     .subscribe({
+  //       next: (response) => {
+  //         this._toastrService.success(response.message, 'Success');
+  //       },
+  //       error: (error) => {
+  //         this._toastrService.error('Failed to add product to cart', 'Error');
+  //       }
+  //     });
 
-    this._toastrService.success(`${product.name} added to cart`, 'Success');
-    console.log('Adding to cart:', product);
-  }
+  //   this._toastrService.success(` added to cart`, 'Success');
+  //   console.log('Adding to cart:', product);
+  // }
+  addToCart(pId:number):void{
+ this.productSub= this._CartService.addProductToCart(pId).subscribe({
+    next:(res)=>{
+      console.log(res);
+    
+       this._toastrService.success(res.message, "Added to your cart");
+    },
 
-  /**
-   * Toggle product in wishlist
-   */
-  toggleWishlist(product: Iproduct, event: Event): void {
-    event.stopPropagation();
-  }
+    error:(err)=>{
+      this._toastrService.error(err.message, "Unsuccessfully");
 
-  /**
-   * Check if product is in wishlist
-   */
-  isInWishlist(productId: string): boolean {
-    return this.wishlistIds.includes(productId);
-  }
-
-  /**
-   * Get product rating stars
-   */
+    }
+  })
+ 
+}
   getRatingStars(rating: number = 4.5): boolean[] {
     return Array(5)
       .fill(false)

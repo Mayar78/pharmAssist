@@ -107,15 +107,15 @@
 <!-- Logout Confirmation Dialog -->
 @if (showLogoutConfirmation) {
   <div class="logout-dialog-overlay" (click)="cancelLogout()"></div>
-  <div class="logout-dialog bg-white" role="dialog" aria-labelledby="logout-dialog-title">
+  <div class="logout-dialog bg-dark-subtle" role="dialog" aria-labelledby="logout-dialog-title">
     <div class="logout-dialog-header">
       <div class="logout-dialog-icon">
         <i class="fa-solid fa-sign-out-alt"></i>
       </div>
-      <h2 id="logout-dialog-title" class="logout-dialog-title">Confirm</h2>
+      <h2 id="logout-dialog-title" class="logout-dialog-title">confirm Logout</h2>
     </div>
     
-    <p class="logout-dialog-message"> Are you sure you want to log out? The current session has been closed.</p>
+    <p class="logout-dialog-message">Are you sure you want to log out? The current session will be closed.</p>
     
     <div class="logout-dialog-actions">
       <button class="dialog-btn dialog-btn-cancel" 
@@ -123,14 +123,13 @@
               [disabled]="logoutInProgress">
         Cancel
       </button>
-      <button class="dialog-btn dialog-btn-confirm" 
+      <button class="dialog-btn dialog-btn-confirm bg-black" 
               (click)="confirmLogout()"
               [disabled]="logoutInProgress">
         @if (logoutInProgress) {
           <span class="spinner"></span>
         }
-Log Out
-      </button>
+Logout      </button>
     </div>
   </div>
 }

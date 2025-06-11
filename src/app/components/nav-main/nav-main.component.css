@@ -77,8 +77,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 45px;
-  height: 45px;
+  min-width: 40px;
+  height: 40px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   backdrop-filter: blur(10px);
@@ -86,8 +86,8 @@
 }
 
 .logo {
-  width: 38px;
-  height: 38px;
+  width: 28px;
+  height: 28px;
   object-fit: contain;
   filter: brightness(1.2);
 }
@@ -481,13 +481,13 @@
 
 .dialog-btn-confirm {
   background: var(--danger-color);
-  color: black;
+  color: white;
 }
 
 .dialog-btn-confirm:hover {
-  transition: all .5s;
   background: #dc2626;
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+  transition: all .5s;
 }
 
 .dialog-btn:disabled {

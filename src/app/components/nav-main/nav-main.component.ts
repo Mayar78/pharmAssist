@@ -1,10 +1,4 @@
-import {
-  Component,
-  OnInit,
-  OnDestroy,
-  HostListener,
-  inject,
-} from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { Subject, takeUntil, filter } from 'rxjs';
@@ -23,63 +17,66 @@ interface NavItem {
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './nav-main.component.html',
-  styleUrl: './nav-main.component.css',
+  styleUrl: './nav-main.component.css'
 })
 export class NavMainComponent implements OnInit, OnDestroy {
+  
   private readonly _destroy$ = new Subject<void>();
-
+  private readonly _router = inject(Router);
+  
   // Component Properties
   isSidebarOpen: boolean = false;
   isAnimating: boolean = false;
   currentRoute: string = '';
   isMobile: boolean = false;
-  // username!:string;
-
-  username = sessionStorage.getItem('username');
-
-  // Navigation Items with enhanced properties
+  showLogoutConfirmation = false;
+  logoutInProgress = false;
+  
+  username = sessionStorage.getItem('displayName');
+  
+  // Navigation Items
   navItems: NavItem[] = [
     {
       id: 'medicines',
-      label: 'medicines',
+      label: 'Medicines',
       icon: 'fa-solid fa-capsules',
-      route: '/main/AllProducts',
+      route: '/main/AllProducts'
     },
     {
       id: 'request',
-      label: 'request',
+      label: 'Request',
       icon: 'fa-solid fa-file-medical',
       route: '/main/request',
-      badge: 3,
+      badge: 3
     },
     {
       id: 'orders',
-      label: 'orders',
+      label: 'Orders',
       icon: 'fa-solid fa-clipboard-list',
-      route: '/main/orders',
+      route: '/main/orders'
     },
     {
       id: 'cart',
-      label: 'cart',
+      label: 'Cart',
       icon: 'fa-solid fa-cart-shopping',
       route: '/main/cart',
-      badge: 5,
+      badge: 5
     },
     {
       id: 'chatbot',
-      label: 'chatbot',
+      label: 'Chatbot',
       icon: 'fa-solid fa-robot',
-      route: '/main/chatbot',
+      route: '/main/chatbot'
     },
     {
       id: 'profile',
-      label: 'profile',
+      label: 'Profile',
       icon: 'fa-solid fa-user-circle',
-      route: '/main/profile',
+      route: '/main/profile'
     },
   ];
 
-  constructor(private _router: Router) {
+  constructor() {
     this.checkScreenSize();
   }
 
@@ -87,6 +84,8 @@ export class NavMainComponent implements OnInit, OnDestroy {
     this.trackRouteChanges();
     this.setInitialRoute();
     this.initializeComponent();
+    // console.log('logggg',this.username);
+    
   }
 
   ngOnDestroy(): void {
@@ -97,13 +96,9 @@ export class NavMainComponent implements OnInit, OnDestroy {
   private initializeComponent(): void {
     setTimeout(() => {
       this.navItems.forEach((_, index) => {
-        const element = document.querySelector(
-          `.nav-item:nth-child(${index + 1})`
-        );
+        const element = document.querySelector(`.nav-item:nth-child(${index + 1})`);
         if (element) {
-          (element as HTMLElement).style.animationDelay = `${
-            (index + 1) * 0.1
-          }s`;
+          (element as HTMLElement).style.animationDelay = `${(index + 1) * 0.1}s`;
         }
       });
     }, 100);
@@ -112,9 +107,7 @@ export class NavMainComponent implements OnInit, OnDestroy {
   private trackRouteChanges(): void {
     this._router.events
       .pipe(
-        filter(
-          (event): event is NavigationEnd => event instanceof NavigationEnd
-        ),
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
         takeUntil(this._destroy$)
       )
       .subscribe((event: NavigationEnd) => {
@@ -130,13 +123,13 @@ export class NavMainComponent implements OnInit, OnDestroy {
   }
 
   private updateActiveStates(): void {
-    this.navItems.forEach((item) => {
+    this.navItems.forEach(item => {
       item.isActive = this.currentRoute.includes(item.route);
     });
   }
 
   private announceRouteChange(): void {
-    const activeItem = this.navItems.find((item) => item.isActive);
+    const activeItem = this.navItems.find(item => item.isActive);
     if (activeItem) {
       this.announceForScreenReader(`Navigated to ${activeItem.label}`);
     }
@@ -153,25 +146,21 @@ export class NavMainComponent implements OnInit, OnDestroy {
 
   toggleSidebar(): void {
     if (this.isAnimating) return;
-
+    
     this.isAnimating = true;
     this.isSidebarOpen = !this.isSidebarOpen;
-
-    // Add body class for overlay
+    
     if (this.isSidebarOpen && this.isMobile) {
       document.body.classList.add('sidebar-open');
     } else {
       document.body.classList.remove('sidebar-open');
     }
-
-    // Reset animation flag after transition
+    
     setTimeout(() => {
       this.isAnimating = false;
     }, 300);
-
-    // Announce state change
-    const state = this.isSidebarOpen ? 'مفتوح' : 'مغلق';
-    this.announceToScreenReader(`شريط التنقل ${state}`);
+    
+    this.announceForScreenReader(`Sidebar ${this.isSidebarOpen ? 'opened' : 'closed'}`);
   }
 
   closeSidebar(): void {
@@ -184,33 +173,43 @@ export class NavMainComponent implements OnInit, OnDestroy {
   navigateToRoute(item: NavItem): void {
     if (item.route && !this.isAnimating) {
       this.isAnimating = true;
-
-      // Navigate with smooth transition
-      this._router
-        .navigate([item.route])
-        .then(() => {
-          // Close sidebar on mobile after navigation
-          if (this.isMobile) {
-            setTimeout(() => {
-              this.closeSidebar();
-            }, 150);
-          }
-
-          // Reset animation state
+      
+      this._router.navigate([item.route]).then(() => {
+        if (this.isMobile) {
           setTimeout(() => {
-            this.isAnimating = false;
-          }, 300);
-        })
-        .catch((error) => {
-          console.error('Navigation error:', error);
+            this.closeSidebar();
+          }, 150);
+        }
+        
+        setTimeout(() => {
           this.isAnimating = false;
-        });
+        }, 300);
+      }).catch(error => {
+        console.error('Navigation error:', error);
+        this.isAnimating = false;
+      });
     }
   }
 
   logout(): void {
-    sessionStorage.removeItem('token');
-    this._router.navigate(['/auth/login']);
+    this.showLogoutConfirmation = true;
+    this.announceForScreenReader('Logout confirmation dialog opened');
+  }
+
+  confirmLogout(): void {
+    this.logoutInProgress = true;
+    this.announceForScreenReader('Logging out, please wait');
+    
+    setTimeout(() => {
+      localStorage.clear();
+      sessionStorage.clear();
+      
+      this._router.navigate(['/auth/login']).then(() => {
+        this.announceForScreenReader('Logged out successfully');
+        this.logoutInProgress = false;
+        this.showLogoutConfirmation = false;
+      });
+    }, 1000);
   }
 
   cancelLogout(): void {
@@ -223,8 +222,7 @@ export class NavMainComponent implements OnInit, OnDestroy {
     const target = event.target as HTMLElement;
     const sidebar = document.querySelector('.sidebar');
     const clickedInside = sidebar?.contains(target);
-
-    // Close sidebar if clicked outside on mobile
+    
     if (!clickedInside && this.isSidebarOpen && this.isMobile) {
       this.closeSidebar();
     }
@@ -241,8 +239,7 @@ export class NavMainComponent implements OnInit, OnDestroy {
       event.preventDefault();
       this.toggleSidebar();
     }
-
-    // Close sidebar with Escape
+    
     if (event.key === 'Escape' && this.isSidebarOpen) {
       this.closeSidebar();
     }
@@ -250,7 +247,7 @@ export class NavMainComponent implements OnInit, OnDestroy {
 
   private checkScreenSize(): void {
     this.isMobile = window.innerWidth <= 768;
-
+    
     if (this.isMobile) {
       this.isSidebarOpen = false;
       document.body.classList.remove('sidebar-open');
@@ -271,30 +268,6 @@ export class NavMainComponent implements OnInit, OnDestroy {
     return item.label;
   }
 
-  /**
-   * Announce messages to screen readers
-   */
-  private announceToScreenReader(message: string): void {
-    const announcement = document.createElement('div');
-    announcement.setAttribute('aria-live', 'polite');
-    announcement.setAttribute('aria-atomic', 'true');
-    announcement.style.position = 'absolute';
-    announcement.style.left = '-10000px';
-    announcement.style.width = '1px';
-    announcement.style.height = '1px';
-    announcement.style.overflow = 'hidden';
-    announcement.textContent = message;
-
-    document.body.appendChild(announcement);
-
-    setTimeout(() => {
-      document.body.removeChild(announcement);
-    }, 1000);
-  }
-
-  /**
-   * Get user greeting based on time
-   */
   getUserGreeting(): string {
     const hour = new Date().getHours();
     if (hour < 12) {
@@ -317,84 +290,15 @@ export class NavMainComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Initialize keyboard shortcuts
-   */
-  private initializeKeyboardShortcuts(): void {
-    // Add keyboard shortcuts help
-    const shortcuts = {
-      'Ctrl + B': 'Toggle Sidebar',
-      Escape: 'Close Sidebar',
-      'Arrow Keys': 'Navigate Menu',
-      'Enter/Space': 'Select Item',
-    };
-
-    // Store shortcuts for help modal if needed
-    (window as any).keyboardShortcuts = shortcuts;
-  }
-
-  /**
-   * Handle theme changes (if needed)
-   */
-  toggleTheme(): void {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-  }
-
-  /**
-   * Get badge count for nav items
-   */
   getBadgeCount(itemId: string): number | undefined {
-    const item = this.navItems.find((nav) => nav.id === itemId);
+    const item = this.navItems.find(nav => nav.id === itemId);
     return item?.badge;
   }
 
   updateBadgeCount(itemId: string, count: number): void {
-    const item = this.navItems.find((nav) => nav.id === itemId);
+    const item = this.navItems.find(nav => nav.id === itemId);
     if (item) {
       item.badge = count > 0 ? count : undefined;
-    }
-  }
-
-  /**
-   * Handle sidebar hover effects
-   */
-  onSidebarHover(isHovering: boolean): void {
-    if (!this.isSidebarOpen && !this.isMobile && isHovering) {
-      // Temporarily expand on hover when collapsed
-      const sidebar = document.querySelector('.sidebar') as HTMLElement;
-      if (sidebar) {
-        sidebar.classList.toggle('hover-expand', isHovering);
-      }
-    }
-  }
-
-  /**
-   * Export user preferences
-   */
-  exportPreferences(): string {
-    return JSON.stringify({
-      sidebarOpen: this.isSidebarOpen,
-      theme: localStorage.getItem('theme'),
-      lastRoute: this.currentRoute,
-      timestamp: new Date().toISOString(),
-    });
-  }
-
-  /**
-   * Import user preferences
-   */
-  importPreferences(preferences: string): void {
-    try {
-      const prefs = JSON.parse(preferences);
-      this.isSidebarOpen = prefs.sidebarOpen || false;
-      if (prefs.theme) {
-        document.documentElement.setAttribute('data-theme', prefs.theme);
-      }
-    } catch (error) {
-      console.error('Error importing preferences:', error);
     }
   }
 }

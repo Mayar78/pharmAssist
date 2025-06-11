@@ -16,6 +16,7 @@ import { ResetPasswordComponent } from './components/reset-password/reset-passwo
 import { AllproductsComponent } from './components/allproducts/allproducts.component';
 import { SpecficProductComponent } from './components/specfic-product/specfic-product.component';
 import { authGuard } from './core/guards/auth.guard';
+import { CartComponent } from './components/cart/cart.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'auth', pathMatch: 'full' },
@@ -44,6 +45,8 @@ export const routes: Routes = [
             { path: 'home', component: HomeComponent, title: 'home' },
             {path: 'AllProducts', component:AllproductsComponent, title:'AllProducts'},
             {path: 'productdetails/:PId', component:SpecficProductComponent, title:'Details'},
+            {path: 'cart', component:CartComponent, title:'Cart'},
+
 
 
         ]
