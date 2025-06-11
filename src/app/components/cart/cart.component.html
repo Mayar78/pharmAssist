@@ -1,1 +1,213 @@
-<p>cart works!</p>
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+          <h4 class="mb-0">
+            <i class="fas fa-shopping-cart me-2"></i>
+            Shopping Cart
+          </h4>
+          <span class="badge bg-light text-primary fs-6">
+            {{ cartItems?.length || 0 }} Items
+          </span>
+        </div>
+        
+        <!-- Loading State -->
+        <div *ngIf="isLoading" class="text-center py-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <p class="mt-2 text-muted">Loading your cart...</p>
+        </div>
+
+        <!-- Empty Cart State -->
+        <div *ngIf="!isLoading && (!cartItems || cartItems.length === 0)" class="text-center py-5">
+          <div class="mb-4">
+            <i class="fas fa-shopping-cart fa-4x text-muted"></i>
+          </div>
+          <h5 class="text-muted mb-3">Your cart is empty</h5>
+          <p class="text-muted mb-4">Looks like you haven't added any items to your cart yet.</p>
+          <button class="btn btn-primary btn-lg" routerLink="/products">
+            <i class="fas fa-arrow-left me-2"></i>
+            Continue Shopping
+          </button>
+        </div>
+
+        <!-- Cart Items -->
+        <div *ngIf="!isLoading && cartItems && cartItems.length > 0" class="card-body p-0">
+          <!-- Cart Header Actions -->
+          <div class="p-3 border-bottom bg-light">
+            <div class="row align-items-center">
+              <div class="col-md-6">
+                <h6 class="mb-0 text-muted">Cart ID: {{ cartData?.id || 'N/A' }}</h6>
+              </div>
+              <div class="col-md-6 text-end">
+                <button 
+                  class="btn btn-outline-danger btn-sm"
+                  (click)="clearAllCart()"
+                  [disabled]="isUpdating">
+                  <i class="fas fa-trash me-1"></i>
+                  Clear All Items
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cart Items List -->
+          <div class="cart-items">
+            <div 
+              *ngFor="let item of cartItems; trackBy: trackByItemId" 
+              class="cart-item border-bottom">
+              <div class="row g-0 p-3">
+                <!-- Product Image -->
+                <div class="col-md-2 col-3">
+                  <div class="product-image-container">
+                    <img 
+                      [src]="item.pictureUrl || 'assets/images/placeholder.jpg'" 
+                      [alt]="item.name"
+                      class="img-fluid rounded shadow-sm"
+                      style="width: 100%; height: 80px; object-fit: cover;"
+                      (error)="onImageError($event)">
+                  </div>
+                </div>
+
+                <!-- Product Details -->
+                <div class="col-md-4 col-9">
+                  <div class="ps-3">
+                    <h6 class="product-name mb-1 fw-bold">{{ item.name }}</h6>
+                    <p class="text-muted small mb-1">
+                      <i class="fas fa-capsules me-1"></i>
+                      {{ item.activeIngredient }}
+                    </p>
+                    <div class="product-price">
+                      <span class="h6 text-success mb-0">
+                        ${{ item.price | number:'1.2-2' }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Quantity Controls -->
+                <div class="col-md-3 col-6">
+                  <div class="quantity-controls d-flex align-items-center justify-content-center">
+                    <button 
+                      class="btn btn-outline-secondary btn-sm quantity-btn"
+                      (click)="updateQuantity(item.id, item.quantity - 1)"
+                      [disabled]="item.quantity <= 1 || isUpdating"
+                      type="button">
+                      <i class="fas fa-minus"></i>
+                    </button>
+                    
+                    <input 
+                      type="number" 
+                      class="form-control text-center mx-2 quantity-input"
+                      [value]="item.quantity"
+                      (change)="updateQuantity(item.id, $any($event.target).value)"
+                      [disabled]="isUpdating"
+                      min="1"
+                      max="99">
+                    
+                    <button 
+                      class="btn btn-outline-secondary btn-sm quantity-btn"
+                      (click)="updateQuantity(item.id, item.quantity + 1)"
+                      [disabled]="isUpdating"
+                      type="button">
+                      <i class="fas fa-plus"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Item Total & Actions -->
+                <div class="col-md-3 col-6">
+                  <div class="text-end">
+                    <div class="item-total mb-2">
+                      <span class="h6 text-dark">
+                        ${{ (item.price * item.quantity) | number:'1.2-2' }}
+                      </span>
+                    </div>
+                    <button 
+                      class="btn btn-outline-danger btn-sm"
+                      (click)="deleteItem(item.id)"
+                      [disabled]="isUpdating"
+                      type="button">
+                      <i class="fas fa-trash me-1"></i>
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cart Summary -->
+          <div class="cart-summary bg-light p-4">
+            <div class="row">
+              <div class="col-md-8">
+                <div class="d-flex flex-wrap gap-2">
+                  <button class="btn btn-outline-primary" routerLink="/main/home">
+                    <i class="fas fa-arrow-left me-2"></i>
+                    Continue Shopping
+                  </button>
+                  <button 
+                    class="btn btn-secondary"
+                    (click)="refreshCart()"
+                    [disabled]="isUpdating">
+                    <i class="fas fa-sync-alt me-2"></i>
+                    Refresh Cart
+                  </button>
+                </div>
+              </div>
+              
+              <div class="col-md-4">
+                <div class="summary-card bg-white p-3 rounded shadow-sm">
+                  <div class="d-flex justify-content-between mb-2">
+                    <span>Subtotal:</span>
+                    <span class="fw-bold">${{ getCartTotal() | number:'1.2-2' }}</span>
+                  </div>
+                  <div class="d-flex justify-content-between mb-2">
+                    <span>Items:</span>
+                    <span>{{ getTotalQuantity() }}</span>
+                  </div>
+                  <hr>
+                  <div class="d-flex justify-content-between mb-3">
+                    <span class="h6">Total:</span>
+                    <span class="h5 text-success">${{ getCartTotal() | number:'1.2-2' }}</span>
+                  </div>
+                  
+                  <button 
+                    class="btn btn-success w-100 btn-lg"
+                    [disabled]="!cartItems || cartItems.length === 0 || isUpdating"
+                    (click)="proceedToCheckout()">
+                    <i class="fas fa-credit-card me-2"></i>
+                    Proceed to Checkout
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirm Action</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>{{ confirmationMessage }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger" (click)="confirmAction()" data-bs-dismiss="modal">
+          Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

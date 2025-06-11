@@ -6,10 +6,11 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { ProductsService } from '../../core/services/products.service';
-import { Subject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs';
+import { Subject, takeUntil, debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
 import { CurrencyPipe } from '@angular/common';
 import { SearchPipe } from '../../core/pipes/search.pipe';
 import { Iproduct } from '../../core/interfaces/iproduct';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-allproducts',
@@ -21,17 +22,23 @@ import { Iproduct } from '../../core/interfaces/iproduct';
 export class AllproductsComponent implements OnInit, OnDestroy {
   // Dependency Injection
   private readonly _toastrService = inject(ToastrService);
+  private readonly _CartService = inject(CartService);
+
   private readonly _destroy$ = new Subject<void>();
+  private readonly _searchSubject = new Subject<string>(); // إضافة Subject للبحث
 
   // Component Properties
   productsData: Iproduct[] = [];
-  filteredProducts: Iproduct[] = [];
   searchValue: string = '';
   isLoading: boolean = false;
   wishlistIds: string[] = [];
+  
+  // Pagination Properties (Server-side)
   currentPage: number = 1;
-  itemsPerPage: number = 12;
+  pageSize: number = 10;
   totalProducts: number = 0;
+  totalPages: number = 0;
+  productSub!:Subscription
 
   // View State
   viewMode: 'grid' | 'list' = 'grid';
@@ -54,21 +61,31 @@ export class AllproductsComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Load all products from service
+   * Load products with pagination and search from server
    */
   private loadProducts(): void {
     this.isLoading = true;
     this._NgxSpinnerService.show();
 
+    // إنشاء parameters للـ API call مع إضافة البحث
+    const params = {
+      pageIndex: this.currentPage,
+      pageSize: this.pageSize,
+      sort: this.getSortParameter(),
+      search: this.searchValue.trim() // إضافة قيمة البحث
+    };
+
     this._productsService
-      .getAllProduct()
+      .getAllProductsPaginated(params)
       .pipe(takeUntil(this._destroy$))
       .subscribe({
         next: (response) => {
           console.log('Products loaded:', response);
-          this.productsData = response.data || response;
-          this.filteredProducts = [...this.productsData];
-          this.totalProducts = this.productsData.length;
+          
+          this.productsData = response.data || [];
+          this.totalProducts = response.count || 0;
+          this.totalPages = Math.ceil(this.totalProducts / this.pageSize);
+          
           this.isLoading = false;
           this._NgxSpinnerService.hide();
         },
@@ -85,116 +102,103 @@ export class AllproductsComponent implements OnInit, OnDestroy {
    * Setup search functionality with debounce
    */
   private setupSearch(): void {
-    // Future implementation: Real-time search with debounce
-    // This would require converting searchValue to a reactive form control
+    this._searchSubject
+      .pipe(
+        debounceTime(500), // انتظار 500ms بعد آخر كتابة
+        distinctUntilChanged(), // تجاهل القيم المتكررة
+        takeUntil(this._destroy$)
+      )
+      .subscribe((searchTerm: string) => {
+        this.searchValue = searchTerm;
+        this.currentPage = 1; // العودة للصفحة الأولى عند البحث
+        this.loadProducts(); // إعادة تحميل المنتجات مع البحث
+      });
   }
 
   /**
-   * Filter products based on search value
+   * Get sort parameter for API
+   */
+  private getSortParameter(): string {
+    const direction = this.sortOrder === 'asc' ? 'Asc' : 'Desc';
+    switch (this.sortBy) {
+      case 'name':
+        return `Name${direction}`;
+      case 'price':
+        return `Price${direction}`;
+      case 'rating':
+        return `Rating${direction}`;
+      default:
+        return 'NameAsc';
+    }
+  }
+
+  /**
+   * Handle search input change
    */
   onSearchChange(): void {
-    if (!this.searchValue.trim()) {
-      this.filteredProducts = [...this.productsData];
-    } else {
-      this.filteredProducts = this.productsData.filter(
-        (product) =>
-          product.name.toLowerCase().includes(this.searchValue.toLowerCase()) ||
-          product.description
-            .toLowerCase()
-            .includes(this.searchValue.toLowerCase())
-      );
-    }
-    this.currentPage = 1; // Reset to first page
+    // إرسال قيمة البحث إلى Subject
+    this._searchSubject.next(this.searchValue);
   }
 
   /**
-   * Sort products
+   * Handle immediate search (when user clicks search button)
+   */
+  onSearchSubmit(): void {
+    this.currentPage = 1;
+    this.loadProducts();
+  }
+
+  /**
+   * Sort products (server-side)
    */
   sortProducts(sortBy: 'name' | 'price' | 'rating'): void {
-    this.sortBy = sortBy;
-    this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+    if (this.sortBy === sortBy) {
+      this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortBy = sortBy;
+      this.sortOrder = 'asc';
+    }
 
-    this.filteredProducts.sort((a, b) => {
-      let valueA: any;
-      let valueB: any;
-
-      switch (sortBy) {
-        case 'name':
-          valueA = a.name.toLowerCase();
-          valueB = b.name.toLowerCase();
-          break;
-        case 'price':
-          valueA = a.price;
-          valueB = b.price;
-          break;
-        case 'rating':
-          valueA = 4.5; // Default rating since it's not in interface
-          valueB = 4.5;
-          break;
-      }
-
-      if (this.sortOrder === 'asc') {
-        return valueA > valueB ? 1 : -1;
-      } else {
-        return valueA < valueB ? 1 : -1;
-      }
-    });
+    this.currentPage = 1;
+    this.loadProducts();
   }
 
   /**
    * Add product to cart
    */
-  addToCart(product: Iproduct, event: Event): void {
-    event.stopPropagation(); // Prevent navigation to product details
+  // addToCart(product: number, event: Event): void {
+  //   event.stopPropagation();
 
-    // Uncomment when cart service is implemented
-    // this._cartService.addProductToCart(product.id)
-    //   .pipe(takeUntil(this._destroy$))
-    //   .subscribe({
-    //     next: (response) => {
-    //       this._toastrService.success(response.message, 'Success');
-    //     },
-    //     error: (error) => {
-    //       this._toastrService.error('Failed to add product to cart', 'Error');
-    //     }
-    //   });
+  
+  //   this._CartService.addProductToCart(product.toString())
+  //     .pipe(takeUntil(this._destroy$))
+  //     .subscribe({
+  //       next: (response) => {
+  //         this._toastrService.success(response.message, 'Success');
+  //       },
+  //       error: (error) => {
+  //         this._toastrService.error('Failed to add product to cart', 'Error');
+  //       }
+  //     });
 
-    // Temporary success message
-    this._toastrService.success(`${product.name} added to cart`, 'Success');
-    console.log('Adding to cart:', product);
-  }
+  //   this._toastrService.success(` added to cart`, 'Success');
+  //   console.log('Adding to cart:', product);
+  // }
+  addToCart(pId:number):void{
+ this.productSub= this._CartService.addProductToCart(pId).subscribe({
+    next:(res)=>{
+      console.log(res);
+    
+       this._toastrService.success(res.message, "Added to your cart");
+    },
 
-  /**
-   * Toggle product in wishlist
-   */
-  toggleWishlist(product: Iproduct, event: Event): void {
-    event.stopPropagation(); // Prevent navigation to product details
+    error:(err)=>{
+      this._toastrService.error(err.message, "Unsuccessfully");
 
-    // Uncomment when wishlist service is implemented
-    // const action$ = isInWishlist
-    //   ? this._wishlistService.removeFromWishlist(product.id)
-    //   : this._wishlistService.addToWishlist(product.id);
-
-    // action$.pipe(takeUntil(this._destroy$)).subscribe({
-    //   next: () => {
-    //     // Success handled above
-    //   },
-    //   error: (error) => {
-    //     this._toastrService.error('Failed to update wishlist', 'Error');
-    //   }
-    // });
-  }
-
-  /**
-   * Check if product is in wishlist
-   */
-  isInWishlist(productId: string): boolean {
-    return this.wishlistIds.includes(productId);
-  }
-
-  /**
-   * Get product rating stars
-   */
+    }
+  })
+ 
+}
   getRatingStars(rating: number = 4.5): boolean[] {
     return Array(5)
       .fill(false)
@@ -223,38 +227,50 @@ export class AllproductsComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Get paginated products
-   */
-  getPaginatedProducts(): Iproduct[] {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
-    return this.filteredProducts.slice(startIndex, endIndex);
-  }
-
-  /**
-   * Get total pages
-   */
-  getTotalPages(): number {
-    return Math.ceil(this.filteredProducts.length / this.itemsPerPage);
-  }
-
-  /**
    * Go to specific page
    */
   goToPage(page: number): void {
-    if (page >= 1 && page <= this.getTotalPages()) {
+    if (page >= 1 && page <= this.totalPages && page !== this.currentPage) {
       this.currentPage = page;
+      this.loadProducts();
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }
 
   /**
-   * Get page numbers for pagination
+   * Go to previous page
+   */
+  goToPreviousPage(): void {
+    if (this.currentPage > 1) {
+      this.goToPage(this.currentPage - 1);
+    }
+  }
+
+  /**
+   * Go to next page
+   */
+  goToNextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.goToPage(this.currentPage + 1);
+    }
+  }
+
+  /**
+   * Get page numbers for pagination display
    */
   getPageNumbers(): number[] {
-    const totalPages = this.getTotalPages();
     const pages: number[] = [];
+    const maxPagesToShow = 5;
+    
+    let startPage = Math.max(1, this.currentPage - Math.floor(maxPagesToShow / 2));
+    let endPage = Math.min(this.totalPages, startPage + maxPagesToShow - 1);
+    
+    if (endPage - startPage + 1 < maxPagesToShow) {
+      startPage = Math.max(1, endPage - maxPagesToShow + 1);
+    }
 
-    for (let i = 1; i <= totalPages; i++) {
+    for (let i = startPage; i <= endPage; i++) {
       pages.push(i);
     }
 
@@ -262,21 +278,47 @@ export class AllproductsComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Check if we should show first page and dots
+   */
+  shouldShowFirstPage(): boolean {
+    return this.getPageNumbers()[0] > 1;
+  }
+
+  /**
+   * Check if we should show last page and dots
+   */
+  shouldShowLastPage(): boolean {
+    const pageNumbers = this.getPageNumbers();
+    return pageNumbers[pageNumbers.length - 1] < this.totalPages;
+  }
+
+  /**
    * Clear search
    */
   clearSearch(): void {
     this.searchValue = '';
-    this.onSearchChange();
+    this._searchSubject.next(''); // إرسال قيمة فارغة للبحث
   }
 
   /**
    * Get products count text
    */
   getProductsCountText(): string {
-    const total = this.filteredProducts.length;
-    const start = (this.currentPage - 1) * this.itemsPerPage + 1;
-    const end = Math.min(start + this.itemsPerPage - 1, total);
+    if (this.totalProducts === 0) {
+      return this.searchValue ? `No products found for "${this.searchValue}"` : 'No products found';
+    }
 
-    return `Showing ${start}-${end} of ${total} products`;
+    const start = (this.currentPage - 1) * this.pageSize + 1;
+    const end = Math.min(this.currentPage * this.pageSize, this.totalProducts);
+
+    const searchText = this.searchValue ? ` for "${this.searchValue}"` : '';
+    return `Showing ${start}-${end} of ${this.totalProducts} products${searchText}`;
+  }
+
+  /**
+   * Get current products (server-side pagination - no need for slicing)
+   */
+  getCurrentProducts(): Iproduct[] {
+    return this.productsData;
   }
 }

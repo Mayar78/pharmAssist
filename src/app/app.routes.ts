@@ -15,9 +15,11 @@ import { ResetCodeComponent } from './components/reset-code/reset-code.component
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 import { AllproductsComponent } from './components/allproducts/allproducts.component';
 import { SpecficProductComponent } from './components/specfic-product/specfic-product.component';
+import { authGuard } from './core/guards/auth.guard';
+import { CartComponent } from './components/cart/cart.component';
 
 export const routes: Routes = [
-    { path: '', redirectTo: 'auth', pathMatch: 'full' },
+  { path: '', redirectTo: 'auth', pathMatch: 'full' },
 
     {
         path: 'auth', component: AuthComponent, children: [
@@ -38,11 +40,13 @@ export const routes: Routes = [
         ]
     },
     {
-        path: 'main', component: MainComponent, children: [
-            { path: '', redirectTo: 'home', pathMatch: 'full' },
+        path: 'main', component: MainComponent,canActivate:[authGuard] ,children: [
+            { path: '', redirectTo: 'AllProducts', pathMatch: 'full' },
             { path: 'home', component: HomeComponent, title: 'home' },
             {path: 'AllProducts', component:AllproductsComponent, title:'AllProducts'},
             {path: 'productdetails/:PId', component:SpecficProductComponent, title:'Details'},
+            {path: 'cart', component:CartComponent, title:'Cart'},
+
 
 
         ]

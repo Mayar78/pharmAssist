@@ -18,38 +18,38 @@ import { Subject, takeUntil } from 'rxjs';
 export class SpecficProductComponent implements OnInit, OnDestroy {
   
   // Carousel Configuration
-  detailsSlider: OwlOptions = {
-    loop: true,
-    mouseDrag: true,
-    touchDrag: true,
-    pullDrag: false,
-    dots: true,
-    navSpeed: 700,
-    navText: [
-      '<i class="fas fa-chevron-left"></i>',
-      '<i class="fas fa-chevron-right"></i>'
-    ],
-    responsive: {
-      0: {
-        items: 1
-      },
-      400: {
-        items: 1
-      },
-      740: {
-        items: 1
-      },
-      940: {
-        items: 1
-      }
-    },
-    nav: true,
-    autoplay: true,
-    autoplayTimeout: 3000,
-    autoplayHoverPause: true,
-    animateOut: 'fadeOut',
-    animateIn: 'fadeIn'
-  };
+  // detailsSlider: OwlOptions = {
+  //   loop: true,
+  //   mouseDrag: true,
+  //   touchDrag: true,
+  //   pullDrag: false,
+  //   dots: true,
+  //   navSpeed: 700,
+  //   navText: [
+  //     '<i class="fas fa-chevron-left"></i>',
+  //     '<i class="fas fa-chevron-right"></i>'
+  //   ],
+  //   responsive: {
+  //     0: {
+  //       items: 1
+  //     },
+  //     400: {
+  //       items: 1
+  //     },
+  //     740: {
+  //       items: 1
+  //     },
+  //     940: {
+  //       items: 1
+  //     }
+  //   },
+  //   nav: true,
+  //   autoplay: true,
+  //   autoplayTimeout: 3000,
+  //   autoplayHoverPause: true,
+  //   animateOut: 'fadeOut',
+  //   animateIn: 'fadeIn'
+  // };
 
   // Dependency Injection
   private readonly _activatedRoute = inject(ActivatedRoute);

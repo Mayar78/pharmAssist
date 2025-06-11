@@ -1,123 +1,128 @@
 /*  */
 * {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
 }
 
 .header {
- 
-    background: rgba(0, 0, 0, 0.8)url("../../../assets/imgs/login.jpg")no-repeat;
-    
-    min-height: 100vh;
-    background-position: center center;
-    background-size: cover;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  background: rgba(0, 0, 0, 0.8) url("../../../assets/imgs/login.jpg") no-repeat;
+
+  min-height: 100vh;
+  background-position: center center;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.registration h1{
-    font-size: 36px;
-    text-align: center;
-    margin-left: 15px;
-    font-family: var(--main-font);
-    color: var(--main-color);
-
+.registration h1 {
+  font-size: 36px;
+  text-align: center;
+  margin-left: 15px;
+  font-family: var(--main-font);
+  color: var(--main-color);
 }
 .registration {
-    background-color: white;
-    width: 100%;
-    max-width: 400px;
-    padding: 25px;
-    border-radius: 15px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  width: 100%;
+  max-width: 400px;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .container {
-    position: relative;
+  position: relative;
 }
 
 h2 {
-    margin-bottom: 15px;
-    font-size: 30px;
-    font-weight: bold;
-    color: rgb(54, 95, 218);
-    text-align: center;
+  margin-bottom: 15px;
+  font-size: 30px;
+  font-weight: bold;
+  color: rgb(54, 95, 218);
+  text-align: center;
 }
 
 p.size {
-    font-size: 15px;
-    color: rgb(120, 121, 121);
-    text-align: center;
+  font-size: 15px;
+  color: rgb(120, 121, 121);
+  text-align: center;
 }
 
 input.form-control {
-    border-radius: 20px;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid rgb(211, 206, 206);
-    padding-right: 40px;
+  border-radius: 20px;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid rgb(211, 206, 206);
+  padding-right: 40px;
 }
 
 .icon {
-    position: absolute;
-    top: 50%;
-    left: 88%;
-    transform: translateY(-50%);
-    font-size: 18px;
+  position: absolute;
+  top: 50%;
+  left: 88%;
+  transform: translateY(-50%);
+  font-size: 18px;
 }
 button {
-    border-radius: 20px;
-    width: 100%;
-    padding: 10px;
-    font-weight: bold;
-    color: aliceblue;
-    border: none;
+  border-radius: 20px;
+  width: 100%;
+  padding: 10px;
+  font-weight: bold;
+  color: aliceblue;
+  border: none;
 }
 
 .color {
-    background-color:#6D89E7;
+  background-color: #6d89e7;
 }
 
 .sizing {
-    margin-top: 20px;
-    text-align: center;
+  margin-top: 20px;
+  text-align: center;
 }
 @media (max-width: 768px) {
-    .registration {
-        width: 80%;
-        padding: 20px;
-    }
+  .registration {
+    width: 80%;
+    padding: 20px;
+  }
 
-    .header {
-        height: auto;
-        padding: 20px;
-        height: 100vh;
-    }
+  .header {
+    height: auto;
+    padding: 20px;
+    height: 100vh;
+  }
 
-   .icon
-   {
+  .icon {
     left: 86%;
-   }
+  }
 }
 
 .siz {
-    margin-top: 3%;
+  margin-top: 3%;
 }
-a
-{
-    text-decoration: none;
-    color:rgb(54, 95, 218) ;
+a {
+  text-decoration: none;
+  color: rgb(54, 95, 218);
 }
 
 .icon-input {
-    position: absolute;
-    top: 50%;
-    right: 15px;
-    transform: translateY(-50%);
-   
-    pointer-events: none;
-     color: rgb(42, 42, 70);
-    font-size: 15px;
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+
+  pointer-events: none;
+  color: rgb(42, 42, 70);
+  font-size: 15px;
+}
+.layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.204);
+  z-index: 1000000;
 }
