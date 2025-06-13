@@ -36,7 +36,7 @@
                         <!-- Price -->
                         <div class="price-section mb-4">
                             <span class="current-price">{{detailsData.price | currency : 'EGP'}}</span>
-                            <!-- <span class="original-price">{{detailsData.originalPrice | currency : 'EGP'}}</span> -->
+                           
                         </div>
 
                         <!-- Product Features -->
@@ -57,24 +57,10 @@
 
                         <!-- Quantity and Add to Cart -->
                         <div class="purchase-section">
-                            <div class="quantity-selector mb-3">
-                                <label class="form-label">Quantity:</label>
-                                <div class="input-group quantity-input">
-                                    <button class="btn btn-outline-secondary" type="button"
-                                        (click)="decreaseQuantity()">
-                                        <i class="fas fa-minus"></i>
-                                    </button>
-                                    <input type="number" class="form-control text-center" [value]="quantity"
-                                        (change)="updateQuantity($event)" min="1">
-                                    <button class="btn btn-outline-secondary" type="button"
-                                        (click)="increaseQuantity()">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
-                                </div>
-                            </div>
+                        
 
                             <div class="action-buttons">
-                                <button class="btn btn-primary btn-add-cart" (click)="addToCart()">
+                                <button class="btn btn-primary btn-add-cart" (click)="addToCart(detailsData.id)">
                                     <i class="fas fa-shopping-cart me-2"></i>
                                     Add to Cart
                                 </button>
@@ -84,10 +70,7 @@
 
                         <!-- Additional Info -->
                         <div class="additional-info mt-4">
-                            <div class="info-item">
-                                <strong>SKU:</strong>
-                                <span>{{detailsData.id || 'N/A'}}</span>
-                            </div>
+                           
                             <div class="info-item">
                                 <strong>Availability:</strong>
                                 <span class="badge bg-success">In Stock</span>
