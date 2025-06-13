@@ -38,7 +38,9 @@ export class AllproductsComponent implements OnInit, OnDestroy {
   pageSize: number = 10;
   totalProducts: number = 0;
   totalPages: number = 0;
-  productSub!:Subscription
+  productSub!:Subscription;
+   loading = false;
+  addToCartError: string | null = null;
 
   // View State
   viewMode: 'grid' | 'list' = 'grid';
@@ -55,14 +57,12 @@ export class AllproductsComponent implements OnInit, OnDestroy {
     this.setupSearch();
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy(): void {  if (this.productSub) {
+    this.productSub.unsubscribe();}
     this._destroy$.next();
     this._destroy$.complete();
   }
 
-  /**
-   * Load products with pagination and search from server
-   */
   private loadProducts(): void {
     this.isLoading = true;
     this._NgxSpinnerService.show();
@@ -166,7 +166,11 @@ export class AllproductsComponent implements OnInit, OnDestroy {
   /**
    * Add product to cart
    */
-  // addToCart(product: number, event: Event): void {
+  // addToCart(product: number
+  // 
+  // 
+  // 
+  // , event: Event): void {
   //   event.stopPropagation();
 
   
@@ -184,27 +188,37 @@ export class AllproductsComponent implements OnInit, OnDestroy {
   //   this._toastrService.success(` added to cart`, 'Success');
   //   console.log('Adding to cart:', product);
   // }
-  addToCart(pId:number):void{
- this.productSub= this._CartService.addProductToCart(pId).subscribe({
-    next:(res)=>{
-      console.log(res);
-    
-       this._toastrService.success(res.message, "Added to your cart");
-    },
 
-    error:(err)=>{
-      this._toastrService.error(err.message, "Unsuccessfully");
 
-    }
-  })
- 
-}
+
+
   getRatingStars(rating: number = 4.5): boolean[] {
     return Array(5)
       .fill(false)
       .map((_, index) => index < Math.floor(rating));
   }
+private isAuthenticated(): boolean {
+    return !!sessionStorage.getItem('token'); // Adjust based on your auth implementation
+  }
+  //   addToCart(productId: number): void {
+  //   this.loading = true;
+  //   this.addToCartError = null;
 
+  //   this._CartService.addProductToCart(productId).subscribe({
+  //     next: (cart) => {
+  //       console.log('Product added to cart successfully:', cart);
+  //       this.loading = false;
+        
+  //       // Optional: Show success message
+  //       // this.showSuccessMessage('Product added to cart!');
+  //     },
+  //     error: (error) => {
+  //       console.error('Error adding product to cart:', error);
+  //       this.addToCartError = 'Failed to add product to cart. Please try again.';
+  //       this.loading = false;
+  //     }
+  //   });
+  // }
   /**
    * Navigate to product details
    */
@@ -321,4 +335,24 @@ export class AllproductsComponent implements OnInit, OnDestroy {
   getCurrentProducts(): Iproduct[] {
     return this.productsData;
   }
+
+ addToCart(pId: number): void {
+  this._NgxSpinnerService.show(); // عرض spinner للتحميل
+  
+  this.productSub = this._CartService.addProductToCart(pId).subscribe({
+    next: (res) => {
+      this._NgxSpinnerService.hide();
+  this._toastrService.success(res.message, "Added to your cart");
+      console.log('Cart updated:', res.items);
+    },
+    error: (err) => {
+      this._NgxSpinnerService.hide();
+      this._toastrService.error(
+        err.error?.message || 'Failed to add product to cart', 
+        "Error"
+      );
+      console.error('Error adding to cart:', err);
+    }
+  });
+}
 }
