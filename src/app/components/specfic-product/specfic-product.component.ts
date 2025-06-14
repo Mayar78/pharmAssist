@@ -57,6 +57,7 @@ export class SpecficProductComponent implements OnInit, OnDestroy {
   private readonly _toastrService = inject(ToastrService);
   private readonly _NgxSpinnerService = inject(NgxSpinnerService);
     private readonly _CartService = inject(CartService);
+  private readonly _ToastrService = inject(ToastrService);
     productSub!:Subscription;
   
 
@@ -163,39 +164,9 @@ export class SpecficProductComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Add product to cart
-   */
- addToCart(pId: number): void {
-  this._NgxSpinnerService.show(); // عرض spinner للتحميل
-  
-  this.productSub = this._CartService.addProductToCart(pId).subscribe({
-    next: (res) => {
-      this._NgxSpinnerService.hide();
-  this._toastrService.success(res.message, "Added to your cart");
-      console.log('Cart updated:', res.items);
-    },
-    error: (err) => {
-      this._NgxSpinnerService.hide();
-      this._toastrService.error(
-        err.error?.message || 'Failed to add product to cart', 
-        "Error"
-      );
-      console.error('Error adding to cart:', err);
-    }
-  });
-}
-  
-  addToWishlist(): void {
-    if (!this.detailsData) {
-      this._toastrService.warning('Product not loaded', 'Warning');
-      return;
-    }
 
-  
-    this._toastrService.success(`${this.detailsData.name} added to wishlist`, 'Success');
-    console.log('Adding to wishlist:', this.detailsData);
-  }
+
+
 
   
   /**
@@ -228,4 +199,24 @@ export class SpecficProductComponent implements OnInit, OnDestroy {
         });
     }
   }
+   addToCart(pId: number): void {
+
+  
+  this.productSub = this._CartService.addProductToCart(pId).subscribe({
+    next: (res) => {
+      // this._NgxSpinnerService.hide();
+ this._ToastrService.success('Product added to cart successfully', 'Success');
+      // Update cart count
+      console.log('Cart updated:', res.items);
+    },
+    error: (err) => {
+      // this._NgxSpinnerService.hide();
+      this._ToastrService.error(
+        err.error?.message || 'Failed to add product to cart', 
+        "Error"
+      );
+      console.error('Error adding to cart:', err);
+    }
+  });
+}
 }

@@ -37,14 +37,7 @@ export class LoginComponent {
     private _AuthService: AuthService,
     private _Router: Router
   ) {}
-  // questions: string[] = [
-  //   'What prompted you to seek medical support at this time?',
-  //   'Do you have any chronic or recurring health conditions?',
-  //   'How have these conditions been affecting your daily life or routines?',
-  //   'Are you experiencing any specific symptoms or concerns right now?',
-  // ];
-  // answers: string[] = ['', '', ''];
-  // currentIndex = 0;
+
   loginForm: FormGroup = this._FormBuilder.group({
     email: [null, [Validators.required, Validators.email]],
     password: [
@@ -81,7 +74,7 @@ export class LoginComponent {
             this.errorOrSuccess = 'success';
             this.loading = false;
             this.intervalId = setInterval(() => {
-              this._Router.navigate(['/main/home']);
+              this._Router.navigate(['/main/AllProducts']);
             }, 2000);
           },
           error: (error) => {
@@ -107,29 +100,12 @@ export class LoginComponent {
   // }
   submit() {
     // this.sendQuestionAnswers();
-    this._Router.navigate(['/main/home']);
+    this._Router.navigate(['/main/AllProducts']);
   }
   ngOnDestroy(): void {
     this.loginSub?.unsubscribe();
 
     clearInterval(this.intervalId);
   }
-  // sendQuestionAnswers(): void {
-  //   const jsonToApi = {
-  //     PromptReason: this.answers[0],
-  //     HasChronicConditions: this.answers[1],
-  //     TakesMedicationsOrTreatments: this.answers[2],
-  //     CurrentSymptoms: this.answers[3],
-  //   };
-  //   this._AuthService.sendAnswers(jsonToApi).subscribe({
-  //     next: (res) => {
-  //       if (res.success == true) {
-  //         this._Router.navigate(['/main/home']);
-  //       }
-  //     },
-  //     error: (err) => {
-  //       console.error('Error sending answers:', err);
-  //     },
-  //   });
-  // }
+
 }

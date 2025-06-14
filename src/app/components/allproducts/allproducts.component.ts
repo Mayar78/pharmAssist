@@ -4,7 +4,7 @@ import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { ToastrComponentlessModule, ToastrService } from 'ngx-toastr';
 import { ProductsService } from '../../core/services/products.service';
 import { Subject, takeUntil, debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
 import { CurrencyPipe } from '@angular/common';
@@ -15,13 +15,14 @@ import { CartService } from '../../services/cart.service';
 @Component({
   selector: 'app-allproducts',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, CurrencyPipe, SearchPipe],
+  imports: [CommonModule, FormsModule, RouterModule, CurrencyPipe, SearchPipe, ],
   templateUrl: './allproducts.component.html',
   styleUrl: './allproducts.component.css',
 })
 export class AllproductsComponent implements OnInit, OnDestroy {
   // Dependency Injection
-  private readonly _toastrService = inject(ToastrService);
+
+  
   private readonly _CartService = inject(CartService);
 
   private readonly _destroy$ = new Subject<void>();
@@ -49,7 +50,8 @@ export class AllproductsComponent implements OnInit, OnDestroy {
 
   constructor(
     private _productsService: ProductsService,
-    private _NgxSpinnerService: NgxSpinnerService
+    private _NgxSpinnerService: NgxSpinnerService, 
+    private _ToastrService:ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -93,7 +95,7 @@ export class AllproductsComponent implements OnInit, OnDestroy {
           console.error('Error loading products:', error);
           this.isLoading = false;
           this._NgxSpinnerService.hide();
-          this._toastrService.error('Failed to load products', 'Error');
+          this._ToastrService.error('Failed to load products', 'Error');
         },
       });
   }
@@ -163,32 +165,7 @@ export class AllproductsComponent implements OnInit, OnDestroy {
     this.loadProducts();
   }
 
-  /**
-   * Add product to cart
-   */
-  // addToCart(product: number
-  // 
-  // 
-  // 
-  // , event: Event): void {
-  //   event.stopPropagation();
-
-  
-  //   this._CartService.addProductToCart(product.toString())
-  //     .pipe(takeUntil(this._destroy$))
-  //     .subscribe({
-  //       next: (response) => {
-  //         this._toastrService.success(response.message, 'Success');
-  //       },
-  //       error: (error) => {
-  //         this._toastrService.error('Failed to add product to cart', 'Error');
-  //       }
-  //     });
-
-  //   this._toastrService.success(` added to cart`, 'Success');
-  //   console.log('Adding to cart:', product);
-  // }
-
+ 
 
 
 
@@ -337,17 +314,18 @@ private isAuthenticated(): boolean {
   }
 
  addToCart(pId: number): void {
-  this._NgxSpinnerService.show(); // عرض spinner للتحميل
+
   
   this.productSub = this._CartService.addProductToCart(pId).subscribe({
     next: (res) => {
-      this._NgxSpinnerService.hide();
-  this._toastrService.success(res.message, "Added to your cart");
+      // this._NgxSpinnerService.hide();
+ this._ToastrService.success('Product added to cart successfully', 'Success');
+      // Update cart count
       console.log('Cart updated:', res.items);
     },
     error: (err) => {
-      this._NgxSpinnerService.hide();
-      this._toastrService.error(
+      // this._NgxSpinnerService.hide();
+      this._ToastrService.error(
         err.error?.message || 'Failed to add product to cart', 
         "Error"
       );

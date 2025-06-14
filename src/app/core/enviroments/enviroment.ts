@@ -1,3 +1,3 @@
 export const enviroments = {
   
-  baseUrl: 'https://3f69-156-209-79-172.ngrok-free.app'}
+  baseUrl: 'https://2af6-41-239-77-111.ngrok-free.app'}

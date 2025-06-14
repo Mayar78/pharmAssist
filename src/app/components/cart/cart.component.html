@@ -3,6 +3,10 @@
     <div class="row align-items-center">
       <div class="col-md-6">
         <h1 class="page-title">{{username}}'s Cart</h1>
+          <div class="cart-count-badge">
+         
+          <span>{{getTotalItemCount()}} {{getTotalItemCount() === 1 ? 'Item' : 'Items'}} in the cart</span>
+        </div>
       </div>
     </div>
   </div>
@@ -16,7 +20,11 @@
           <i class="fa-brands fa-shopify"></i>
           Shopping Cart
         </h1>
-        <button class="clear-cart-btn" (click)="clearAllCart()">
+        
+        <!-- Item Count Badge -->
+      
+        
+        <button class="clear-cart-btn" (click)="showClearCartModal()">
           <i class="fa-solid fa-broom"></i>
           Clear Cart
         </button>
@@ -39,23 +47,8 @@
               <h2 class="item-name">{{item.name}}</h2>
               <p class="item-ingredient">{{item.activeIngredient}}</p>
               <p class="item-price">{{item.price | currency:'EGP'}}</p>
+              <h6 class="quantity text-start">Quantity: {{item.quantity}}</h6>
             </div>
-<!--             
-            <div class="item-controls">
-              <div class="quantity-controls">
-                <button class="quantity-btn minus" 
-                        (click)="updateQuantity(item.id, item.quantity - 1)"
-                        [disabled]="item.quantity <= 1">
-                  <i class="fa-solid fa-minus"></i>
-                </button>
-                <span class="quantity">{{item.quantity}}</span>
-                <button class="quantity-btn plus" 
-                        (click)="updateQuantity(item.id, item.quantity + 1)">
-                  <i class="fa-solid fa-plus"></i>
-                </button>
-              </div>
-              <div class="item-total">{{item.price * item.quantity | currency:'EGP'}}</div>
-            </div> -->
           </div>
         }
       </div>
@@ -65,7 +58,7 @@
           <span>Total:</span>
           <span>{{calculateTotal() | currency:'EGP'}}</span>
         </div>
-        <button [routerLink]="'/checkout'" class="checkout-btn">
+        <button [routerLink]="'/checkout'" class="browse-btn">
           <i class="fa-solid fa-credit-card"></i>
           Proceed to Checkout
         </button>
@@ -78,6 +71,12 @@
           <i class="fa-brands fa-shopify"></i>
           Shopping Cart
         </h1>
+        
+        <!-- Item Count Badge for empty cart -->
+        <div class="cart-count-badge">
+          <i class="fa-solid fa-box"></i>
+          <span>0 Items</span>
+        </div>
       </div>
       
       <div class="empty-cart">
@@ -93,4 +92,25 @@
       </div>
     </div>
   }
+</div>
+
+<!-- Clear Cart Modal -->
+<div class="modal-overlay" [class.show]="showModal" (click)="hideModalOnBackdrop($event)">
+  <div class="modal-content">
+    <div class="modal-icon">
+      <i class="fa-solid fa-trash-can"></i>
+    </div>
+    <h3 class="modal-title">Delete cart?</h3>
+    <p class="modal-message">Are you sure you want to remove all items from your shopping cart?
+This action cannot be canceled.
+    </p>
+    <div class="modal-buttons">
+      <button class="modal-btn cancel" (click)="hideClearCartModal()">
+      Cancel
+      </button>
+      <button class="modal-btn confirm" (click)="confirmClearCart()">
+      Yes, Delete 
+      </button>
+    </div>
+  </div>
 </div>
