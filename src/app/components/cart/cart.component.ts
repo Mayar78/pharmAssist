@@ -23,23 +23,58 @@ export class CartComponent implements OnInit, OnDestroy {
   cartData: ICart | null = null;
   username = sessionStorage.getItem('displayName');
   cartSub!: Subscription;
+  showModal: boolean = false;
+  totalPrice!:number
 
-  clearAllCart(): void {
-    if (confirm('Are you sure you want to clear your cart?')) {
-      this._NgxSpinnerService.show();
-      this._CartService.clearCart().subscribe({
-        next: (res) => {
-          this._NgxSpinnerService.hide();
-          this.cartData = res;
-          this._CartService.noOfItems2.set(0);
-          this._ToastrService.success('Cart cleared successfully', 'Success');
-        },
-        error: (err) => {
-          this._NgxSpinnerService.hide();
-          this._ToastrService.error(err.error?.message || 'Error clearing cart', 'Error');
-        }
-      });
+  // Get total item count
+  getTotalItemCount(): number {
+    if (!this.cartData?.items) return 0;
+    const totalCount = this.cartData.items.reduce((total, item) => total + item.quantity, 0);
+    
+    // Save to session storage
+    sessionStorage.setItem('cartItemCount', totalCount.toString());
+    
+    return totalCount;
+  }
+
+  // Show clear cart modal
+  showClearCartModal(): void {
+    this.showModal = true;
+  }
+
+  // Hide clear cart modal
+  hideClearCartModal(): void {
+    this.showModal = false;
+  }
+
+  // Hide modal when clicking on backdrop
+  hideModalOnBackdrop(event: Event): void {
+    if (event.target === event.currentTarget) {
+      this.hideClearCartModal();
     }
+  }
+
+  // Confirm clear cart
+  confirmClearCart(): void {
+    this._NgxSpinnerService.show();
+    this._CartService.clearCart().subscribe({
+      next: (res) => {
+        this._NgxSpinnerService.hide();
+        this.cartData = res;
+        this._CartService.noOfItems2.set(0);
+        
+        // Update session storage
+        sessionStorage.setItem('cartItemCount', '0');
+        
+        this._ToastrService.success('تم مسح السلة بنجاح', 'نجح العملية');
+        this.hideClearCartModal();
+      },
+      error: (err) => {
+        this._NgxSpinnerService.hide();
+        this._ToastrService.error(err.error?.message || 'خطأ في مسح السلة', 'خطأ');
+        this.hideClearCartModal();
+      }
+    });
   }
 
   deleteItem(p_id: number): void {
@@ -48,53 +83,61 @@ export class CartComponent implements OnInit, OnDestroy {
       next: (res) => {
         this._NgxSpinnerService.hide();
         this.cartData = res;
-        this._ToastrService.success(res.message, "Deleted Successfully");
-        // Update cart count
-        const itemCount = this.cartData?.items?.reduce((total, item) => total + item.quantity, 0) || 0;
+        this._ToastrService.success(res.message, "تم الحذف بنجاح");
+        
+        // Update cart count and session storage
+        const itemCount = this.getTotalItemCount();
         this._CartService.noOfItems2.set(itemCount);
       },
       error: (err) => {
         this._NgxSpinnerService.hide();
-        this._ToastrService.error(err.error?.message, "Error");
+        this._ToastrService.error(err.error?.message, "خطأ");
       }
     });
   }
 
- updateQuantity(p_id: number, newQuantity: number): void {
-  if (newQuantity < 1) return;
-  
-  this._NgxSpinnerService.show();
-  this._CartService.update(p_id.toString(), newQuantity).subscribe({
-    next: (res) => {
-      this._NgxSpinnerService.hide();
-      this.cartData = res;
-      // لا حاجة لإظهار رسالة لكل تغيير في الكمية
-      // Update cart count
-      const itemCount = this.cartData?.items?.reduce((total, item) => total + item.quantity, 0) || 0;
-      this._CartService.noOfItems2.set(itemCount);
-    },
-    error: (err) => {
-      this._NgxSpinnerService.hide();
-      console.error('Error updating quantity:', err);
-      this._ToastrService.error('حدث خطأ أثناء تحديث الكمية', 'خطأ');
-    }
-  });
-}
+  updateQuantity(p_id: number, newQuantity: number): void {
+    if (newQuantity < 1) return;
+    
+    this._NgxSpinnerService.show();
+    this._CartService.update(p_id.toString(), newQuantity).subscribe({
+      next: (res) => {
+        this._NgxSpinnerService.hide();
+        this.cartData = res;
+        
+        // Update cart count and session storage
+        const itemCount = this.getTotalItemCount();
+        this._CartService.noOfItems2.set(itemCount);
+      },
+      error: (err) => {
+        this._NgxSpinnerService.hide();
+        console.error('Error updating quantity:', err);
+        this._ToastrService.error('حدث خطأ أثناء تحديث الكمية', 'خطأ');
+      }
+    });
+  }
 
   ngOnInit(): void {
     console.log(sessionStorage.getItem('token'));
+    
+    // Load saved cart count from session storage
+    const savedCartCount = sessionStorage.getItem('cartItemCount');
+    if (savedCartCount) {
+      this._CartService.noOfItems2.set(parseInt(savedCartCount));
+    }
     
     this._CartService.getLoogedUserCart().subscribe({
       next: (res) => {
         this.cartData = res;
         console.log("Cart data loaded:", res.items);
-        // Update cart count on load
-        const itemCount = this.cartData?.items?.reduce((total, item) => total + item.quantity, 0) || 0;
+        
+        // Update cart count and session storage
+        const itemCount = this.getTotalItemCount();
         this._CartService.noOfItems2.set(itemCount);
       },
       error: (err) => {
         console.error("Error loading cart:", err);
-        this._ToastrService.error('Error loading cart data', 'Error');
+        this._ToastrService.error('خطأ في تحميل بيانات السلة', 'خطأ');
       }
     });
   }
@@ -103,6 +146,7 @@ export class CartComponent implements OnInit, OnDestroy {
     if (!this.cartData?.items) return 0;
     return this.cartData.items.reduce((total, item) => {
       return total + (item.price * item.quantity);
+      // sessionStorage.setItem("totalPrice", )
     }, 0);
   }
 

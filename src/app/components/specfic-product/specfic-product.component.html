@@ -31,6 +31,7 @@
                                 <i class="fas fa-star"></i>
                             </div>
                             <span class="rating-text">(4.8 out of 5)</span>
+                             <h6 class="text-danger-emphasis">{{detailsData.activeIngredient}}</h6>
                         </div>
 
                         <!-- Price -->
@@ -60,7 +61,7 @@
                         
 
                             <div class="action-buttons">
-                                <button class="btn btn-primary btn-add-cart" (click)="addToCart(detailsData.id)">
+                                <button class="btn btn-primary btn-add-cart"  (click)="addToCart(detailsData.id)">
                                     <i class="fas fa-shopping-cart me-2"></i>
                                     Add to Cart
                                 </button>
