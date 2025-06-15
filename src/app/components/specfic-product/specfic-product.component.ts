@@ -6,7 +6,8 @@ import { ToastrService } from 'ngx-toastr';
 import { Iproduct } from '../../core/interfaces/iproduct';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { CurrencyPipe } from '@angular/common';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, Subscription, takeUntil } from 'rxjs';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-specfic-product',
@@ -54,6 +55,12 @@ export class SpecficProductComponent implements OnInit, OnDestroy {
   // Dependency Injection
   private readonly _activatedRoute = inject(ActivatedRoute);
   private readonly _toastrService = inject(ToastrService);
+  private readonly _NgxSpinnerService = inject(NgxSpinnerService);
+    private readonly _CartService = inject(CartService);
+  private readonly _ToastrService = inject(ToastrService);
+    productSub!:Subscription;
+  
+
   private readonly _destroy$ = new Subject<void>();
 
   // Component Properties
@@ -157,52 +164,9 @@ export class SpecficProductComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Add product to cart
-   */
-  addToCart(): void {
-    if (!this.detailsData) {
-      this._toastrService.warning('Product not loaded', 'Warning');
-      return;
-    }
 
-    // Uncomment and implement when cart service is ready
-    // this._cartService.addProductToCart(this.detailsData.id, this.quantity)
-    //   .pipe(takeUntil(this._destroy$))
-    //   .subscribe({
-    //     next: (response) => {
-    //       this._toastrService.success(response.message, 'Success');
-    //       console.log('Product added to cart:', response);
-    //     },
-    //     error: (error) => {
-    //       console.error('Error adding to cart:', error);
-    //       this._toastrService.error('Failed to add product to cart', 'Error');
-    //     }
-    //   });
 
-    // Temporary success message
-    this._toastrService.success(
-      `${this.detailsData.name} added to cart (Quantity: ${this.quantity})`,
-      'Success'
-    );
-    
-    console.log('Adding to cart:', {
-      product: this.detailsData,
-      quantity: this.quantity
-    });
-  }
 
-  
-  addToWishlist(): void {
-    if (!this.detailsData) {
-      this._toastrService.warning('Product not loaded', 'Warning');
-      return;
-    }
-
-  
-    this._toastrService.success(`${this.detailsData.name} added to wishlist`, 'Success');
-    console.log('Adding to wishlist:', this.detailsData);
-  }
 
   
   /**
@@ -235,4 +199,24 @@ export class SpecficProductComponent implements OnInit, OnDestroy {
         });
     }
   }
+   addToCart(pId: number): void {
+
+  
+  this.productSub = this._CartService.addProductToCart(pId).subscribe({
+    next: (res) => {
+      // this._NgxSpinnerService.hide();
+ this._ToastrService.success('Product added to cart successfully', 'Success');
+      // Update cart count
+      console.log('Cart updated:', res.items);
+    },
+    error: (err) => {
+      // this._NgxSpinnerService.hide();
+      this._ToastrService.error(
+        err.error?.message || 'Failed to add product to cart', 
+        "Error"
+      );
+      console.error('Error adding to cart:', err);
+    }
+  });
+}
 }
