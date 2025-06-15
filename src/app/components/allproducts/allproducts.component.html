@@ -103,15 +103,7 @@
                     *ngIf="sortBy === 'price' && sortOrder === 'desc'"
                   ></i>
                 </button>
-                <button
-                  type="button"
-                  class="btn btn-outline-primary"
-                  [class.active]="sortBy === 'rating'"
-                  (click)="sortProducts('rating')"
-                >
-                  Rating
-                  <i class="fas fa-star" *ngIf="sortBy === 'rating'"></i>
-                </button>
+               
               </div>
             </div>
           </div>
@@ -241,16 +233,7 @@
                   </p>
 
                   <!-- Rating -->
-                  <div class="product-rating">
-                    <span class="stars">
-                      <i
-                        *ngFor="let star of getRatingStars(); let i = index"
-                        class="fas fa-star"
-                        [class.filled]="star"
-                      ></i>
-                    </span>
-                    <span class="rating-text">(4.5)</span>
-                  </div>
+              
 
                   <!-- Price and Actions -->
                   <div class="product-footer">
@@ -310,17 +293,7 @@
                   {{ product.description }}
                 </p>
 
-                <!-- Rating -->
-                <div class="product-rating">
-                  <span class="stars">
-                    <i
-                      *ngFor="let star of getRatingStars(); let i = index"
-                      class="fas fa-star"
-                      [class.filled]="star"
-                    ></i>
-                  </span>
-                  <span class="rating-text">(4.5)</span>
-                </div>
+              
               </div>
 
               <!-- Price and Actions -->

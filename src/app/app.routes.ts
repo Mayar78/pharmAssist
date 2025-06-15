@@ -17,6 +17,9 @@ import { AllproductsComponent } from './components/allproducts/allproducts.compo
 import { SpecficProductComponent } from './components/specfic-product/specfic-product.component';
 import { authGuard } from './core/guards/auth.guard';
 import { CartComponent } from './components/cart/cart.component';
+
+import { GetMyRecommendationsComponent } from './components/get-my-recommendations/get-my-recommendations.component';
+
 import { CheckoutComponent } from './components/checkout/checkout/checkout.component';
 import { AddAddressComponent } from './components/add-address/add-address/add-address.component';
 import { OrderSuccessComponent } from './components/order-success/order-success.component';
@@ -24,8 +27,9 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { EditProfileComponent } from './components/edit-profile/edit-profile.component';
 import { OrderstatusComponent } from './components/orderstatus/orderstatus.component';
 
+
 export const routes: Routes = [
-  { path: '', redirectTo: 'auth', pathMatch: 'full' },
+    { path: '', redirectTo: 'auth', pathMatch: 'full' },
 
     {
         path: 'auth', component: AuthComponent, children: [
@@ -68,17 +72,21 @@ export const routes: Routes = [
             { path: 'emaildone', component: EmaildoneComponent, title: 'Done' },
             { path: 'forgetPassword', component: ForgetPasswordComponent, title: 'forgetPassword' },
             { path: 'reset-password', component: ResetPasswordComponent, title: 'reset-password' },
- 
+
 
         ]
     },
     {
-        path: 'main', component: MainComponent,canActivate:[authGuard] ,children: [
+        path: 'main', component: MainComponent, canActivate: [authGuard], children: [
             { path: '', redirectTo: 'AllProducts', pathMatch: 'full' },
             { path: 'home', component: HomeComponent, title: 'home' },
-            {path: 'AllProducts', component:AllproductsComponent, title:'AllProducts'},
-            {path: 'productdetails/:PId', component:SpecficProductComponent, title:'Details'},
-            {path: 'cart', component:CartComponent, title:'Cart'},
+
+            { path: 'AllProducts', component: AllproductsComponent, title: 'AllProducts' },
+            { path: 'productdetails/:PId', component: SpecficProductComponent, title: 'Details' },
+            { path: 'cart', component: CartComponent, title: 'Cart' },
+            { path: 'MyRecommendation', component: GetMyRecommendationsComponent, title: 'MyRecommendation' },
+
+           
             
             // add checkout route
             {path:'checkout',component:CheckoutComponent, title:'Checkout'},
@@ -93,7 +101,12 @@ export const routes: Routes = [
    
 
 
-
+            {
+                path: 'chatbot',
+                loadComponent: () =>
+                    import('./components/diagnosis-chat/diagnosis-chat.component').then(m => m.DiagnosisChatComponent),
+                title: 'Chatbot'
+            },
         ]
     },
     { path: '**', component: NotFoundComponent },
