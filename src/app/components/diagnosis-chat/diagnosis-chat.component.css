@@ -1,0 +1,266 @@
+/* General Styles */
+:host {
+  display: block;
+  font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', sans-serif;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Chat Container */
+.chatbot-container {
+  max-width: 800px;
+  margin: 30px auto;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 80vh;
+}
+
+/* Header */
+.chat-header {
+  background:linear-gradient(135deg, #667eea 0%, #19b896dc 100%);
+  color: white;
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.bot-icon {
+  width: 32px;
+  height: 32px;
+}
+
+.user-info {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+/* Chat Window */
+.chat-window {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background-color: #f9f9f9;
+}
+
+.messages-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Messages */
+.message {
+  max-width: 80%;
+  padding: 12px 16px;
+  border-radius: 18px;
+  font-size: 15px;
+  line-height: 1.5;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.user {
+  background-color: #e3f2fd;
+  color: #0d47a1;
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+
+.bot {
+  background-color: white;
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Condition Response Styling */
+.condition-response {
+  padding: 8px;
+}
+
+.condition-response h4 {
+  margin-top: 0;
+  color: #2c3e50;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
+}
+
+.medications, .warnings, .advice {
+  margin-bottom: 16px;
+}
+
+.medications h5, .warnings h5, .advice h5 {
+  margin-bottom: 8px;
+  color: #34495e;
+}
+
+.medications ul, .warnings ul, .advice ul {
+  padding-left: 20px;
+  margin: 8px 0;
+}
+
+.medications li, .warnings li, .advice li {
+  margin-bottom: 6px;
+}
+
+.warnings {
+  background-color: #fff8e1;
+  padding: 12px;
+  border-radius: 8px;
+  border-left: 4px solid #ffc107;
+}
+
+.advice {
+  background-color: #e8f5e9;
+  padding: 12px;
+  border-radius: 8px;
+  border-left: 4px solid #19b896dc;
+}
+
+.disclaimer {
+  font-size: 13px;
+  color: #666;
+  margin-top: 16px;
+  padding: 8px;
+  background-color: #f5f5f5;
+  border-radius: 6px;
+}
+
+.multi-condition {
+  background-color: #f5f5f5;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.multi-condition h4 {
+  color: #2c3e50;
+}
+
+.personal-note {
+  font-weight: 500;
+  color: #e91e63;
+  margin-bottom: 12px;
+}
+
+.welcome-message {
+  text-align: center;
+  padding: 12px;
+}
+
+.welcome-message h3 {
+  color: #2c3e50;
+  margin-bottom: 8px;
+}
+
+.welcome-message p {
+  color: #666;
+  margin-bottom: 12px;
+}
+
+.examples {
+  font-size: 14px;
+}
+
+.examples span {
+  background-color: #e3f2fd;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin: 0 4px;
+  color: #1976d2;
+  font-size: 13px;
+}
+
+/* Input Area */
+.input-area {
+  display: flex;
+  padding: 16px;
+  background-color: white;
+  border-top: 1px solid #eee;
+}
+
+.input-area input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid #ddd;
+  border-radius: 24px;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.input-area input:focus {
+  border-color: #4b6cb7;
+}
+
+.input-area button {
+  background:linear-gradient(135deg, #667eea 0%, #19b896dc 100%);
+  color: white;
+  border: none;
+  border-radius: 24px;
+  padding: 0 20px;
+  margin-left: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s;
+}
+
+.input-area button:hover {
+  opacity: 0.9;
+}
+
+.button-text {
+  margin-right: 8px;
+}
+
+.send-icon {
+  width: 20px;
+  height: 20px;
+  fill: white;
+}
+
+/* Footer */
+.disclaimer-footer {
+  background-color: #f5f5f5;
+  padding: 8px 16px;
+  text-align: center;
+  font-size: 12px;
+  color: #666;
+  border-top: 1px solid #eee;
+}
+
+/* RTL Support for Arabic */
+[dir="rtl"] .message {
+  text-align: right;
+}
+
+[dir="rtl"] .medications ul, 
+[dir="rtl"] .warnings ul, 
+[dir="rtl"] .advice ul {
+  padding-right: 20px;
+  padding-left: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .chatbot-container {
+    margin: 0;
+    border-radius: 0;
+    height: 100vh;
+  }
+  
+  .message {
+    max-width: 90%;
+  }
+}
