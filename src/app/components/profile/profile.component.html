@@ -1,0 +1,41 @@
+<div class="profile-wrapper">
+ 
+  <div class="header-banner">
+   
+    <div class="header-title">Profile</div>
+  </div>
+
+  
+  <div class="profile-content">
+     
+    <div class="user-info">
+      <img src="https://cdn-icons-png.flaticon.com/512/2922/2922510.png" alt="User" class="user-img" />
+      <div class="user-details">
+       <div class="user-name">{{ userName }}</div>
+<div class="user-email">{{ userEmail }}</div>
+
+      </div>
+    </div>
+
+    
+    <div class="action-list">
+      <div class="action-item" (click)="navigateTo('edit-profile')">
+        <i class="fas fa-edit"></i>
+        Edit Profile
+        <span class="arrow">›</span>
+      </div>
+
+      <div class="action-item" (click)="navigateTo('recommended')">
+        <i class="fas fa-pills"></i>
+        Recommended Medications
+        <span class="arrow">›</span>
+      </div>
+
+      <div class="action-item" (click)="navigateTo('side-effects')">
+        <i class="fas fa-file-medical-alt"></i>
+        Medication side Effects Notes
+        <span class="arrow">›</span>
+      </div>
+    </div>
+  </div>
+</div>
