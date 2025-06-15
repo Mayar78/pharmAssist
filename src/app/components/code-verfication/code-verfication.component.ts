@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { ToastrService } from 'ngx-toastr';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-code-verfication',
@@ -18,6 +19,7 @@ export class CodeVerficationComponent implements AfterViewInit, OnInit {
   resendDisabled: boolean = false;
   resendTimer: number = 60;
   intervalId: any;
+  otpSub!: Subscription;
 
   @ViewChildren('otpInput') otpInputs!: QueryList<ElementRef>;
 
@@ -86,10 +88,12 @@ export class CodeVerficationComponent implements AfterViewInit, OnInit {
         code: otpCode
       };
 
-      this._AuthService.otp(data).subscribe({
+      this.otpSub = this._AuthService.otp(data).subscribe({
         next: (res) => {
           this._ToastrService.success('Successfully', 'OTP verified');
-          this.router.navigate(['/auth/login']);
+          this.router.navigate(['/auth/questions'], {
+            queryParams: { email: this.email }
+          });
         },
         error: (err) => {
           this._ToastrService.error('UnSuccessfully', 'OTP verification failed');
@@ -100,7 +104,7 @@ export class CodeVerficationComponent implements AfterViewInit, OnInit {
 
   resendOtp(): void {
     if (this.email) {
-      this.startResendTimer(); 
+      this.startResendTimer();
 
       const data = {
         email: this.email
@@ -130,5 +134,12 @@ export class CodeVerficationComponent implements AfterViewInit, OnInit {
         clearInterval(this.intervalId);
       }
     }, 1000);
+  }
+
+  ngOnDestroy(): void {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
+    this.otpSub?.unsubscribe();
   }
 }

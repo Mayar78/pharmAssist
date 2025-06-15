@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CartService } from '../../services/cart.service';
 import { ToastrService } from 'ngx-toastr';
@@ -33,6 +33,8 @@ export class CartComponent implements OnInit, OnDestroy {
   private readonly _CartService = inject(CartService);
   private readonly _ToastrService = inject(ToastrService);
   private readonly _NgxSpinnerService = inject(NgxSpinnerService);
+  private readonly _Router = inject(Router);
+
 
   // Component State
   cartData: ICart | null = null;
@@ -245,7 +247,8 @@ export class CartComponent implements OnInit, OnDestroy {
     }
 
     // Implement checkout logic here
-    this._ToastrService.info('Checkout functionality to be implemented', 'Info');
+ this._Router.navigate(['/checkout']);
+    //    this._ToastrService.info('Checkout functionality to be implemented', 'Info');
   }
 
   /**

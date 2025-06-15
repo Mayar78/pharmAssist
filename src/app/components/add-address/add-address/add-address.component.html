@@ -1,0 +1,68 @@
+<form [formGroup]="addressForm" (ngSubmit)="onSubmit()" class="address-form" novalidate>
+
+ 
+  <div class="step">
+    <div class="step-icon">1</div>
+    <h2 class="step-title">Recipients Information</h2>
+  </div>
+
+  <input type="text" formControlName="fullName" placeholder="Full Name *" />
+  <div *ngIf="addressForm.get('fullName')?.touched && addressForm.get('fullName')?.errors?.['required']" class="error">
+    Full Name is required.
+  </div>
+
+  <input type="text" formControlName="phoneNumber" placeholder="Phone Number *" />
+  <div *ngIf="addressForm.get('phoneNumber')?.touched && addressForm.get('phoneNumber')?.errors?.['required']" class="error">
+    Phone Number is required.
+  </div>
+  <p class="hint">For shipping-related questions only</p>
+
+  <input type="email" formControlName="email" placeholder="Email Address *" />
+  <div *ngIf="addressForm.get('email')?.touched && addressForm.get('email')?.errors?.['required']" class="error">
+    Email is required.
+  </div>
+  <div *ngIf="addressForm.get('email')?.touched && addressForm.get('email')?.errors?.['email']" class="error">
+    Please enter a valid email address.
+  </div>
+  <p class="hint">The address will be used to send your order and bill details</p>
+
+ 
+  <hr class="divider" />
+ 
+  <div class="step">
+    <div class="step-icon">2</div>
+    <h2 class="step-title">Shipping Address</h2>
+  </div>
+
+  <input type="text" formControlName="addressTitle" placeholder="Address Title (optional)" />
+  <p class="hint">For estimating if the place is opened or closed on the weekends</p>
+
+  <input type="text" formControlName="addressLine1" placeholder="Street Address *" />
+  <div *ngIf="addressForm.get('addressLine1')?.touched && addressForm.get('addressLine1')?.errors?.['required']" class="error">
+    Address is required.
+  </div>
+
+ 
+  <div class="optional-field">
+    <span class="plus">+</span>
+    <span class="optional-label">Street Address 2 (optional)</span>
+  </div>
+  <input type="text" formControlName="addressLine2" placeholder="Street Address 2" />
+
+  <input type="text" formControlName="city" placeholder="City *" />
+  <div *ngIf="addressForm.get('city')?.touched && addressForm.get('city')?.errors?.['required']" class="error">
+    City is required.
+  </div>
+
+  <input type="text" formControlName="country" placeholder="Country *" />
+  <div *ngIf="addressForm.get('country')?.touched && addressForm.get('country')?.errors?.['required']" class="error">
+    Country is required.
+  </div>
+
+  <div class="actions">
+    <button type="submit" class="btn-save">Save</button>
+   <button type="button" (click)="cancel()" class="btn-cancel">Cancel</button>
+
+  </div>
+
+</form>

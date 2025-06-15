@@ -1,0 +1,98 @@
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+
+     
+      <div class="header-title">
+        <i class="bi bi-arrow-left" (click)="goBack()"></i>
+        <h3>Check Out</h3>
+      </div>
+
+      
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <p class="text-muted mb-0">{{ itemsCount }} Items in your cart</p>
+        <h6 class="text-muted mb-0">TOTAL<br>
+          <span class="fw-bold text-dark">EGP.{{ totalPrice.toFixed(2) }}</span>
+        </h6>
+      </div>
+
+    
+      <div class="mt-4">
+        <h5>Delivery Address</h5>
+
+        <div *ngFor="let addr of addresses; let i = index" class="border rounded p-3 mb-2">
+          <div class="form-check d-flex justify-content-between align-items-center">
+            <div>
+              <input class="form-check-input me-2" type="radio" name="address" [value]="i" [(ngModel)]="selectedAddressIndex">
+              <label class="form-check-label">
+                <strong>{{ addr.addressTitle || 'Address ' + (i + 1) }}</strong><br>
+                {{ addr.fullName }}<br>
+                {{ addr.phoneNumber }}<br>
+                {{ addr.email }}<br>
+                {{ addr.street }}<span *ngIf="addr.street2">, {{ addr.street2 }}</span><br>
+                {{ addr.city }}, {{ addr.country }}
+              </label>
+            </div>
+            <button class="btn btn-sm btn-outline-secondary" (click)="editAddress(i)">✏️</button>
+          </div>
+        </div>
+
+  
+        <div *ngIf="isAdding" class="border rounded p-3 mb-3 bg-light">
+          <div class="mb-2">
+            <input type="text" class="form-control form-control-sm" placeholder="Full Name" [(ngModel)]="newAddress.fullName">
+          </div>
+          <div class="mb-2">
+            <input type="text" class="form-control form-control-sm" placeholder="Phone Number" [(ngModel)]="newAddress.phoneNumber">
+          </div>
+          <div class="mb-2">
+            <input type="email" class="form-control form-control-sm" placeholder="Email" [(ngModel)]="newAddress.email">
+          </div>
+          <div class="mb-2">
+            <input type="text" class="form-control form-control-sm" placeholder="Address Title (e.g. Home, Work)" [(ngModel)]="newAddress.addressTitle">
+          </div>
+          <div class="mb-2">
+            <input type="text" class="form-control form-control-sm" placeholder="Street" [(ngModel)]="newAddress.street">
+          </div>
+          <div class="mb-2">
+            <input type="text" class="form-control form-control-sm" placeholder="Street 2 (optional)" [(ngModel)]="newAddress.street2">
+          </div>
+          <div class="mb-2">
+            <input type="text" class="form-control form-control-sm" placeholder="City" [(ngModel)]="newAddress.city">
+          </div>
+          <div class="mb-2">
+            <input type="text" class="form-control form-control-sm" placeholder="Country" [(ngModel)]="newAddress.country">
+          </div>
+
+          <div class="d-flex justify-content-center gap-2">
+            <button class="btn btn-outline-secondary btn-sm" (click)="cancelForm()">Cancel</button>
+            <button class="btn btn-primary btn-sm" (click)="addOrUpdateAddress()">
+              {{ isEditingIndex !== null ? 'Update' : 'Save' }}
+            </button>
+          </div>
+        </div>
+
+        <button class="btn btn-outline-primary w-100" (click)="navigateToAddAddress()">+ Add Address</button>
+      </div>
+
+       
+      <div class="mt-4">
+        <h5>Payment method</h5>
+        <div class="border rounded p-3 d-flex align-items-center justify-content-between">
+          <div class="d-flex align-items-center">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" width="40" class="me-2" alt="PayPal">
+            <span>Cash on Delivery</span>
+          </div>
+          <input class="form-check-input" type="radio" name="payment" [(ngModel)]="paymentMethod" value="cod">
+        </div>
+      </div>
+
+      
+      <div class="text-center mt-4">
+       <button (click)="onPayNow()" class="btn btn-primary">Pay Now</button>
+
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -1,36 +1,48 @@
-<div class="pa">
-  <div class="home-overlay text-center">
-    <label
-      [for]="'textarea' + currentIndex"
-      class="form-label"
-      (click)="preventScroll($event)">
-      {{ questions[currentIndex] }}
-    </label>
-
-    <textarea
-      class="form-control"
-      [(ngModel)]="answers[currentIndex]"
-      [id]="'textarea' + currentIndex"
-      placeholder="Answer to help us provide personalized care.."
-      rows="6"
-      (input)="checkAnswer()"
-      (click)="preventScroll($event)">
-    </textarea>
-
-    <div class="d-flex justify-content-center mt-4">
-      <button
-        type="button"
-        class="btn me-2"
-        (click)="skip()">
-        Skip
-      </button>
-
-      <button type="button"
-        class="btn"
-        [disabled]="!answers[currentIndex]" 
-        (click)="next()">
-        Next
-      </button>
+<div class="d-flex justify-content-center align-items-center min-vh-100 bg-light px-3">
+  <div *ngIf="isLoading; else questionBlock" class="text-center p-4 card" style="max-width: 600px;">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
     </div>
+    <p class="mt-3 mb-0">Loading your health information...</p>
   </div>
+
+  <ng-template #questionBlock>
+    <div class="card shadow-lg p-4 w-100" style="max-width: 600px;">
+ 
+      <div class="progress mb-4" style="height: 6px;">
+        <div class="progress-bar bg-success"
+             [style.width.%]="(currentQuestionIndex + 1) / questions.length * 100">
+        </div>
+      </div>
+
+      
+      <h5 class="mb-3 fw-semibold text-primary">
+        Question {{ currentQuestionIndex + 1 }} of {{ questions.length }}
+      </h5>
+
+      
+      <h4 class="mb-4">{{ currentQuestion.text }}</h4>
+
+     
+      <textarea #answerInput
+                class="form-control mb-3"
+                rows="5"
+                placeholder="Type your answer here..."
+                style="resize: none"></textarea>
+
+      
+      <div class="d-flex justify-content-between">
+        <button class="btn btn-outline-secondary"
+                (click)="onSkip()"
+                [disabled]="isSubmitted">
+          Skip
+        </button>
+        <button class="btn btn-primary"
+                (click)="onNext()"
+                [disabled]="isSubmitted || !answerInput.value?.trim()">
+          {{ isLastQuestion ? 'Submit' : 'Next' }}
+        </button>
+      </div>
+    </div>
+  </ng-template>
 </div>

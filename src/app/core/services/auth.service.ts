@@ -8,9 +8,23 @@ import { jwtDecode } from 'jwt-decode';
   providedIn: 'root',
 })
 export class AuthService {
-  decodedInfo: any;
+decodedInfo: any;
 
   constructor(private _HttpClient: HttpClient) {}
+
+  private getAuthHeaders(): HttpHeaders {
+    const token = sessionStorage.getItem('token');
+    const headersConfig: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'ngrok-skip-browser-warning': 'true'
+    };
+
+    if (token) {
+      headersConfig['Authorization'] = `Bearer ${token}`;
+    }
+
+    return new HttpHeaders(headersConfig);
+  }
 
   register(userData: object): Observable<any> {
     return this._HttpClient.post(
@@ -27,20 +41,25 @@ export class AuthService {
   }
 
   saveDecodedInfo(): void {
-    if (sessionStorage.getItem('token') != null) {
-      this.decodedInfo = jwtDecode(sessionStorage.getItem('token')!);
+    const token = sessionStorage.getItem('token');
+    if (token) {
+      this.decodedInfo = jwtDecode(token);
+      console.log(this.decodedInfo);
     }
-    console.log(this.decodedInfo);
   }
 
-  otp(email: object): Observable<any> {
+  otp(data: { email: string; code: string }): Observable<any> {
     return this._HttpClient.post(
       `${enviroments.baseUrl}/api/Otp/VerifyOtp`,
-      email
+      data
     );
   }
+
   resendOtp(data: { email: string }): Observable<any> {
-    return this._HttpClient.post(`${enviroments.baseUrl}/api/Otp/Resend`, data);
+    return this._HttpClient.post(
+      `${enviroments.baseUrl}/api/Otp/Resend`,
+      data
+    );
   }
 
   forgetPassword(userEmail: object): Observable<any> {
@@ -51,21 +70,22 @@ export class AuthService {
   }
 
   resetCode(resetCode: object): Observable<any> {
-    console.log('Sending reset code request:', resetCode);
-    return this._HttpClient
-      .post(`${enviroments.baseUrl}/api/Otp/VerifyResetOtp`, resetCode)
-      .pipe(
-        tap((response) => console.log('Reset code response:', response)),
-        catchError((error) => {
-          console.error('Reset code API error:', error);
-          return throwError(() => ({
-            error: error.error,
-            status: error.status,
-            message: error.message,
-          }));
-        })
-      );
+    return this._HttpClient.post(
+      `${enviroments.baseUrl}/api/Otp/VerifyResetOtp`,
+      resetCode
+    ).pipe(
+      tap((response) => console.log('Reset Code Response:', response)),
+      catchError((error) => {
+        console.error('Reset code API error:', error);
+        return throwError(() => ({
+          error: error.error,
+          status: error.status,
+          message: error.message,
+        }));
+      })
+    );
   }
+
   newData(userData: object): Observable<any> {
     return this._HttpClient
       .post(`${enviroments.baseUrl}/api/Accounts/ResetPassword`, userData)
@@ -78,16 +98,35 @@ export class AuthService {
   }
 
   sendAnswers(answers: any): Observable<any> {
-    const token = sessionStorage.getItem('token');
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    });
-
     return this._HttpClient.post(
       `${enviroments.baseUrl}/api/Accounts/UpdateAnswers`,
       answers,
-      { headers }
+      { headers: this.getAuthHeaders() }
+    ).pipe(
+      tap((res) => console.log('Answers submitted:', res)),
+      catchError((err) => {
+        console.error('Error sending answers:', err);
+        return throwError(() => err);
+      })
+    );
+  }
+
+  loginAfterQuestions(email: string): Observable<any> {
+    return this._HttpClient.post(
+      `${enviroments.baseUrl}/api/Accounts/LoginAfterQuestions`,
+      { email },
+      { headers: this.getAuthHeaders() }
+    ).pipe(
+      tap((res: any) => {
+        if (res.token) {
+          sessionStorage.setItem('token', res.token);
+          this.saveDecodedInfo();
+        }
+      }),
+      catchError((err) => {
+        console.error('LoginAfterQuestions error:', err);
+        return throwError(() => err);
+      })
     );
   }
 }
