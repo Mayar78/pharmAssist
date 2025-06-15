@@ -1,0 +1,31 @@
+<div *ngFor="let order of orders" class="order-card">
+  <div class="shipping-header">
+    <span>Shipping ID</span>
+    <strong>#{{ order.shippingId }}</strong>
+
+    <span [ngClass]="{'badge-pending': order.status === 'Pending', 'badge-reject': order.status === 'Rejected'}">
+      {{ order.status }}
+    </span>
+  </div>
+
+  <div class="order-details">
+    <h5>Request item</h5>
+
+    <div *ngFor="let item of cartData?.items" class="product-item">
+      <img [src]="item.pictureUrl" width="60" height="60" alt="product" />
+      <div>
+        <strong>{{ item.name }}</strong><br>
+        {{ item.quantity }} x {{ item.price }} EGP
+      </div>
+    </div>
+  </div>
+
+  <div class="order-summary mt-3">
+    <div>Shipping: {{ shippingPrice }} EGP</div>
+    <div>Items: {{ itemsTotal }} EGP</div>
+    <div><strong>Total: {{ getTotal() }} EGP</strong></div>
+  </div>
+
+  <div class="text-muted text-center mt-2">Expected Replied in 2 days</div>
+</div>
+........................................................................................................................

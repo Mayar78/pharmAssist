@@ -17,7 +17,16 @@ import { AllproductsComponent } from './components/allproducts/allproducts.compo
 import { SpecficProductComponent } from './components/specfic-product/specfic-product.component';
 import { authGuard } from './core/guards/auth.guard';
 import { CartComponent } from './components/cart/cart.component';
+
 import { GetMyRecommendationsComponent } from './components/get-my-recommendations/get-my-recommendations.component';
+
+import { CheckoutComponent } from './components/checkout/checkout/checkout.component';
+import { AddAddressComponent } from './components/add-address/add-address/add-address.component';
+import { OrderSuccessComponent } from './components/order-success/order-success.component';
+import { ProfileComponent } from './components/profile/profile.component';
+import { EditProfileComponent } from './components/edit-profile/edit-profile.component';
+import { OrderstatusComponent } from './components/orderstatus/orderstatus.component';
+
 
 export const routes: Routes = [
     { path: '', redirectTo: 'auth', pathMatch: 'full' },
@@ -28,9 +37,36 @@ export const routes: Routes = [
             {
                 path: 'login', component: LoginComponent, title: 'login',
             },
-            { path: 'Questions', component: QuestionsComponent, title: 'Questions' },
+            {path:'questions',component:QuestionsComponent,title:'questions'},
+           {
+      path: 'questions',
+      loadComponent: () =>
+        import('./components/questions/questions.component').then(
+          (m) => m.QuestionsComponent
+        ),
+      title: 'questions',
+    },
             { path: 'register', component: RegisterComponent, title: 'register' },
             { path: 'explore', component: FirstpageComponent, title: 'PharmAssist' },
+
+             // OTP Flow
+      {
+        path: 'code-verification',
+        component: CodeVerficationComponent,
+        title: 'OTP Verification',
+        data: { nextRoute: '/auth/questions' }
+      },
+
+       // Questions Flow
+      {
+        path: 'questions',
+        loadComponent: () =>
+          import('./components/questions/questions.component').then(
+            (m) => m.QuestionsComponent
+          ),
+        title: 'Health Questions',
+        data: { requiresAnswers: true }
+         },
             { path: 'CodeVerfication', component: CodeVerficationComponent, title: 'OTP' },
             { path: 'reset-code', component: ResetCodeComponent, title: 'reset-code' },
             { path: 'emaildone', component: EmaildoneComponent, title: 'Done' },
@@ -44,10 +80,25 @@ export const routes: Routes = [
         path: 'main', component: MainComponent, canActivate: [authGuard], children: [
             { path: '', redirectTo: 'AllProducts', pathMatch: 'full' },
             { path: 'home', component: HomeComponent, title: 'home' },
+
             { path: 'AllProducts', component: AllproductsComponent, title: 'AllProducts' },
             { path: 'productdetails/:PId', component: SpecficProductComponent, title: 'Details' },
             { path: 'cart', component: CartComponent, title: 'Cart' },
             { path: 'MyRecommendation', component: GetMyRecommendationsComponent, title: 'MyRecommendation' },
+
+           
+            
+            // add checkout route
+            {path:'checkout',component:CheckoutComponent, title:'Checkout'},
+            // add address:
+            { path: 'add-address', component: AddAddressComponent, title: 'Add Address' },
+            {path:'order-success', component: OrderSuccessComponent, title:'Order Success'},
+{path:'orderstatus', component:OrderstatusComponent, title:'Order Status'},
+             //  Profile routes
+      { path: 'profile', component: ProfileComponent, title: 'Profile' },
+      { path: 'edit-profile', component: EditProfileComponent, title: 'Edit Profile' },
+    
+   
 
 
             {

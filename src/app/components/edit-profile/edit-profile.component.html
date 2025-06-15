@@ -1,0 +1,54 @@
+<div class="container py-4">
+  <div class="card p-4 mx-auto shadow" style="max-width: 600px;">
+    <h4 class="mb-4 text-center text-primary">Edit Profile</h4>
+
+    <div class="text-center mb-3">
+      <img [src]="selectedImage" class="rounded-circle border" width="100" height="100" alt="Profile" />
+    </div>
+
+    <div class="d-flex justify-content-center mb-4 flex-wrap">
+      <div
+        *ngFor="let img of profileImages"
+        (click)="onImageSelect(img.url)"
+        class="mx-2 border rounded p-1 mb-2"
+        [ngClass]="{ 'border-primary border-3': selectedImage === img.url }"
+        style="cursor: pointer;"
+      >
+        <img [src]="img.url" alt="Avatar" width="40" height="40" />
+      </div>
+    </div>
+
+    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+      <div class="form-group mb-3 position-relative">
+        <label>User Name</label>
+        <input class="form-control pe-5" formControlName="firstName" />
+        <i class="bi bi-pencil position-absolute bottom-0 end-0 mb-2 me-3 text-muted" style="cursor: pointer;"></i>
+        <div class="text-danger small" *ngIf="profileForm.get('firstName')?.invalid && profileForm.get('firstName')?.touched">
+          User name is required (min 2 characters)
+        </div>
+      </div>
+
+      <!-- <div class="form-group mb-3">
+        <label>Email</label>
+        <input class="form-control" formControlName="email" readonly />
+      </div> -->
+
+      <div class="form-group mb-4 position-relative">
+        <label>Phone Number</label>
+        <input class="form-control pe-5" type="number" formControlName="phone" />
+        <i class="bi bi-pencil position-absolute bottom-0 end-0 mb-2 me-3 text-muted" style="cursor: pointer;"></i>
+        <div class="text-danger small" *ngIf="profileForm.get('phone')?.invalid && profileForm.get('phone')?.touched">
+          Phone number must be at least 11 characters
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center">
+        <button class="btn btn-outline-secondary" type="button" (click)="onCancel()">Cancel</button>
+        <button class="btn btn-primary d-flex align-items-center" type="submit" [disabled]="profileForm.invalid || isLoading">
+          <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          Save
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

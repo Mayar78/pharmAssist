@@ -1,0 +1,30 @@
+.order-card {
+  background: white;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+.shipping-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.badge-pending {
+  background-color: orange;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+.badge-reject {
+  background-color: #ff5c5c;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+.product-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
