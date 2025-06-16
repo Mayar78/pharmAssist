@@ -1,31 +1,57 @@
-<div *ngFor="let order of orders" class="order-card">
-  <div class="shipping-header">
-    <span>Shipping ID</span>
-    <strong>#{{ order.shippingId }}</strong>
+<div *ngIf="!isLoading && order" class="container bg-light p-4 rounded shadow-sm mb-4">
+  <h3 class="mb-3 text-primary fw-bold">Order #{{ order.id }}</h3>
 
-    <span [ngClass]="{'badge-pending': order.status === 'Pending', 'badge-reject': order.status === 'Rejected'}">
-      {{ order.status }}
-    </span>
+  <div class="mb-2">
+    <strong>Email:</strong> {{ order.buyerEmail }}
   </div>
 
-  <div class="order-details">
-    <h5>Request item</h5>
+  <div class="mb-2">
+    <strong>Date:</strong> {{ order.orderDate | date: 'medium' }}
+  </div>
 
-    <div *ngFor="let item of cartData?.items" class="product-item">
-      <img [src]="item.pictureUrl" width="60" height="60" alt="product" />
+  <div class="mb-2">
+    <strong>Status:</strong>
+    <span [ngClass]="getOrderStatusClass(order.status)">
+      <i [class]="'bi me-1 ' + getOrderStatusIcon(order.status)"></i>
+      {{ getOrderStatusText(order.status) }}
+    </span>
+  </div>
+</div>
+
+
+
+
+
+
+
+<div class="container mt-5">
+  <h3 class="text-center mb-4 fw-bold">Your Order Details 🛒</h3>
+
+  <div *ngIf="items.length === 0" class="alert alert-info text-center">
+    Your cart is empty.
+  </div>
+
+  <div *ngFor="let item of items" class="d-flex justify-content-center">
+    <div class="cart-item-box d-flex align-items-center shadow-sm rounded mb-3 p-3">
+      <!-- Image -->
+      <img [src]="item.pictureUrl || 'https://via.placeholder.com/90'"
+           class="img-thumbnail me-3 cart-image"
+           alt="{{ item.name }}">
+
+      <!-- Details -->
       <div>
-        <strong>{{ item.name }}</strong><br>
-        {{ item.quantity }} x {{ item.price }} EGP
+        <h5 class="mb-1 text-primary fw-semibold">{{ item.name }}</h5>
+        <p class="mb-1 text-muted small">Ingredient: {{ item.activeIngredient || 'N/A' }}</p>
+        <p class="mb-1 text-muted small">Qty: {{ item.quantity }}</p>
+        <p class="mb-0 text-muted small">Price: {{ item.price | currency:'USD' }}</p>
       </div>
     </div>
   </div>
 
-  <div class="order-summary mt-3">
-    <div>Shipping: {{ shippingPrice }} EGP</div>
-    <div>Items: {{ itemsTotal }} EGP</div>
-    <div><strong>Total: {{ getTotal() }} EGP</strong></div>
+  <!-- Order Summary -->
+  <div class="bg-light border rounded p-4 shadow-sm mt-4" style="width: 80%; margin: 0 auto;">
+    <h5 class="fw-bold mb-3">🧾 Order Summary</h5>
+    <p class="mb-2">Total items: <strong>{{ itemCount }}</strong></p>
+    <p class="mb-0">Total price: <strong>{{ total | currency:'USD' }}</strong></p>
   </div>
-
-  <div class="text-muted text-center mt-2">Expected Replied in 2 days</div>
 </div>
-........................................................................................................................
