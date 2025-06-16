@@ -1,0 +1,68 @@
+<div class="features-container">
+  <!-- Carousel Section -->
+  <div class="carousel-section">
+    <div class="carousel-container">
+      <div class="carousel-wrapper">
+        <div class="carousel-track" [style.transform]="'translateX(-' + (currentSlide() * 100) + '%)'">
+          @for (item of carouselItems; track item.id) {
+            <div class="carousel-slide">
+              <img [src]="item.imageUrl" [alt]="item.title" 
+                   onerror="this.src='assets/images/placeholder.jpg'">
+              @if (item.title) {
+                <div class="slide-overlay">
+                  <h3>{{ item.title }}</h3>
+                  <p>{{ item.description }}</p>
+                </div>
+              }
+            </div>
+          }
+        </div>
+        
+        <!-- Navigation arrows -->
+        <button class="carousel-btn prev" (click)="prevSlide()">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <button class="carousel-btn next" (click)="nextSlide()">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
+      
+      <!-- Dots indicator -->
+      <div class="carousel-dots">
+        @for (item of carouselItems; track item.id; let i = $index) {
+          <button 
+            class="dot" 
+            [class.active]="currentSlide() === i"
+            [class.current]="currentSlide() === i"
+            (click)="goToSlide(i)">
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Features Cards Section -->
+  <div class="features-section">
+    <div class="features-grid">
+      @for (card of featureCards; track card.id; let i = $index) {
+        <div class="feature-card" [class]="card.gradientClass">
+          <div class="card-number">{{ i + 1 }}</div>
+          
+          <div class="card-icon">
+            <i [class]="card.iconClass"></i>
+          </div>
+          
+          <div class="card-content">
+            <h3 class="card-title">{{ card.title }}</h3>
+            <p class="card-description">{{ card.description }}</p>
+            
+            <button class="card-button" (click)="card.action()">
+              <span>{{ card.buttonText }}</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

@@ -46,7 +46,7 @@ export class NavMainComponent implements OnInit, OnDestroy {
       id: 'request',
       label: 'Request',
       icon: 'fa-solid fa-file-medical',
-      route: '/main/MyRecommendation',
+      route: '/main/orderstatus',
       badge: 3
     },
     {

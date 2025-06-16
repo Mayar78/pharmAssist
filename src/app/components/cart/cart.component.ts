@@ -8,6 +8,16 @@ import { ICart, ICartItem } from '../../interfaces/icart';
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from 'ngx-spinner';
 
+// Interface for storing cart items in localStorage
+interface StoredCartItem {
+  id: number;
+  name: string;
+  quantity: number;
+  price: number;
+  activeIngredient?: string;
+  pictureUrl?: string;
+}
+
 @Component({
   selector: 'app-cart',
   standalone: true,
@@ -24,7 +34,48 @@ export class CartComponent implements OnInit, OnDestroy {
   username = sessionStorage.getItem('displayName');
   cartSub!: Subscription;
   showModal: boolean = false;
-  totalPrice!:number
+  totalPrice!: number;
+
+  // Save cart items to localStorage
+  private saveCartToLocalStorage(): void {
+    if (this.cartData?.items) {
+      const cartItems: StoredCartItem[] = this.cartData.items.map(item => ({
+        id: item.id,
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price,
+        activeIngredient: item.activeIngredient,
+        pictureUrl: item.pictureUrl
+      }));
+      
+      localStorage.setItem('cartItems', JSON.stringify(cartItems));
+      localStorage.setItem('cartTotal', this.calculateTotal().toString());
+      
+      console.log('Cart saved to localStorage:', cartItems);
+    } else {
+      // Clear localStorage if cart is empty
+      localStorage.removeItem('cartItems');
+      localStorage.removeItem('cartTotal');
+    }
+  }
+
+
+  getCartFromLocalStorage(): StoredCartItem[] {
+    const storedCart = localStorage.getItem('cartItems');
+    return storedCart ? JSON.parse(storedCart) : [];
+  }
+
+  getCartTotalFromLocalStorage(): number {
+    const storedTotal = localStorage.getItem('cartTotal');
+    return storedTotal ? parseFloat(storedTotal) : 0;
+  }
+
+  // Clear cart from localStorage
+  private clearCartFromLocalStorage(): void {
+    localStorage.removeItem('cartItems');
+    localStorage.removeItem('cartTotal');
+    console.log('Cart cleared from localStorage');
+  }
 
   // Get total item count
   getTotalItemCount(): number {
@@ -63,8 +114,10 @@ export class CartComponent implements OnInit, OnDestroy {
         this.cartData = res;
         this._CartService.noOfItems2.set(0);
         
-        // Update session storage
+      
         sessionStorage.setItem('cartItemCount', '0');
+
+        this.clearCartFromLocalStorage();
         
         this._ToastrService.success('تم مسح السلة بنجاح', 'نجح العملية');
         this.hideClearCartModal();
@@ -83,15 +136,18 @@ export class CartComponent implements OnInit, OnDestroy {
       next: (res) => {
         this._NgxSpinnerService.hide();
         this.cartData = res;
-        this._ToastrService.success(res.message, "تم الحذف بنجاح");
+        this._ToastrService.success(res.message, "Deletesd Successfully");
         
         // Update cart count and session storage
         const itemCount = this.getTotalItemCount();
         this._CartService.noOfItems2.set(itemCount);
+        
+        // Update localStorage
+        this.saveCartToLocalStorage();
       },
       error: (err) => {
         this._NgxSpinnerService.hide();
-        this._ToastrService.error(err.error?.message, "خطأ");
+        this._ToastrService.error(err.error?.message, "Error");
       }
     });
   }
@@ -108,11 +164,14 @@ export class CartComponent implements OnInit, OnDestroy {
         // Update cart count and session storage
         const itemCount = this.getTotalItemCount();
         this._CartService.noOfItems2.set(itemCount);
+        
+        // Update localStorage
+        this.saveCartToLocalStorage();
       },
       error: (err) => {
         this._NgxSpinnerService.hide();
         console.error('Error updating quantity:', err);
-        this._ToastrService.error('حدث خطأ أثناء تحديث الكمية', 'خطأ');
+        this._ToastrService.error('Error updating quantity', 'Error');
       }
     });
   }
@@ -120,7 +179,7 @@ export class CartComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     console.log(sessionStorage.getItem('token'));
     
-    // Load saved cart count from session storage
+  
     const savedCartCount = sessionStorage.getItem('cartItemCount');
     if (savedCartCount) {
       this._CartService.noOfItems2.set(parseInt(savedCartCount));
@@ -134,6 +193,9 @@ export class CartComponent implements OnInit, OnDestroy {
         // Update cart count and session storage
         const itemCount = this.getTotalItemCount();
         this._CartService.noOfItems2.set(itemCount);
+        
+        // Save to localStorage
+        this.saveCartToLocalStorage();
       },
       error: (err) => {
         console.error("Error loading cart:", err);
@@ -146,8 +208,19 @@ export class CartComponent implements OnInit, OnDestroy {
     if (!this.cartData?.items) return 0;
     return this.cartData.items.reduce((total, item) => {
       return total + (item.price * item.quantity);
-      // sessionStorage.setItem("totalPrice", )
     }, 0);
+  }
+
+  getCartSummaryForOrder(): { items: StoredCartItem[], total: number, itemCount: number } {
+    const items = this.getCartFromLocalStorage();
+    const total = this.getCartTotalFromLocalStorage();
+    const itemCount = items.reduce((count, item) => count + item.quantity, 0);
+    
+    return {
+      items,
+      total,
+      itemCount
+    };
   }
 
   ngOnDestroy(): void {

@@ -30,15 +30,17 @@ export class QuestionsService {
 
    
   private getAuthHeaders(): HttpHeaders {
+    const token = sessionStorage.getItem('token');
     const headersConfig: Record<string, string> = {
+       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
-      "ngrok-skip-browser-warning": "true"
+      "ngrok-skip-browser-warning": "true",
     };
 
-    const token = sessionStorage.getItem('token');
-    if (token) {
-      headersConfig['Authorization'] = `Bearer ${token}`;
-    }
+    // const token = sessionStorage.getItem('token');
+    // if (token) {
+    //   headersConfig['Authorization'] = `Bearer ${token}`;
+    // }
 
     return new HttpHeaders(headersConfig);
   }
