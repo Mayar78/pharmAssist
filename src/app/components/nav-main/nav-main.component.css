@@ -77,8 +77,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 40px;
-  height: 40px;
+  min-width: 45px;
+  height: 45px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   backdrop-filter: blur(10px);
@@ -86,8 +86,8 @@
 }
 
 .logo {
-  width: 28px;
-  height: 28px;
+  width: 36px;
+  height: 36px;
   object-fit: contain;
   filter: brightness(1.2);
 }

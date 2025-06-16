@@ -20,21 +20,20 @@ import { CartService } from '../../services/cart.service';
   styleUrl: './allproducts.component.css',
 })
 export class AllproductsComponent implements OnInit, OnDestroy {
-  // Dependency Injection
+  
 
   
   private readonly _CartService = inject(CartService);
 
   private readonly _destroy$ = new Subject<void>();
-  private readonly _searchSubject = new Subject<string>(); // إضافة Subject للبحث
+  private readonly _searchSubject = new Subject<string>(); 
 
-  // Component Properties
   productsData: Iproduct[] = [];
   searchValue: string = '';
   isLoading: boolean = false;
   wishlistIds: string[] = [];
   
-  // Pagination Properties (Server-side)
+ 
   currentPage: number = 1;
   pageSize: number = 10;
   totalProducts: number = 0;
