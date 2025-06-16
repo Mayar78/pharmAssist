@@ -1,20 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { OrderService } from '../../core/services/order.service';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
+import { Order } from '../../core/interfaces/order';
 
-export interface ICartItem {
+
+interface StoredCartItem {
   id: number;
   name: string;
-  pictureUrl: string;
-  activeIngredient: string;
-  price: number;
   quantity: number;
+  price: number;
+  activeIngredient?: string;
+  pictureUrl?: string;
 }
 
-export interface ICart {
-  id: string;
-  items: ICartItem[];
-}
 
 @Component({
   selector: 'app-orderstatus',
@@ -24,50 +23,91 @@ export interface ICart {
   styleUrl: './orderstatus.component.css'
 })
 export class OrderstatusComponent implements OnInit {
-  orders: any[] = [];
-  cartData: ICart | null = null;
-  shippingPrice: number = 25;
-  itemsTotal: number = 0;
-  totalItems: number = 0;
 
-  constructor(private orderService: OrderService) {}
+  items: StoredCartItem[] = [];
+  total: number = 0;
+  itemCount: number = 0;
+  order!: Order;
+  isLoading = true;
 
-  ngOnInit(): void {
-    this.loadOrders();
-    this.loadCartDataFromStorage();
-  }
+  constructor(private route: ActivatedRoute, private OrderService: OrderService) {}
+ ngOnInit(): void {
+    // first sec:
+    const orderId = Number(this.route.snapshot.paramMap.get('id'));
+    this.OrderService.getOrderById(orderId).subscribe({
+      next: (data) => {
+        this.order = data;
+        console.log('Order loaded:', this.order);
 
-  loadOrders(): void {
-    this.orderService.getUserOrders().subscribe({
-      next: (res) => {
-        this.orders = res;
-        console.log("Orders: ", res);
+        this.isLoading = false;
       },
-      error: (err) => {
-        console.error("Error loading orders:", err);
-      }
-    });
-  }
+    error: (err) => {
+  console.error('Error loading order', err);
+  this.isLoading = false;
+}
 
-  loadCartDataFromStorage(): void {
-    const cart = sessionStorage.getItem('cart');
-    if (cart) {
-      try {
-        this.cartData = JSON.parse(cart);
-        this.itemsTotal = this.cartData && this.cartData.items
-          ? this.cartData.items.reduce((acc, item) => acc + (item.price * item.quantity), 0)
-          : 0;
-        this.totalItems = this.cartData && this.cartData.items
-          ? this.cartData.items.reduce((acc, item) => acc + item.quantity, 0)
-          : 0;
-      } catch (e) {
-        console.error("Invalid cart data in sessionStorage", e);
-        this.cartData = null;
-      }
+    });
+
+    const storedItems = localStorage.getItem('cartItems');
+    const storedTotal = localStorage.getItem('cartTotal');
+
+    if (storedItems) {
+      this.items = JSON.parse(storedItems);
+      this.itemCount = this.items.reduce((sum, item) => sum + item.quantity, 0);
+    }
+
+    if (storedTotal) {
+      this.total = parseFloat(storedTotal);
     }
   }
 
-  getTotal(): number {
-    return this.itemsTotal + this.shippingPrice;
+
+  //  getOrderStatusText(status: number): string {
+  //   switch (status) {
+  //     case 0:
+  //       return 'Pending';
+  //     case 1:
+  //       return 'Processing';
+  //     case 2:
+  //       return 'Shipped';
+  //     case 3:
+  //       return 'Delivered';
+  //     case 4:
+  //       return 'Cancelled';
+  //     default:
+  //       return 'Unknown';
+  //   }
+  // }
+getOrderStatusText(status: number): string {
+  switch (status) {
+    case 0: return 'Pending';
+    case 1: return 'Processing';
+    case 2: return 'Shipped';
+    case 3: return 'Delivered';
+    case 4: return 'Cancelled';
+    default: return 'Unknown';
   }
+}
+
+getOrderStatusClass(status: number): string {
+  switch (status) {
+    case 0: return 'badge bg-warning text-dark';
+    case 1: return 'badge bg-primary';
+    case 2: return 'badge bg-info text-dark';
+    case 3: return 'badge bg-success';
+    case 4: return 'badge bg-danger';
+    default: return 'badge bg-secondary';
+  }
+}
+
+getOrderStatusIcon(status: number): string {
+  switch (status) {
+    case 0: return 'bi-hourglass-split';
+    case 1: return 'bi-gear-fill';
+    case 2: return 'bi-truck';
+    case 3: return 'bi-check-circle-fill';
+    case 4: return 'bi-x-circle-fill';
+    default: return 'bi-question-circle';
+  }
+}
 }
