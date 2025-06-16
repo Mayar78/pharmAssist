@@ -52,14 +52,20 @@ export class EditProfileComponent {
 
     this.isLoading = true;
 
-    const formData: EditProfileData = {
-      displayName: this.profileForm.get('firstName')?.value,
-      phoneNumber: this.profileForm.get('phone')?.value
-    };
+    // const formData: EditProfileData = {
+    //   displayName: this.profileForm.get('firstName')?.value,
+    //   phoneNumber: this.profileForm.get('phone')?.value
+    // };
+    const formData = {
+  DisplayName: this.profileForm.get('firstName')?.value,
+  phoneNumber: this.profileForm.get('phone')?.value
+};
+
+ console.log(formData);
 
     this.profileService.updateProfile(formData).subscribe({
       next: () => {
-        sessionStorage.setItem('displayName', formData.displayName);
+        sessionStorage.setItem('displayName', formData.DisplayName);
         sessionStorage.setItem('phoneNumber', formData.phoneNumber);
         sessionStorage.setItem('imageUrl', this.selectedImage); 
 

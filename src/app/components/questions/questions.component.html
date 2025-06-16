@@ -8,40 +8,42 @@
 
   <ng-template #questionBlock>
     <div class="card shadow-lg p-4 w-100" style="max-width: 600px;">
- 
+
+      <!-- Progress Bar -->
       <div class="progress mb-4" style="height: 6px;">
         <div class="progress-bar bg-success"
              [style.width.%]="(currentQuestionIndex + 1) / questions.length * 100">
         </div>
       </div>
 
-      
+      <!-- Question Header -->
       <h5 class="mb-3 fw-semibold text-primary">
         Question {{ currentQuestionIndex + 1 }} of {{ questions.length }}
       </h5>
 
-      
+      <!-- Question Text -->
       <h4 class="mb-4">{{ currentQuestion.text }}</h4>
 
-     
+      <!-- Answer Textarea -->
       <textarea #answerInput
                 class="form-control mb-3"
                 rows="5"
                 placeholder="Type your answer here..."
                 style="resize: none"></textarea>
 
-      
+      <!-- Buttons -->
       <div class="d-flex justify-content-between">
         <button class="btn btn-outline-secondary"
                 (click)="onSkip()"
                 [disabled]="isSubmitted">
           Skip
         </button>
+
         <button class="btn btn-primary"
                 (click)="onNext()"
-                [disabled]="isSubmitted || !answerInput.value?.trim()">
+                [disabled]="isLastQuestion ? isSubmitted || !answerInput.value?.trim() : !answerInput.value?.trim()">
           {{ isLastQuestion ? 'Submit' : 'Next' }}
-        </button>
+          </button>
       </div>
     </div>
   </ng-template>

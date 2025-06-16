@@ -2,14 +2,10 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { enviroments } from '../enviroments/enviroment';
+import { AnswerData } from './Answer';
  
 
-interface AnswerData {
-  PromptReason: string;
-  HasChronicConditions: string;
-  TakesMedicationsOrTreatments: string;
-  CurrentSymptoms: string;
-}
+
 
 @Injectable({
   providedIn: 'root'

@@ -1,14 +1,11 @@
-import { AfterViewChecked, AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
- 
- 
-import { FormsModule } from '@angular/forms'; 
+import { AfterViewChecked, AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { QuestionsService } from '../../core/interfaces/questions.service';
-import { AnswerData, Question } from '../../core/interfaces/Answer';
+import { Question } from '../../core/interfaces/Answer';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../core/services/auth.service';
-
 
 @Component({
   selector: 'app-questions',
@@ -17,38 +14,39 @@ import { AuthService } from '../../core/services/auth.service';
   templateUrl: './questions.component.html',
   styleUrls: ['./questions.component.css']
 })
-export class QuestionsComponent implements  AfterViewInit, AfterViewChecked {
-    @ViewChild('answerInput') answerInput!: ElementRef<HTMLTextAreaElement>;
+export class QuestionsComponent implements AfterViewInit, AfterViewChecked {
+  @ViewChild('answerInput') answerInput!: ElementRef<HTMLTextAreaElement>;
+
   currentQuestionIndex = 0;
   answers: Record<string, string> = {};
   isSubmitted = false;
   isLoading = false;
   email: string = '';
 
-  questions: Question[] = [
+  questions = [
     {
       id: 'promptReason',
       text: '1. What prompted you to seek medical support at this time?',
       required: false,
-      apiField: 'PromptReason'
+      apiField: 'promptReason'
     },
     {
       id: 'chronicConditions',
       text: '2. Do you have any chronic or recurring health conditions?',
       required: false,
-      apiField: 'HasChronicConditions'
+      apiField: 'hasChronicConditions'
     },
     {
       id: 'conditionsImpact',
       text: '3. How have these conditions been affecting your daily life or routines?',
       required: false,
-      apiField: 'TakesMedicationsOrTreatments'
+      apiField: 'takesMedicationsOrTreatments'
     },
     {
       id: 'currentSymptoms',
       text: '4. Are you experiencing any specific symptoms or concerns right now?',
       required: false,
-      apiField: 'CurrentSymptoms'
+      apiField: 'currentSymptoms'
     }
   ];
 
@@ -63,23 +61,20 @@ export class QuestionsComponent implements  AfterViewInit, AfterViewChecked {
       this.email = params['email'];
     });
   }
+
   ngAfterViewInit(): void {
-    
     if (this.answerInput) {
       this.answerInput.nativeElement.focus();
     }
   }
-  
 
   ngAfterViewChecked(): void {
-    
     if (this.answerInput) {
       this.answerInput.nativeElement.focus();
     }
   }
-  
 
-  get currentQuestion(): Question {
+  get currentQuestion() {
     return this.questions[this.currentQuestionIndex];
   }
 
@@ -118,22 +113,18 @@ export class QuestionsComponent implements  AfterViewInit, AfterViewChecked {
   private submitAnswers(): void {
     this.isSubmitted = true;
 
-    const apiAnswers: AnswerData = {
+    const apiAnswers = {
       PromptReason: this.answers['promptReason'] || '',
       HasChronicConditions: this.answers['chronicConditions'] || '',
       TakesMedicationsOrTreatments: this.answers['conditionsImpact'] || '',
       CurrentSymptoms: this.answers['currentSymptoms'] || '',
     };
 
-    console.log('Submitting answers:', apiAnswers);
-
     this.questionsService.submitAnswers(apiAnswers).subscribe({
-      next: (response) => {
+      next: () => {
         this.toastr.success('Your answers have been submitted successfully!');
         this.authService.loginAfterQuestions(this.email).subscribe({
-          next: (res) => {
-            this.router.navigate(['/main/home']);
-          },
+          next: () => this.router.navigate(['/main/home']),
           error: (err) => {
             console.error('loginAfterQuestions error:', err);
             this.router.navigate(['/auth/login']);

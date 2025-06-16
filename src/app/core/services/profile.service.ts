@@ -11,11 +11,17 @@ export class ProfileService {
 
   constructor(private http: HttpClient) {}
 
-  getProfile() {
-    return this.http.get<any>(`${this.baseUrl}/api/Accounts/GetProfile`);
-  }
+  // getProfile() {
+  //   return this.http.get<any>(`${this.baseUrl}/api/Accounts/GetProfile`);
+  // }
 
-  updateProfile(data: EditProfileData) {
-    return this.http.put(`${this.baseUrl}/api/Accounts/EditProfile`, data);
-  }
+updateProfile(data: EditProfileData) {
+  const token = sessionStorage.getItem('token');
+  const headers = {
+    'Authorization': `Bearer ${token}`
+  };
+  return this.http.post(`${this.baseUrl}/api/Accounts/EditProfile`, data, { headers });
+}
+
+
 }
