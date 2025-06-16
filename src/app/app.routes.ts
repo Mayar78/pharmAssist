@@ -26,6 +26,7 @@ import { OrderSuccessComponent } from './components/order-success/order-success.
 import { ProfileComponent } from './components/profile/profile.component';
 import { EditProfileComponent } from './components/edit-profile/edit-profile.component';
 import { OrderstatusComponent } from './components/orderstatus/orderstatus.component';
+import { FeatureCardComponent } from './components/feature-card/feature-card.component';
 
 
 export const routes: Routes = [
@@ -97,7 +98,8 @@ export const routes: Routes = [
              //  Profile routes
       { path: 'profile', component: ProfileComponent, title: 'Profile' },
       { path: 'edit-profile', component: EditProfileComponent, title: 'Edit Profile' },
-    
+          { path: 'RecommendedMedications', component: FeatureCardComponent, title: 'Recommended Medications' },
+
    
 
 

@@ -62,30 +62,33 @@ export interface PaginatedRecommendationsResponse<T> {
   providedIn: 'root'
 })
 
+
 export class RecommendationService {
- private headers = new HttpHeaders({
-    'ngrok-skip-browser-warning': 'true',
+  public headers!: HttpHeaders;
+
+private getAuthHeaders(): HttpHeaders {
+  const token = sessionStorage.getItem('token')!;
+  return new HttpHeaders({
+    Authorization: `Bearer ${token}`,
     'Content-Type': 'application/json',
-    'Authorization': 'Bearer ' + sessionStorage.getItem('token') // Add auth token
+     "ngrok-skip-browser-warning": "true"
   });
+}
 
   constructor(private _HttpClient: HttpClient) {}
 private baseUrl = enviroments.baseUrl;
-  /**
-   * Get user's recommendations
-   */
-getMyRecommendations(): Observable<any> {
-    return this._HttpClient.get(
-      `${this.baseUrl}/api/Recommendations/GetMyRecommendations/`,
-      { headers: this.headers }
-    ).pipe(
-      catchError(error => {
-        console.error('Error in getMyRecommendations:', error);
-        return throwError(() => error);
-      })
-    );
-  }
 
+getMyRecommendations(): Observable<any> {
+  return this._HttpClient.get(
+    `${this.baseUrl}/api/Recommendations/GetMyRecommendations`,
+    { headers: this.getAuthHeaders() }
+  ).pipe(
+    catchError(error => {
+      console.error('Error in getMyRecommendations:', error);
+      return throwError(() => error);
+    })
+  );
+}
   /**
    * Get recommendations with pagination and filters
    */
@@ -141,7 +144,7 @@ getMyRecommendations(): Observable<any> {
     return this._HttpClient.get<Recommendation>(
       `${enviroments.baseUrl}/api/Recommendations/${id}`,
       { 
-        headers: this.headers 
+        headers: this.getAuthHeaders() 
       }
     ).pipe(
       catchError(error => {
@@ -158,7 +161,7 @@ getMyRecommendations(): Observable<any> {
     return this._HttpClient.get<RecommendationFilter[]>(
       `${enviroments.baseUrl}/api/Recommendations/active-ingredients`,
       {
-        headers: this.headers
+        headers: this.getAuthHeaders()
       }
     ).pipe(
       catchError(error => {
@@ -196,6 +199,6 @@ getMyRecommendations(): Observable<any> {
    * Update headers with new token
    */
   updateAuthToken(token: string): void {
-    this.headers = this.headers.set('Authorization', `Bearer ${token}`);
+    this.headers = this.getAuthHeaders().set('Authorization', `Bearer ${token}`);
   }
 }

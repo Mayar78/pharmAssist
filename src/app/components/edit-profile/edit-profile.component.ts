@@ -10,7 +10,7 @@ import { EditProfileData } from '../../core/interfaces/EditProfileData';
 @Component({
   selector: 'app-edit-profile',
   standalone: true,
-  imports: [CommonModule,ReactiveFormsModule],
+  imports: [CommonModule,ReactiveFormsModule, ],
   templateUrl: './edit-profile.component.html',
   styleUrl: './edit-profile.component.css'
 })

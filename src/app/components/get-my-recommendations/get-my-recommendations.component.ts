@@ -43,7 +43,7 @@ export class GetMyRecommendationsComponent implements OnInit, OnDestroy {
   totalItems = 0;
   
   // View mode
-  viewMode: 'grid' | 'list' = 'grid';
+  viewMode: 'table' | 'list' = 'table';
   
   // RxJS
   private destroy$ = new Subject<void>();
@@ -58,11 +58,18 @@ export class GetMyRecommendationsComponent implements OnInit, OnDestroy {
     { value: 'productName', label: 'Name', icon: '📋' }
   ];
 
+  incompleteProfileData: {
+  message: string;
+  title: string;
+  missingFields: string[];
+  actionRequired: string;
+} | null = null;
   constructor(private recommendationsService: RecommendationService) {}
 
   ngOnInit(): void {
     this.initializeComponent();
     this.setupSearch();
+  this.loadRecommendations();
   }
 
   ngOnDestroy(): void {
@@ -96,27 +103,51 @@ export class GetMyRecommendationsComponent implements OnInit, OnDestroy {
     });
   }
 
-  loadRecommendations(): void {
-    this.isLoading = true;
-    this.error = null;
-    
-    this.recommendationsService.getMyRecommendations()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (response) => {
-          this.recommendationsData = response;
-          this.recommendations = response.recommendations;
-          this.totalItems = response.recommendations.length;
-          this.applyFilters();
-          this.isLoading = false;
-        },
-        error: (error) => {
-          this.error = 'Failed to load recommendations. Please try again.';
-          this.isLoading = false;
-          console.error('Error loading recommendations:', error);
+loadRecommendations(): void {
+  this.isLoading = true;
+  this.error = null;
+  
+  this.recommendationsService.getMyRecommendations()
+    .pipe(takeUntil(this.destroy$))
+    .subscribe({
+      next: (response) => {
+        console.log('API Response:', response); // إضافة هذا السطر
+        if (response.isProfileComplete === false) {
+          this.handleIncompleteProfile(response);
+          return;
         }
-      });
-  }
+        this.handleCompleteProfile(response);
+      },
+      error: (error) => {
+        console.error('Error loading recommendations:', error);
+        this.error = 'Failed to load recommendations. Please try again.';
+        this.isLoading = false;
+      }
+    });
+}
+
+private handleIncompleteProfile(response: any): void {
+  this.isLoading = false;
+  
+  // Store the incomplete profile message to display in template
+  this.incompleteProfileData = {
+    message: response.message,
+    title: response.title,
+    missingFields: response.missingFields,
+    actionRequired: response.actionRequired
+  };
+  
+  // You might want to navigate to profile completion page
+  // this.router.navigate(['/complete-profile']);
+}
+
+private handleCompleteProfile(response: RecommendationsResponse): void {
+  this.recommendationsData = response;
+  this.recommendations = response.recommendations;
+  this.totalItems = response.recommendations.length;
+  this.applyFilters();
+  this.isLoading = false;
+}
 
   loadIngredients(): void {
     this.isLoadingIngredients = true;
@@ -183,7 +214,7 @@ export class GetMyRecommendationsComponent implements OnInit, OnDestroy {
   }
 
   toggleViewMode(): void {
-    this.viewMode = this.viewMode === 'grid' ? 'list' : 'grid';
+    this.viewMode = this.viewMode === 'table' ? 'list' : 'table';
   }
 
   private applyFilters(): void {
@@ -332,4 +363,10 @@ export class GetMyRecommendationsComponent implements OnInit, OnDestroy {
     };
     return iconMap[category] || 'fa-spa';
   }
+  showDetails(recommendation: Recommendation): void {
+  // You can implement a modal or expandable row here
+  console.log('Showing details for:', recommendation);
+  // Or implement a modal service:
+  // this.modalService.showRecommendationDetails(recommendation);
+}
 }
