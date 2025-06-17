@@ -1,15 +1,4 @@
-export interface Order {
-  id: number;
-  buyerEmail: string;
-  orderDate: string;
-  status: number;
-  shippingAddress: ShippingAddress;
-  deliveryMethod: string;
-  deliveryMethodCost: string;
-  items: OrderItem[];
-  subTotal: number;
-  total: number;
-}
+ 
 
 export interface ShippingAddress {
   firstName: string;

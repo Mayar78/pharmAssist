@@ -6,6 +6,7 @@ import { QuestionsService } from '../../core/interfaces/questions.service';
 import { Question } from '../../core/interfaces/Answer';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../core/services/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-questions',
@@ -14,7 +15,7 @@ import { AuthService } from '../../core/services/auth.service';
   templateUrl: './questions.component.html',
   styleUrls: ['./questions.component.css']
 })
-export class QuestionsComponent implements AfterViewInit, AfterViewChecked {
+export class QuestionsComponent implements AfterViewInit {
   @ViewChild('answerInput') answerInput!: ElementRef<HTMLTextAreaElement>;
 
   currentQuestionIndex = 0;
@@ -22,6 +23,8 @@ export class QuestionsComponent implements AfterViewInit, AfterViewChecked {
   isSubmitted = false;
   isLoading = false;
   email: string = '';
+  currentAnswer: string = '';
+
 
   questions = [
     {
@@ -54,8 +57,7 @@ export class QuestionsComponent implements AfterViewInit, AfterViewChecked {
     private questionsService: QuestionsService,
     private router: Router,
     private route: ActivatedRoute,
-    private authService: AuthService,
-    private toastr: ToastrService
+    private authService: AuthService
   ) {
     this.route.queryParams.subscribe(params => {
       this.email = params['email'];
@@ -63,12 +65,6 @@ export class QuestionsComponent implements AfterViewInit, AfterViewChecked {
   }
 
   ngAfterViewInit(): void {
-    if (this.answerInput) {
-      this.answerInput.nativeElement.focus();
-    }
-  }
-
-  ngAfterViewChecked(): void {
     if (this.answerInput) {
       this.answerInput.nativeElement.focus();
     }
@@ -82,60 +78,63 @@ export class QuestionsComponent implements AfterViewInit, AfterViewChecked {
     return this.currentQuestionIndex === this.questions.length - 1;
   }
 
-  onNext(): void {
-    const answer = this.answerInput.nativeElement.value.trim();
-    if (!answer) {
-      this.toastr.warning('Please write an answer or click Skip.');
-      return;
-    }
-
-    this.answers[this.currentQuestion.id] = answer;
-    this.answerInput.nativeElement.value = '';
-
-    if (!this.isLastQuestion) {
-      this.currentQuestionIndex++;
-    } else {
-      this.submitAnswers();
-    }
+onNext(): void {
+  const answer = this.currentAnswer.trim();
+  if (!answer) {
+    Swal.fire('Please write an answer or click Skip.', '', 'warning');
+    return;
   }
 
-  onSkip(): void {
-    this.answers[this.currentQuestion.id] = 'Skipped';
-    this.answerInput.nativeElement.value = '';
+  this.answers[this.currentQuestion.id] = answer;
+  this.currentAnswer = '';
 
-    if (!this.isLastQuestion) {
-      this.currentQuestionIndex++;
-    } else {
-      this.submitAnswers();
+  if (!this.isLastQuestion) {
+    this.currentQuestionIndex++;
+  } else {
+    this.submitAnswers();
+  }
+}
+
+
+ onSkip(): void {
+  this.answers[this.currentQuestion.id] = 'Skipped';
+  this.currentAnswer = '';
+
+  if (!this.isLastQuestion) {
+    this.currentQuestionIndex++;
+  } else {
+    this.submitAnswers();
+  }
+}
+
+
+private submitAnswers(): void {
+  this.isSubmitted = true;
+
+  const apiAnswers = {
+    PromptReason: this.answers['promptReason'] || '',
+    HasChronicConditions: this.answers['chronicConditions'] || '',
+    TakesMedicationsOrTreatments: this.answers['conditionsImpact'] || '',
+    CurrentSymptoms: this.answers['currentSymptoms'] || '',
+  };
+
+  this.questionsService.submitAnswers(apiAnswers).subscribe({
+    next: () => {
+      Swal.fire({
+        icon: 'success',
+        title: 'Your answers have been submitted successfully!',
+        showConfirmButton: true
+      }).then(() => {
+        // Navigate to profile  :
+        this.router.navigate(['/main/profile']);
+      });
+    },
+    error: (err) => {
+      console.error('submitAnswers error:', err);
+      Swal.fire('Error', 'Failed to submit answers. Please try again.', 'error');
+      this.isSubmitted = false;
     }
-  }
+  });
+}
 
-  private submitAnswers(): void {
-    this.isSubmitted = true;
-
-    const apiAnswers = {
-      PromptReason: this.answers['promptReason'] || '',
-      HasChronicConditions: this.answers['chronicConditions'] || '',
-      TakesMedicationsOrTreatments: this.answers['conditionsImpact'] || '',
-      CurrentSymptoms: this.answers['currentSymptoms'] || '',
-    };
-
-    this.questionsService.submitAnswers(apiAnswers).subscribe({
-      next: () => {
-        this.toastr.success('Your answers have been submitted successfully!');
-        this.authService.loginAfterQuestions(this.email).subscribe({
-          next: () => this.router.navigate(['/main/home']),
-          error: (err) => {
-            console.error('loginAfterQuestions error:', err);
-            this.router.navigate(['/auth/login']);
-          }
-        });
-      },
-      error: (err) => {
-        console.error('submitAnswers error:', err);
-        this.toastr.error('Failed to submit answers. Please try again.');
-        this.isSubmitted = false;
-      }
-    });
-  }
 }

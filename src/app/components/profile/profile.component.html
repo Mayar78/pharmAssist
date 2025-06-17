@@ -12,7 +12,14 @@
       <img src="https://cdn-icons-png.flaticon.com/512/2922/2922510.png" alt="User" class="user-img" />
       <div class="user-details">
        <div class="user-name">{{ userName }}</div>
-<div class="user-email">{{ userEmail }}</div>
+       <div class="user-phone">
+            <i class="fas fa-phone"></i>
+        {{ userPhone }}</div>
+<div class="user-email">
+          <i class="fas fa-envelope"></i>
+          {{ userEmail }}
+        </div>
+
 
       </div>
     </div>
@@ -31,11 +38,12 @@
         <span class="arrow">›</span>
       </div>
 
-      <div class="action-item" (click)="navigateTo('side-effects')">
-        <i class="fas fa-file-medical-alt"></i>
-        Medication side Effects Notes
-        <span class="arrow">›</span>
-      </div>
+     <div class="action-item" (click)="navigateTo('side-effects-questions')">
+    <i class="fas fa-file-medical-alt"></i>
+    Medication side Effects Notes
+    <span class="arrow">›</span>
+</div>
+
     </div>
   </div>
 </div>
