@@ -41,15 +41,15 @@ export const routes: Routes = [
             {
                 path: 'login', component: LoginComponent, title: 'login',
             },
-            {path:'questions',component:QuestionsComponent,title:'questions'},
-           {
-      path: 'questions',
-      loadComponent: () =>
-        import('./components/questions/questions.component').then(
-          (m) => m.QuestionsComponent
-        ),
-      title: 'questions',
-    },
+            // {path:'questions',component:QuestionsComponent,title:'questions'},
+    //        {
+    //   path: 'questions',
+    //   loadComponent: () =>
+    //     import('./components/questions/questions.component').then(
+    //       (m) => m.QuestionsComponent
+    //     ),
+    //   title: 'questions',
+    // },
             { path: 'register', component: RegisterComponent, title: 'register' },
             { path: 'explore', component: FirstpageComponent, title: 'PharmAssist' },
 
@@ -62,15 +62,15 @@ export const routes: Routes = [
       },
 
        // Questions Flow
-      {
-        path: 'questions',
-        loadComponent: () =>
-          import('./components/questions/questions.component').then(
-            (m) => m.QuestionsComponent
-          ),
-        title: 'Health Questions',
-        data: { requiresAnswers: true }
-         },
+      // {
+      //   path: 'questions',
+      //   loadComponent: () =>
+      //     import('./components/questions/questions.component').then(
+      //       (m) => m.QuestionsComponent
+      //     ),
+      //   title: 'Health Questions',
+      //   data: { requiresAnswers: true }
+      //    },
             { path: 'CodeVerfication', component: CodeVerficationComponent, title: 'OTP' },
             { path: 'reset-code', component: ResetCodeComponent, title: 'reset-code' },
             { path: 'emaildone', component: EmaildoneComponent, title: 'Done' },
@@ -106,9 +106,20 @@ export const routes: Routes = [
              //  Profile routes
       { path: 'profile', component: ProfileComponent, title: 'Profile' },
       { path: 'edit-profile', component: EditProfileComponent, title: 'Edit Profile' },
+
           { path: 'FeatureCard', component: FeatureCardComponent, title: 'Feature Card' },
 
-   
+          // { path: 'RecommendedMedications', component: FeatureCardComponent, title: 'Recommended Medications' },
+
+
+    {
+      path: 'side-effects-questions',
+      loadComponent: () =>
+        import('./components/questions/questions.component').then(
+          (m) => m.QuestionsComponent
+        ),
+      title: 'Side Effects Questions'
+    },
 
 
             {

@@ -40,7 +40,8 @@ export class CheckoutComponent {
 
 ngOnInit() {
   this.itemsCount = Number(sessionStorage.getItem('cartItemCount')) || 0;
-  this.totalPrice = Number(sessionStorage.getItem('totalPrice')) || 0;
+  this.totalPrice = Number(localStorage.getItem('cartTotal')) || 0;
+
 
  
   this.addressService.loadSavedAddresses();

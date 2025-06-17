@@ -20,28 +20,32 @@
         Question {{ currentQuestionIndex + 1 }} of {{ questions.length }}
       </h5>
 
-      
+     
       <h4 class="mb-4">{{ currentQuestion.text }}</h4>
 
-     
-      <textarea #answerInput
-                class="form-control mb-3"
-                rows="5"
-                placeholder="Type your answer here..."
-                style="resize: none"></textarea>
-
       
+<textarea
+  class="form-control mb-3"
+  rows="5"
+  placeholder="Type your answer here..."
+  [(ngModel)]="currentAnswer"
+  [disabled]="isSubmitted"
+  style="resize: none"></textarea>
+
+ 
       <div class="d-flex justify-content-between">
         <button class="btn btn-outline-secondary"
                 (click)="onSkip()"
                 [disabled]="isSubmitted">
           Skip
         </button>
-        <button class="btn btn-primary"
-                (click)="onNext()"
-                [disabled]="isSubmitted || !answerInput.value?.trim()">
-          {{ isLastQuestion ? 'Submit' : 'Next' }}
-        </button>
+
+      <button class="btn btn-primary"
+        (click)="onNext()"
+        [disabled]="!currentAnswer.trim() || isSubmitted">
+  {{ isLastQuestion ? 'Submit' : 'Next' }}
+</button>
+
       </div>
     </div>
   </ng-template>
