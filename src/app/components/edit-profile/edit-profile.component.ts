@@ -39,7 +39,7 @@ export class EditProfileComponent {
     this.profileForm = this.fb.group({
       firstName: [storedName, [Validators.required, Validators.minLength(2)]],
       email: [{ value: storedEmail, disabled: true }],
-      phone: [storedPhone, [Validators.required, Validators.minLength(11)]]
+      phone: [storedPhone, [ Validators.minLength(11)]]
     });
   }
 
@@ -52,13 +52,10 @@ export class EditProfileComponent {
 
     this.isLoading = true;
 
-    // const formData: EditProfileData = {
-    //   displayName: this.profileForm.get('firstName')?.value,
-    //   phoneNumber: this.profileForm.get('phone')?.value
-    // };
+    
     const formData = {
   DisplayName: this.profileForm.get('firstName')?.value,
-  phoneNumber: this.profileForm.get('phone')?.value
+  PhoneNumber: this.profileForm.get('phone')?.value
 };
 
  console.log(formData);
@@ -66,7 +63,7 @@ export class EditProfileComponent {
     this.profileService.updateProfile(formData).subscribe({
       next: () => {
         sessionStorage.setItem('displayName', formData.DisplayName);
-        sessionStorage.setItem('phoneNumber', formData.phoneNumber);
+        sessionStorage.setItem('phoneNumber', formData.PhoneNumber);
         sessionStorage.setItem('imageUrl', this.selectedImage); 
 
         this.isLoading = false;

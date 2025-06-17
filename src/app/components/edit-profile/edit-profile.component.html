@@ -35,7 +35,14 @@
 
       <div class="form-group mb-4 position-relative">
         <label>Phone Number</label>
-        <input class="form-control pe-5" type="number" formControlName="phone" />
+      <input
+  class="form-control pe-5"
+  type="text"
+  formControlName="phone"
+  pattern="[0-9]*"
+  inputmode="numeric"
+/>
+
         <i class="bi bi-pencil position-absolute bottom-0 end-0 mb-2 me-3 text-muted" style="cursor: pointer;"></i>
         <div class="text-danger small" *ngIf="profileForm.get('phone')?.invalid && profileForm.get('phone')?.touched">
           Phone number must be at least 11 characters

@@ -1,5 +1,5 @@
 export interface EditProfileData {
   DisplayName: string;
-  phoneNumber: string;
+  PhoneNumber: string;
 }
  
