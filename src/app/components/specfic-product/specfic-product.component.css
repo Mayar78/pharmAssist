@@ -169,7 +169,7 @@
   font-size: 1.1rem;
   font-weight: 600;
   border-radius: 10px;
-  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  background: linear-gradient(135deg, #667eea 0%, #19b896dc 100%);
   border: none;
   transition: all 0.3s ease;
   text-transform: uppercase;
@@ -179,7 +179,7 @@
 .btn-add-cart:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
-  background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+  background:linear-gradient(135deg, #445bc2 0%, #0d8d71dc 100%);
 }
 
 .btn-wishlist {

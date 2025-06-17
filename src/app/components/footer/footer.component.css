@@ -1,86 +1,158 @@
+/* Base Styles */
 body {
-    background-color: #f0f4ff;
-  }
+  background-color: #f0f4ff;
+}
 
-  .subscription-container {
-    position: relative;
-    overflow-x: hidden;
-  }
-  
+.bluebk {
+  background-color: #2d94ea;
+  color: white;
+  padding: 2rem 0;
+}
+
+.subscription-container {
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Card Styles */
+.subscription-card {
+  background-color: #2d94ea;
+  max-width: 100%;
+  color: white;
+  padding: 2rem 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* Image Styles */
+.subscription-img {
+  max-width: 100%;
+  height: auto;
+}
+
+.overflow-image {
+  position: absolute;
+  left: 50px;
+  top: -100px;
+  width: 270px;
+  z-index: 2;
+}
+
+/* Form Styles */
+.form-wrapper {
+  background-color: white;
+  border-radius: 30px;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.form-wrapper input {
+  border: none;
+  box-shadow: none;
+  border-radius: 30px;
+}
+
+.form-wrapper input:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.form-wrapper .btn {
+  white-space: nowrap;
+  border-radius: 30px;
+  background-color: var(--main-color);
+}
+
+.input-group {
+  width: 100%;
+  max-width: 600px;
+}
+
+.input-group .form-control {
+  border-radius: 0;
+  transition: all 0.3s ease;
+}
+
+.input-group .form-control:focus {
+  box-shadow: none;
+  border-color: transparent;
+}
+
+.input-group-text {
+  border: 1px solid #ced4da;
+  background-color: #fff;
+}
+
+.btn-primary {
+  transition: all 0.3s ease;
+}
+.btngrad{
+  background:linear-gradient(135deg, #667eea 0%, #19b896dc 100%);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 30px;
+}
+.btn-primary:hover {
+  background:linear-gradient(135deg, #3754d8 0%, #07866bdc 100%);
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 767.98px) {
   .subscription-card {
-    background-color: #2d94ea;
-    max-width: 100.8%;
-    color: white;
-    padding: 40px 30px;
-    position: relative;
-    z-index: 1;
+    padding: 1.5rem;
   }
   
-  .subscription-img {
-    max-width: 100%;
-    height: auto;
-  }
-  
- 
   .overflow-image {
-    position: absolute;
-    left: 50px;     
-    top: -100px;       
-    width: 270px;
-    z-index: 2;
- 
+    width: 180px;
+    left: 20px;
+    top: -70px;
   }
   
-
-  
-  .form-wrapper {
-    background-color: white;
-    border-radius: 30px;
-    padding: 5px;
-    display: flex;
-    align-items: center;
+  .input-group {
+    flex-direction: column;
+    gap: 10px;
   }
   
-  .form-wrapper input {
-    border: none;
-    box-shadow: none;
-    border-radius: 30px;
-  }
-  
-  .form-wrapper input:focus {
-    outline: none;
-    box-shadow: none;
-  }
-  
-  .form-wrapper .btn {
-    white-space: nowrap;
-    border-radius: 30px;
-    background-color: var(--main-color);
-  }
-  .input-group{
-    width: 75%;
-  }
-  .input-group .form-control {
-    border-radius: 0;
-    transition: all 0.3s ease;
-  }
-  
-  .input-group .form-control:focus {
-     box-shadow: none;
-     border-color: rgba(0, 0, 0, 0); 
+  .input-group .form-control,
+  .input-group-text,
+  .input-group .btn {
+    width: 100%;
+    border-radius: 30px !important;
   }
   
   .input-group-text {
-    border: 1px solid #ced4da;
-    background-color: #fff;
+    border-radius: 30px 30px 0 0 !important;
   }
   
-  .btn-primary {
-    transition: all 0.3s ease;
+  .input-group .btn {
+    border-radius: 0 0 30px 30px !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .bluebk {
+    padding: 3rem 0;
   }
   
-  .btn-primary:hover {
-    background-color: #0056b3;
-    transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  .subscription-card {
+    padding: 3rem 2rem;
   }
+}
+
+/* Animation */
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}

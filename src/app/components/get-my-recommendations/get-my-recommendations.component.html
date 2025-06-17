@@ -1,455 +1,101 @@
-<div class="dashboard-container">
+<section class="ms-5">
+ <div class="ms-4">
+   <div class="recommendations-container">
   <!-- Loading State -->
-  @if (isLoading) {
-    <div class="loading-overlay">
-      <div class="loading-spinner"></div>
-      <p>Loading recommendations...</p>
-    </div>
-  }
+  <div *ngIf="isLoading" class="loading">
+    <div class="spinner"></div>
+    <p>Loading your personalized recommendations...</p>
+  </div>
 
   <!-- Error State -->
-  @if (error) {
-    <div class="error-message">
-      <div class="error-content">
-        <i class="fas fa-exclamation-circle"></i>
-        <p>{{ error }}</p>
-        <button class="retry-btn" (click)="retryLoadRecommendations()">
-          <i class="fas fa-sync-alt"></i> Retry
-        </button>
-      </div>
-    </div>
-  }
+  <div *ngIf="error" class="error-message">
+    <p>{{ error }}</p>
+    <button (click)="loadRecommendations()">Try Again</button>
+  </div>
 
   <!-- Main Content -->
-  @if (recommendationsData && !isLoading) {
-    <!-- Header Section -->
-    <div class="header">
-      <div class="header-content">
-        <div class="header-title">
-          <div class="header-icon">
-            <i class="fas fa-star"></i>
-          </div>
-          <h1>My Recommendations</h1>
-        </div>
-        <div class="header-stats">
-          <div class="stat-item">
-            <div class="stat-value">{{ totalItems }}</div>
-            <div class="stat-label">Total Items</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-value">{{ safeItemsCount }}</div>
-            <div class="stat-label">Safe Items</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-value">{{ conflictedItemsCount }}</div>
-            <div class="stat-label">Conflicted</div>
-          </div>
-        </div>
-      </div>
-    </div>
+  <div *ngIf="!isLoading && !error">
 
-    <!-- Filters Section -->
-    <div class="filters-section">
-      <div class="filters-header">
-        <div class="filters-title">
-          <i class="fas fa-filter"></i>
-          Filters & Search
-        </div>
-        <div class="view-toggle">
-          <button [class.active]="viewMode === 'table'" (click)="viewMode = 'table'">
-            <i class="fas fa-th"></i> Grid
-          </button>
-          <button [class.active]="viewMode === 'list'" (click)="viewMode = 'list'">
-            <i class="fas fa-list"></i> List
-          </button>
-          <button [class.active]="viewMode === 'table'" (click)="viewMode = 'table'">
-            <i class="fas fa-table"></i> Detailed
-          </button>
-        </div>
-      </div>
-      
-      <div class="filters-grid">
-        <div class="filter-group">
-          <label class="filter-label">Search Products</label>
-          <div class="search-input">
-            <i class="fas fa-search search-icon"></i>
-            <input 
-              type="text" 
-              [(ngModel)]="searchTerm" 
-              (input)="onSearch($event)"
-              placeholder="Search by name, ingredient, or description...">
-          </div>
-        </div>
-
-        <div class="filter-group">
-          <label class="filter-label">Conflict Status</label>
-          <select 
-            class="select-input" 
-            [(ngModel)]="selectedConflictStatus" 
-            (change)="onConflictStatusChange(selectedConflictStatus)">
-            <option value="all">All Items</option>
-            <option value="safe">Safe Only</option>
-            <option value="conflicted">Conflicted Only</option>
-          </select>
-        </div>
-
-        <div class="filter-group">
-          <label class="filter-label">Sort By</label>
-          <select 
-            class="select-input" 
-            [(ngModel)]="sortBy" 
-            (change)="onSortChange(sortBy)">
-            @for (option of sortOptions; track option.value) {
-              <option [value]="option.value">
-                {{ option.label }} {{ option.icon }}
-              </option>
-            }
-          </select>
-        </div>
-
-        <div class="filter-group">
-          <label class="filter-label">Score Range</label>
-          <div class="range-slider">
-            <div class="range-values">
-              <span>{{ scoreRange.selectedMin }}</span>
-              <span>{{ scoreRange.selectedMax }}</span>
-            </div>
-            <div class="range-inputs">
-              <input 
-                type="range" 
-                class="range-input" 
-                min="0" 
-                max="5" 
-                step="0.1" 
-                [(ngModel)]="scoreRange.selectedMin"
-                (change)="onScoreRangeChange()">
-              <input 
-                type="range" 
-                class="range-input" 
-                min="0" 
-                max="5" 
-                step="0.1" 
-                [(ngModel)]="scoreRange.selectedMax"
-                (change)="onScoreRangeChange()">
-            </div>
-          </div>
-        </div>
-
-        <div class="filter-group">
-          <label class="filter-label">Active Ingredients</label>
-          <div class="ingredients-filter">
-            @for (ingredient of availableIngredients; track ingredient.name) {
-              <div 
-                class="ingredient-tag" 
-                [class.selected]="selectedIngredients.includes(ingredient.name)"
-                (click)="onIngredientToggle(ingredient.name)">
-                {{ ingredient.name }}
-              </div>
-            }
-          </div>
-        </div>
-
-        <div class="filter-group">
-          <button class="clear-filters" (click)="clearFilters()">
-            <i class="fas fa-times"></i> Clear All
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Results Section -->
-    <div class="results-section">
-      <div class="results-header">
-        <div class="results-info">
-          <div class="results-count">
-            Showing {{ getPaginatedRecommendations().length }} of {{ totalItems }} recommendations
-          </div>
-        </div>
-        <div class="sort-controls">
-          <button 
-            class="sort-button" 
-            [class.active]="sortBy === 'finalScore'"
-            (click)="onSortChange('finalScore')">
-            <i class="fas fa-star"></i>
-            Final Score
-            <i class="fas" [ngClass]="{'fa-sort-down': sortDirection === 'desc', 'fa-sort-up': sortDirection === 'asc'}"></i>
-          </button>
-          <button 
-            class="sort-button" 
-            [class.active]="sortBy === 'safetyScore'"
-            (click)="onSortChange('safetyScore')">
-            <i class="fas fa-shield-alt"></i>
-            Safety
-          </button>
-          <button 
-            class="sort-button" 
-            [class.active]="sortBy === 'productPrice'"
-            (click)="onSortChange('productPrice')">
-            <i class="fas fa-dollar-sign"></i>
-            Price
-          </button>
-        </div>
-      </div>
-
-      <!-- Grid View -->
-      @if (viewMode === 'table') {
-        <div class="recommendations-grid">
-          @for (rec of getPaginatedRecommendations(); track rec.id) {
-            <div class="recommendation-card">
-              <div class="card-image">
-                <i class="fas" [ngClass]="getCategoryIcon(getRecordCategory(rec))"></i>
-                <div class="conflict-badge" [class.safe]="!rec.hasConflict" [class.conflicted]="rec.hasConflict">
-                  {{ rec.hasConflict ? 'Conflicted' : 'Safe' }}
-                </div>
-              </div>
-              <div class="card-content">
-                <div class="card-header">
-                  <h3 class="card-title">{{ rec.productName }}</h3>
-                  <span class="card-ingredient">{{ rec.activeIngredient }}</span>
-                </div>
-                <p class="card-description">
-                  {{ truncateText(rec.productDescription, 120) }}
-                </p>
-                <div class="card-scores">
-                  <div class="score-item">
-                    <span class="score-label">Safety</span>
-                    <div class="score-value" [style.color]="getScoreColor(rec.safetyScore)">
-                      <span>{{ formatScore(rec.safetyScore) }}</span>
-                      <i class="fas" [ngClass]="{
-                        'fa-shield-alt': rec.safetyScore >= 4,
-                        'fa-exclamation-triangle': rec.safetyScore < 4
-                      }"></i>
-                    </div>
-                  </div>
-                  <div class="score-item">
-                    <span class="score-label">Effectiveness</span>
-                    <div class="score-value" [style.color]="getScoreColor(rec.effectivenessScore)">
-                      <span>{{ formatScore(rec.effectivenessScore) }}</span>
-                      <i class="fas fa-bolt"></i>
-                    </div>
-                  </div>
-                </div>
-                <div class="final-score">
-                  <span class="final-score-label">Final Score</span>
-                  <div class="final-score-value" [style.color]="getScoreColor(rec.finalScore)">
-                    <span>{{ formatScore(rec.finalScore) }}</span>
-                    <span>{{ getScoreIcon(rec.finalScore) }}</span>
-                  </div>
-                </div>
-                <div class="card-footer">
-                  <span class="card-price">{{ formatPrice(rec.productPrice) }}</span>
-                  <span class="card-date">{{ getRecordDate(rec) }}</span>
-                </div>
-              </div>
-            </div>
-          }
-        </div>
-      }
-
-      <!-- List View -->
-      @if (viewMode === 'list') {
-        <div class="recommendations-list">
-          <table>
-            <thead>
-              <tr>
-                <th (click)="onSortChange('productName')">
-                  Product Name
-                  @if (sortBy === 'productName') {
-                    <i class="fas" 
-                       [ngClass]="{'fa-sort-down': sortDirection === 'desc', 'fa-sort-up': sortDirection === 'asc'}"></i>
-                  }
-                </th>
-                <th (click)="onSortChange('activeIngredient')">
-                  Active Ingredient
-                  @if (sortBy === 'activeIngredient') {
-                    <i class="fas" 
-                       [ngClass]="{'fa-sort-down': sortDirection === 'desc', 'fa-sort-up': sortDirection === 'asc'}"></i>
-                  }
-                </th>
-                <th (click)="onSortChange('finalScore')">
-                  Final Score
-                  @if (sortBy === 'finalScore') {
-                    <i class="fas" 
-                       [ngClass]="{'fa-sort-down': sortDirection === 'desc', 'fa-sort-up': sortDirection === 'asc'}"></i>
-                  }
-                </th>
-                <th (click)="onSortChange('safetyScore')">
-                  Safety
-                  @if (sortBy === 'safetyScore') {
-                    <i class="fas" 
-                       [ngClass]="{'fa-sort-down': sortDirection === 'desc', 'fa-sort-up': sortDirection === 'asc'}"></i>
-                  }
-                </th>
-                <th (click)="onSortChange('effectivenessScore')">
-                  Effectiveness
-                  @if (sortBy === 'effectivenessScore') {
-                    <i class="fas" 
-                       [ngClass]="{'fa-sort-down': sortDirection === 'desc', 'fa-sort-up': sortDirection === 'asc'}"></i>
-                  }
-                </th>
-                <th (click)="onSortChange('productPrice')">
-                  Price
-                  @if (sortBy === 'productPrice') {
-                    <i class="fas" 
-                       [ngClass]="{'fa-sort-down': sortDirection === 'desc', 'fa-sort-up': sortDirection === 'asc'}"></i>
-                  }
-                </th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (rec of getPaginatedRecommendations(); track rec.id) {
-                <tr>
-                  <td>
-                    <strong>{{ rec.productName }}</strong>
-                    <div class="list-description">{{ truncateText(rec.productDescription, 60) }}</div>
-                  </td>
-                  <td>{{ rec.activeIngredient }}</td>
-                  <td [style.color]="getScoreColor(rec.finalScore)">
-                    {{ formatScore(rec.finalScore) }} {{ getScoreIcon(rec.finalScore) }}
-                  </td>
-                  <td [style.color]="getScoreColor(rec.safetyScore)">
-                    {{ formatScore(rec.safetyScore) }}
-                  </td>
-                  <td [style.color]="getScoreColor(rec.effectivenessScore)">
-                    {{ formatScore(rec.effectivenessScore) }}
-                  </td>
-                  <td>{{ formatPrice(rec.productPrice) }}</td>
-                  <td>
-                    <span class="status-badge" [class.safe]="!rec.hasConflict" [class.conflicted]="rec.hasConflict">
-                      {{ rec.hasConflict ? 'Conflicted' : 'Safe' }}
-                    </span>
-                  </td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-      }
-
-      <!-- Detailed Table View -->
-      @if (viewMode === 'table') {
-        <div class="detailed-table-view">
-          <table class="recommendations-detail-table">
-            <thead>
-              <tr>
-                <th>Product</th>
-                <th>Active Ingredient</th>
-                <th>Description</th>
-                <th>Safety Score</th>
-                <th>Effectiveness</th>
-                <th>Final Score</th>
-                <th>Price</th>
-                <th>Status</th>
-                <th>Details</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (rec of getPaginatedRecommendations(); track rec.id) {
-                <tr>
-                  <td>
-                    <strong>{{ rec.productName }}</strong>
-                    @if (rec.productPictureUrl) {
-                      <div class="product-image">
-                        <img [src]="rec.productPictureUrl" alt="{{ rec.productName }}">
-                      </div>
-                    }
-                  </td>
-                  <td>{{ rec.activeIngredient }}</td>
-                  <td class="description-cell">{{ rec.productDescription }}</td>
-                  <td [style.color]="getScoreColor(rec.safetyScore)">
-                    {{ formatScore(rec.safetyScore) }}
-                    <div class="score-progress">
-                      <progress [value]="rec.safetyScore" max="5"></progress>
-                    </div>
-                  </td>
-                  <td [style.color]="getScoreColor(rec.effectivenessScore)">
-                    {{ formatScore(rec.effectivenessScore) }}
-                    <div class="score-progress">
-                      <progress [value]="rec.effectivenessScore" max="5"></progress>
-                    </div>
-                  </td>
-                  <td [style.color]="getScoreColor(rec.finalScore)">
-                    {{ formatScore(rec.finalScore) }}
-                    <div class="score-progress">
-                      <progress [value]="rec.finalScore" max="5"></progress>
-                    </div>
-                  </td>
-                  <td>{{ formatPrice(rec.productPrice) }}</td>
-                  <td>
-                    <span class="status-badge" [class.safe]="!rec.hasConflict" [class.conflicted]="rec.hasConflict">
-                      {{ rec.hasConflict ? 'Conflicted' : 'Safe' }}
-                      <i class="fas" [ngClass]="{'fa-check-circle': !rec.hasConflict, 'fa-exclamation-triangle': rec.hasConflict}"></i>
-                    </span>
-                    @if (rec.hasConflict) {
-                      <div class="conflict-details">
-                        {{ rec.conflictDetails }}
-                      </div>
-                    }
-                  </td>
-                  <td>
-                    <button class="details-btn" (click)="showDetails(rec)">
-                      <i class="fas fa-info-circle"></i> Details
-                    </button>
-                  </td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-      }
-
-      <!-- Pagination -->
-      <div class="pagination">
-        <button [disabled]="currentPage === 0" (click)="onPageChange(currentPage - 1)">
-          <i class="fas fa-chevron-left"></i>
-        </button>
-        @for (page of [].constructor(getTotalPages()); track page; let i = $index) {
-          <button 
-            [class.active]="i === currentPage"
-            (click)="onPageChange(i)">
-            {{ i + 1 }}
-          </button>
-        }
-        <button [disabled]="currentPage >= getTotalPages() - 1" (click)="onPageChange(currentPage + 1)">
-          <i class="fas fa-chevron-right"></i>
-        </button>
-        <div class="page-size-selector">
-          <span>Items per page:</span>
-          <select (change)="onPageSizeChange($any($event.target).value)">
-            <option value="12">12</option>
-            <option value="24">24</option>
-            <option value="48">48</option>
-          </select>
-        </div>
-      </div>
-    </div>
-  }
-</div>
-
-@if (incompleteProfileData) {
-  <div class="profile-incomplete-alert ms-5 d-flex align-items-start">
-    <div class="ms-5">
-      <div class="ms-5 ps-5">
-        <i class="fas fa-exclamation-circle alert-icon"></i>
-        <div class="alert-content pt-2">
-          <h3 class="alert-title">{{ incompleteProfileData.title }}</h3>
-          <p class="alert-message">{{ incompleteProfileData.message }}</p>
-          
-          <h4 class="alert-subtitle">Missing Information:</h4>
-          <ul class="alert-list mb-0">
-            @for (field of incompleteProfileData.missingFields; track field) {
-              <li>{{ field }}</li>
-            }
+    <!-- Incomplete Profile -->
+    <div *ngIf="!profileComplete && incompleteProfileData" class="incomplete-profile">
+      <div class="alert alert-warning bg-light-subtle">
+        <h2> <i class="fa-solid fa-warning me-1 text-warning fs-2"></i>{{ incompleteProfileData.title }}</h2>
+        <p>{{ incompleteProfileData.message }}</p>
+        <div class="missing-fields">
+          <h3>Missing Information:</h3>
+          <ul>
+            <li *ngFor="let field of incompleteProfileData.missingFields">{{ field }}</li>
           </ul>
-          
-          <p class="alert-action">{{ incompleteProfileData.actionRequired }}</p>
-          
-          <button routerLink="/profile" class="btn btn-primary btn-sm mt-2 p-2">
-            Complete My Profile
-          </button>
+        </div>
+        <p class="action-required">{{ incompleteProfileData.actionRequired }}</p>
+        <button (click)="completeProfile()" class="btn-complete-profile">
+          Complete My Profile Now
+        </button>
+      </div>
+    </div>
+
+    <!-- Recommendations (Profile Complete) -->
+    <div *ngIf="profileComplete">
+      <!-- Top-Level Metadata -->
+      <section class="response-metadata">
+      
+        <ul>
+          <li><strong>Generated At:</strong> {{ fullResponse.generatedAt }}</li>
+          <li><strong>Your AI Message:</strong> {{ fullResponse.aiPersonalizedMessage }}</li>
+          <li><strong>Confidence Level:</strong> {{ fullResponse.confidenceLevel }}</li>
+          <li><strong>Total Safe Recommendations:</strong> {{ fullResponse.totalSafeRecommendations }}</li>
+          <li><strong>Total Conflicted Items:</strong> {{ fullResponse.totalConflictedItems }}</li>
+          <li><strong>Next Steps Advice:</strong> {{ fullResponse.nextStepsAdvice }}</li>
+        </ul>
+
+        <h3>Key Insights:</h3>
+        <ul>
+          <li *ngFor="let insight of fullResponse.keyInsights">{{ insight }}</li>
+        </ul>
+      </section>
+
+      <!-- Summary -->
+      <p class="summary"><strong>Summary:</strong> {{ summary }}</p>
+
+      
+
+      <!-- Recommendation Cards -->
+      <div class="recommendation-cards">
+        <div *ngFor="let rec of recommendations" class="recommendation-card">
+          <div class="card-header">
+            <h3>{{ rec.productName }}</h3>
+            <span class="score-badge">Score: {{ rec.finalScore.toFixed(1) }}</span>
+          </div>
+
+          <div class="card-body">
+            <div class="product-image">
+              <img [src]="rec.productPictureUrl" [alt]="rec.productName">
+            </div>
+
+            <div class="product-details">
+             
+              <p><strong>Description:</strong> {{ rec.productDescription }}</p>
+              <p><strong>Active Ingredient:</strong> {{ rec.activeIngredient }}</p>
+              <p><strong>Price:</strong> {{ rec.productPrice | currency  : 'EGP'}}</p>
+              <p><strong>Safety Score:</strong> {{ rec.safetyScore }}/5</p>
+              <p><strong>Effectiveness Score:</strong> {{ rec.effectivenessScore }}/5</p>
+              <p><strong>Value Score:</strong> {{ rec.valueScore.toFixed(2) }}/5</p>
+              <p><strong>Has Conflict:</strong> {{ rec.hasConflict }}</p>
+              <p *ngIf="rec.hasConflict"><strong>Conflict Details:</strong> {{ rec.conflictDetails }}</p>
+              <p><strong>Reason:</strong> {{ rec.recommendationReason }}</p>
+              <p><strong>Created At:</strong> {{ rec.createdAt }}</p>
+            </div>
+          </div>
+
+          <!-- <div class="card-footer">
+            <button class="btn-details" [routerLink]="['/main/productdetails', rec.id]">View Details</button>
+            <button class="btn-add" (click)="addToCart(rec.id)">Add to Cart</button>
+          </div> -->
         </div>
       </div>
     </div>
   </div>
-}
+</div>
+ </div>
+
+</section>

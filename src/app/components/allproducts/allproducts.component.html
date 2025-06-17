@@ -6,7 +6,7 @@
   </div>
 
   <div class="products-container" *ngIf="!isLoading">
-   
+
     <div class="products-header">
       <div class="container">
         <div class="row align-items-center">
@@ -24,7 +24,7 @@
     <div class="filters-section">
       <div class="container">
         <div class="row align-items-center">
-         
+
           <div class="col-lg-4 col-md-6 mb-3">
             <div class="search-box">
               <form (ngSubmit)="onSearchSubmit()" class="search-form">
@@ -32,31 +32,15 @@
                   <span class="input-group-text">
                     <i class="fas fa-search"></i>
                   </span>
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Search medicines..."
-                    [(ngModel)]="searchValue"
-                    (input)="onSearchChange()"
-                    name="search"
-                    autocomplete="off"
-                  />
+                  <input type="text" class="form-control" placeholder="Search medicines..." [(ngModel)]="searchValue"
+                    (input)="onSearchChange()" name="search" autocomplete="off" />
                   <!-- Clear Search Button -->
-                  <button
-                    class="btn btn-outline-secondary"
-                    type="button"
-                    *ngIf="searchValue"
-                    (click)="clearSearch()"
-                    title="Clear search"
-                  >
+                  <button class="btn btn-outline-secondary" type="button" *ngIf="searchValue" (click)="clearSearch()"
+                    title="Clear search">
                     <i class="fas fa-times"></i>
                   </button>
                   <!-- Search Submit Button -->
-                  <button
-                    class="btn btn-primary"
-                    type="submit"
-                    title="Search"
-                  >
+                  <button class="btn serchgrad" type="submit" title="Search">
                     <i class="fas fa-search"></i>
                   </button>
                 </div>
@@ -69,39 +53,19 @@
             <div class="sort-controls">
               <label class="form-label">Sort by:</label>
               <div class="btn-group" role="group">
-                <button
-                  type="button"
-                  class="btn btn-outline-primary"
-                  [class.active]="sortBy === 'name'"
-                  (click)="sortProducts('name')"
-                >
+                <button type="button" class="btn btn-outline-primary" [class.active]="sortBy === 'name'"
+                  (click)="sortProducts('name')">
                   Name
-                  <i
-                    class="fas fa-sort-alpha-down"
-                    *ngIf="sortBy === 'name' && sortOrder === 'asc'"
-                  ></i>
-                  <i
-                    class="fas fa-sort-alpha-up"
-                    *ngIf="sortBy === 'name' && sortOrder === 'desc'"
-                  ></i>
+                  <i class="fas fa-sort-alpha-down" *ngIf="sortBy === 'name' && sortOrder === 'asc'"></i>
+                  <i class="fas fa-sort-alpha-up" *ngIf="sortBy === 'name' && sortOrder === 'desc'"></i>
                 </button>
-                <button
-                  type="button"
-                  class="btn btn-outline-primary"
-                  [class.active]="sortBy === 'price'"
-                  (click)="sortProducts('price')"
-                >
+                <button type="button" class="btn btn-outline-primary" [class.active]="sortBy === 'price'"
+                  (click)="sortProducts('price')">
                   Price
-                  <i
-                    class="fas fa-sort-numeric-down"
-                    *ngIf="sortBy === 'price' && sortOrder === 'asc'"
-                  ></i>
-                  <i
-                    class="fas fa-sort-numeric-up"
-                    *ngIf="sortBy === 'price' && sortOrder === 'desc'"
-                  ></i>
+                  <i class="fas fa-sort-numeric-down" *ngIf="sortBy === 'price' && sortOrder === 'asc'"></i>
+                  <i class="fas fa-sort-numeric-up" *ngIf="sortBy === 'price' && sortOrder === 'desc'"></i>
                 </button>
-               
+
               </div>
             </div>
           </div>
@@ -111,20 +75,12 @@
             <div class="view-controls text-lg-end">
               <label class="form-label">View:</label>
               <div class="btn-group" role="group">
-                <button
-                  type="button"
-                  class="btn btn-outline-secondary"
-                  [class.active]="viewMode === 'grid'"
-                  (click)="viewMode = 'grid'"
-                >
+                <button type="button" class="btn btn-outline-secondary" [class.active]="viewMode === 'grid'"
+                  (click)="viewMode = 'grid'">
                   <i class="fas fa-th"></i>
                 </button>
-                <button
-                  type="button"
-                  class="btn btn-outline-secondary"
-                  [class.active]="viewMode === 'list'"
-                  (click)="viewMode = 'list'"
-                >
+                <button type="button" class="btn btn-outline-secondary" [class.active]="viewMode === 'list'"
+                  (click)="viewMode = 'list'">
                   <i class="fas fa-list"></i>
                 </button>
               </div>
@@ -140,10 +96,7 @@
               <span>
                 Search results for "<strong>{{ searchValue }}</strong>"
               </span>
-              <button
-                class="btn btn-sm btn-outline-primary ms-auto"
-                (click)="clearSearch()"
-              >
+              <button class="btn btn-sm btn-outline-primary ms-auto" (click)="clearSearch()">
                 <i class="fas fa-times me-1"></i>
                 Clear Search
               </button>
@@ -157,10 +110,7 @@
     <div class="products-section">
       <div class="container">
         <!-- Empty State -->
-        <div
-          *ngIf="productsData.length === 0"
-          class="empty-state text-center"
-        >
+        <div *ngIf="productsData.length === 0" class="empty-state text-center">
           <div class="empty-icon">
             <i class="fas fa-search fa-3x text-muted" *ngIf="searchValue"></i>
             <i class="fas fa-box-open fa-3x text-muted" *ngIf="!searchValue"></i>
@@ -174,18 +124,11 @@
             Check back later for new products
           </p>
           <div class="mt-3">
-            <button
-              class="btn btn-primary me-2"
-              (click)="clearSearch()"
-              *ngIf="searchValue"
-            >
+            <button class="btn btn-primary me-2" (click)="clearSearch()" *ngIf="searchValue">
               <i class="fas fa-times me-1"></i>
               Clear Search
             </button>
-            <button
-              class="btn btn-outline-primary"
-              (click)="retryLoad()"
-            >
+            <button class="btn btn-outline-primary" (click)="retryLoad()">
               <i class="fas fa-redo me-1"></i>
               Retry Loading
             </button>
@@ -193,35 +136,18 @@
         </div>
 
         <!-- Grid View -->
-        <div
-          *ngIf="viewMode === 'grid' && productsData.length > 0"
-          class="products-grid"
-        >
+        <div *ngIf="viewMode === 'grid' && productsData.length > 0" class="products-grid">
           <div class="row">
-            <div
-              class="col-xl-3 col-lg-4 col-md-6 col-sm-6 mb-4"
-              *ngFor="let product of getCurrentProducts()"
-            >
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 mb-4" *ngFor="let product of getCurrentProducts()">
               <div class="product-card">
                 <!-- Product Image -->
-                <div
-                  class="product-image"
-                  [routerLink]="['/main/productdetails', product.id]"
-                >
-                  <img
-                    [src]="product.pictureUrl"
-                    [alt]="product.name"
-                    class="img-fluid"
-                    loading="lazy"
-                  />
+                <div class="product-image" [routerLink]="['/main/productdetails', product.id]">
+                  <img [src]="product.pictureUrl" [alt]="product.name" class="img-fluid" loading="lazy" />
                 </div>
 
                 <!-- Product Info -->
                 <div class="product-info">
-                  <h5
-                    class="product-title"
-                    [routerLink]="['/product', product.id]"
-                  >
+                  <h5 class="product-title" [routerLink]="['/product', product.id]">
                     {{ product.name }}
                   </h5>
                   <h6 class="text-danger-emphasis">{{product.activeIngredient}}</h6>
@@ -231,23 +157,24 @@
                   </p>
 
                   <!-- Rating -->
-              
 
+                  <div class="price">
+                    <span class="current-price">{{
+                      product.price | currency : "EGP" : "symbol" : "1.0-2"
+                      }}</span>
+                  </div>
                   <!-- Price and Actions -->
                   <div class="product-footer">
-                    <div class="price">
-                      <span class="current-price">{{
-                        product.price | currency : "EGP" : "symbol" : "1.0-2"
-                      }}</span>
-                    </div>
-                    <button
-                      class="btn btn-primary btn-sm add-to-cart-btn"
-                      (click)="addToCart(product.id)"
-                    >
+                    <button class="btn safeBtn d-block w-100 my-2" [routerLink]="['/main/CheckSafety', product.id]">
+                      <i class="fas fa-warning"></i>
+                      Check safety
+                    </button>
+                    <button class="btn text-white add-to-cart-btn w-100" (click)="addToCart(product.id)">
                       <i class="fas fa-shopping-cart"></i>
                       Add to Cart
                     </button>
                   </div>
+
                 </div>
               </div>
             </div>
@@ -255,105 +182,77 @@
         </div>
 
         <!-- List View -->
-        <div
-          *ngIf="viewMode === 'list' && productsData.length > 0"
-          class="products-list"
-        >
-          <div
-            class="product-list-item"
-            *ngFor="let product of getCurrentProducts()"
-          >
+        <div *ngIf="viewMode === 'list' && productsData.length > 0" class="products-list">
+          <div class="product-list-item" *ngFor="let product of getCurrentProducts()">
             <div class="row align-items-center">
               <!-- Product Image -->
               <div class="col-md-2 col-sm-3">
-                <div
-                  class="product-image-list"
-                  [routerLink]="['/product', product.id]"
-                >
-                  <img
-                    [src]="product.pictureUrl"
-                    [alt]="product.name"
-                    class="img-fluid"
-                    loading="lazy"
-                  />
+                <div class="product-image-list" [routerLink]="['/product', product.id]">
+                  <img [src]="product.pictureUrl" [alt]="product.name" class="img-fluid" loading="lazy" />
                 </div>
               </div>
 
               <!-- Product Details -->
               <div class="col-md-6 col-sm-5">
-                <h5
-                  class="product-title-list"
-                  [routerLink]="['/product', product.id]"
-                >
+                <h5 class="product-title-list" [routerLink]="['/product', product.id]">
                   {{ product.name }}
                 </h5>
                 <p class="product-description-list">
                   {{ product.description }}
                 </p>
 
-              
+
               </div>
 
               <!-- Price and Actions -->
-              <div class="col-md-4 col-sm-4">
-                <div class="product-actions-list text-end">
+              <!-- Price and Actions -->
+              <div class="col-md-4 col-sm-4 d-flex flex-column h-100">
+                <div class="product-footer-list mt-auto">
                   <div class="price mb-2">
                     <span class="current-price">{{
                       product.price | currency : "EGP" : "symbol" : "1.0-2"
-                    }}</span>
+                      }}</span>
                   </div>
-
-                  <button
-                    class="btn btn-primary btn-sm"
-                    (click)="addToCart(product.id)"
-                  >
+                   <button class="btn safeBtn d-block w-100 my-2" [routerLink]="['/main/CheckSafety', product.id]">
+                      <i class="fas fa-warning"></i>
+                      Check safety
+                    </button>
+                  <button class="btn add-to-cart-btn text-white btn-sm w-100" (click)="addToCart(product.id)">
                     <i class="fas fa-shopping-cart"></i>
                     Add to Cart
                   </button>
                 </div>
               </div>
+
             </div>
           </div>
         </div>
       </div>
 
       <!-- Enhanced Pagination -->
-      <nav
-        *ngIf="totalPages > 1"
-        class="pagination-nav"
-        aria-label="Products pagination"
-      >
+      <nav *ngIf="totalPages > 1" class="pagination-nav" aria-label="Products pagination">
         <div class="container">
           <div class="pagination-container">
             <!-- Pagination Info -->
-            <div class="pagination-info">
+            <div class="pagination-info ms-4 mb-2">
               <span>{{ getProductsCountText() }}</span>
-              <small class="text-muted">Page {{ currentPage }} of {{ totalPages }}</small>
+              <small class="text-muted ms-2">Page {{ currentPage }} of {{ totalPages }}</small>
             </div>
 
             <!-- Pagination Controls -->
-            <div class="pagination-controls">
+            <div class="pagination-controls ms-4">
               <ul class="pagination mb-0">
                 <!-- First Page Button -->
                 <li class="page-item" [class.disabled]="currentPage === 1">
-                  <button
-                    class="page-link"
-                    (click)="goToPage(1)"
-                    [disabled]="currentPage === 1"
-                    title="First Page"
-                  >
+                  <button class="page-link" (click)="goToPage(1)" [disabled]="currentPage === 1" title="First Page">
                     <i class="fas fa-angle-double-left"></i>
                   </button>
                 </li>
 
                 <!-- Previous Button -->
                 <li class="page-item" [class.disabled]="currentPage === 1">
-                  <button
-                    class="page-link"
-                    (click)="goToPreviousPage()"
-                    [disabled]="currentPage === 1"
-                    title="Previous Page"
-                  >
+                  <button class="page-link" (click)="goToPreviousPage()" [disabled]="currentPage === 1"
+                    title="Previous Page">
                     <i class="fas fa-chevron-left"></i>
                   </button>
                 </li>
@@ -367,18 +266,15 @@
                 </li>
 
                 <!-- Page Numbers -->
-                <li
-                  class="page-item"
-                  [class.active]="currentPage === page"
-                  *ngFor="let page of getPageNumbers()"
-                >
+                <li class="page-item" [class.active]="currentPage === page" *ngFor="let page of getPageNumbers()">
                   <button class="page-link" (click)="goToPage(page)">
                     {{ page }}
                   </button>
                 </li>
 
                 <!-- Last Page Number (if not in range) -->
-                <li class="page-item disabled" *ngIf="shouldShowLastPage() && getPageNumbers()[getPageNumbers().length - 1] < totalPages - 1">
+                <li class="page-item disabled"
+                  *ngIf="shouldShowLastPage() && getPageNumbers()[getPageNumbers().length - 1] < totalPages - 1">
                   <span class="page-link">...</span>
                 </li>
                 <li class="page-item" *ngIf="shouldShowLastPage()">
@@ -386,31 +282,17 @@
                 </li>
 
                 <!-- Next Button -->
-                <li
-                  class="page-item"
-                  [class.disabled]="currentPage === totalPages"
-                >
-                  <button
-                    class="page-link"
-                    (click)="goToNextPage()"
-                    [disabled]="currentPage === totalPages"
-                    title="Next Page"
-                  >
+                <li class="page-item" [class.disabled]="currentPage === totalPages">
+                  <button class="page-link" (click)="goToNextPage()" [disabled]="currentPage === totalPages"
+                    title="Next Page">
                     <i class="fas fa-chevron-right"></i>
                   </button>
                 </li>
 
                 <!-- Last Page Button -->
-                <li
-                  class="page-item"
-                  [class.disabled]="currentPage === totalPages"
-                >
-                  <button
-                    class="page-link"
-                    (click)="goToPage(totalPages)"
-                    [disabled]="currentPage === totalPages"
-                    title="Last Page"
-                  >
+                <li class="page-item" [class.disabled]="currentPage === totalPages">
+                  <button class="page-link" (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages"
+                    title="Last Page">
                     <i class="fas fa-angle-double-right"></i>
                   </button>
                 </li>
@@ -418,24 +300,14 @@
             </div>
 
             <!-- Quick Page Jump -->
-            <div class="page-jump">
-              <div class="input-group input-group-sm">
+            <div class="page-jump my-4 ms-4">
+              <div class="input-group input-group-sm w-25">
                 <span class="input-group-text">Go to:</span>
-                <input
-                  type="number"
-                  class="form-control"
-                  [min]="1"
-                  [max]="totalPages"
-                  #pageInput
-                  (keyup.enter)="goToPage(+pageInput.value); pageInput.value = ''"
-                  placeholder="Page"
-                  style="width: 70px;"
-                />
-                <button
-                  class="btn btn-outline-primary"
-                  (click)="goToPage(+pageInput.value); pageInput.value = ''"
-                  [disabled]="!pageInput.value"
-                >
+                <input type="number" class="form-control w-25" [min]="1" [max]="totalPages" #pageInput
+                  (keyup.enter)="goToPage(+pageInput.value); pageInput.value = ''" placeholder="Page"
+                   />
+                <button class="btn btn-outline-primary" (click)="goToPage(+pageInput.value); pageInput.value = ''"
+                  [disabled]="!pageInput.value">
                   Go
                 </button>
               </div>
@@ -447,10 +319,7 @@
   </div>
 
   <!-- Error State -->
-  <div
-    *ngIf="!isLoading && productsData.length === 0 && totalProducts === 0"
-    class="error-state text-center"
-  >
+  <div *ngIf="!isLoading && productsData.length === 0 && totalProducts === 0" class="error-state text-center">
     <div class="error-icon">
       <i class="fas fa-exclamation-triangle fa-3x text-warning"></i>
     </div>

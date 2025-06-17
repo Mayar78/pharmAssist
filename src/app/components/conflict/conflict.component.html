@@ -1,0 +1,94 @@
+<!-- conflicting-medications.component.html -->
+<div class="conflicting-medications-container">
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Checking for medication conflicts...</p>
+  </div>
+
+  <div *ngIf="error" class="error-message">
+    <p>{{ error }}</p>
+    <button (click)="loadConflictingMedications()" class="retry-button">Try Again</button>
+  </div>
+
+  <div *ngIf="!isLoading && !error">
+    <!-- Incomplete profile case -->
+    <div *ngIf="response?.isProfileComplete === false" class="incomplete-profile">
+  <div class="alert alert-warning bg-light-subtle">
+   
+
+    <h2> <i class="fa-solid fa-warning me-1 text-warning fs-2"></i>{{ response.title }}</h2>
+    <p>{{ response.message }}</p>
+
+    <div class="missing-fields">
+      <h3>Missing Information:</h3>
+      <ul>
+        <li *ngFor="let field of response.missingFields">{{ field }}</li>
+      </ul>
+    </div>
+
+    <p class="action-required">{{ response.actionRequired }}</p>
+
+    <a routerLink="/profile" class="btn-complete-profile">
+      Complete My Profile Now
+    </a>
+  </div>
+</div>
+
+
+    <!-- Complete profile case -->
+    <div *ngIf="response?.isProfileComplete !== false" class="conflicts-summary">
+      <div class="summary-header">
+        <h2>Potential Medication Conflicts</h2>
+        <p class="generated-at">Generated at: {{ response?.generatedAt | date:'medium' }}</p>
+      </div>
+
+      <div class="personalized-message">
+        <p>{{ response?.aiPersonalizedMessage }}</p>
+      </div>
+
+      <div class="stats-container">
+        <div class="stat-box conflicts">
+          <h4>Potential Conflicts Found</h4>
+          <p class="stat-value">{{ response?.totalConflictingItems }}</p>
+        </div>
+      </div>
+
+      <div class="summary-text">
+        <p>{{ response?.summary }}</p>
+      </div>
+
+      <div class="conflict-warnings" *ngIf="response?.conflictWarnings?.length">
+        <h3>Conflict Warnings</h3>
+        <ul>
+          <li *ngFor="let warning of response.conflictWarnings">{{ warning }}</li>
+        </ul>
+      </div>
+
+      <div class="medications-list" *ngIf="response?.conflictingMedications?.length">
+        <h3>Conflicting Medications</h3>
+        <div class="medication-card" *ngFor="let med of response.conflictingMedications">
+          <div class="medication-image">
+            <img [src]="med.productPictureUrl" alt="{{ med.productName }} image">
+          </div>
+          <div class="medication-details">
+            <h4>{{ med.productName }}</h4>
+            <p>{{ med.productDescription }}</p>
+            <p><strong>Active Ingredient:</strong> {{ med.activeIngredient }}</p>
+             <p><strong>Price:</strong> {{ med.productPrice | currency  : 'EGP'}}</p>
+            <div class="conflict-details">
+              <p><strong>⚠️ Conflict:</strong> {{ med.conflictDetails }}</p>
+              <p class="recommendation-reason">{{ med.recommendationReason }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="safety-advice" *ngIf="response?.safetyAdvice?.length">
+        <h3>Safety Advice</h3>
+        <ul>
+          <li *ngFor="let advice of response.safetyAdvice">{{ advice }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

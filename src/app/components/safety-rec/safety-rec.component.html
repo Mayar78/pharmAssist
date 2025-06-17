@@ -1,0 +1,99 @@
+<!-- safety-summary.component.html -->
+<div class="safety-summary-container">
+
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading your safety summary...</p>
+  </div>
+
+  <div *ngIf="error" class="error-message">
+    <p>{{ error }}</p>
+    <button (click)="loadSafetySummary()" class="retry-button">Try Again</button>
+  </div>
+
+  <div *ngIf="!isLoading && !error">
+    <!-- Incomplete profile case -->
+   <div *ngIf="safetySummary?.isProfileComplete === false" class="incomplete-profile ">
+  <div class="alert alert-warning bg-light-subtle ">
+    <h2><i class="fa-solid fa-warning me-1 text-warning fs-2"></i>{{ safetySummary.title }}</h2>
+    <p>{{ safetySummary.message }}</p>
+
+    <div class="missing-fields">
+      <h3>Missing Information:</h3>
+      <ul>
+        <li *ngFor="let field of safetySummary.missingFields">{{ field }}</li>
+      </ul>
+    </div>
+
+    <p class="action-required">{{ safetySummary.actionRequired }}</p>
+
+    <a routerLink="/profile" class="btn-complete-profile">
+      Complete My Profile Now
+    </a>
+  </div>
+</div>
+
+
+    <!-- Complete profile case -->
+    <div *ngIf="safetySummary?.isProfileComplete !== false" class="complete-summary">
+      <div class="summary-header">
+        <h2>Your Medication Safety Summary</h2>
+        <p class="generated-at">Generated at: {{ safetySummary?.generatedAt | date:'medium' }}</p>
+      </div>
+
+      <div class="personalized-message">
+        <p>{{ safetySummary?.aiPersonalizedMessage }}</p>
+      </div>
+
+      <div class="risk-assessment">
+        <h3>Overall Risk Assessment</h3>
+        <p>{{ safetySummary?.overallRiskAssessment }}</p>
+      </div>
+
+      <div class="stats-container">
+        <div class="stat-box safe">
+          <h4>Safe Recommendations</h4>
+          <p class="stat-value">{{ safetySummary?.totalSafeRecommendations }}</p>
+        </div>
+        <div class="stat-box conflicted">
+          <h4>Conflicted Items</h4>
+          <p class="stat-value">{{ safetySummary?.totalConflictedItems }}</p>
+        </div>
+      </div>
+
+      <div class="safety-highlights">
+        <h3>Safety Highlights</h3>
+        <ul>
+          <li *ngFor="let highlight of safetySummary?.safetyHighlights">{{ highlight }}</li>
+        </ul>
+      </div>
+
+      <div class="summary-text">
+        <p>{{ safetySummary?.summary }}</p>
+      </div>
+
+      <div *ngIf="safetySummary?.topRecommendation" class="top-recommendation">
+        <h3>Top Recommendation</h3>
+        <div class="recommendation-card">
+          <div class="product-image">
+            <img [src]="safetySummary.topRecommendation.productPictureUrl" alt="Product image">
+          </div>
+          <div class="product-details">
+            <h4>{{ safetySummary.topRecommendation.productName }}</h4>
+            <p>{{ safetySummary.topRecommendation.productDescription }}</p>
+            <p><strong>Active Ingredient:</strong> {{ safetySummary.topRecommendation.activeIngredient }}</p>
+             <p><strong>Price:</strong> {{ safetySummary.topRecommendation.productPrice | currency  : 'EGP'}}</p>
+            <p><strong>Safety Score:</strong> {{ safetySummary.topRecommendation.safetyScore }}/5</p>
+            <p><strong>Effectiveness:</strong> {{ safetySummary.topRecommendation.effectivenessScore }}/5</p>
+            <p class="recommendation-reason">{{ safetySummary.topRecommendation.recommendationReason }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="recommended-action">
+        <h3>Recommended Action</h3>
+        <p>{{ safetySummary?.recommendedAction }}</p>
+      </div>
+    </div>
+  </div>
+</div>

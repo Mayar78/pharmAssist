@@ -28,7 +28,7 @@ export class ResetPasswordComponent implements OnInit {
       console.log('Navigation ended to:', event.url);
       if (event.url === '/auth/reset-code') {
         console.warn('Unexpected navigation back to reset-code');
-        // منع إعادة التوجيه غير المرغوب فيها
+      
         this._Router.navigate(['/auth/reset-password'], {replaceUrl: true});
       }
     }
