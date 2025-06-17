@@ -136,6 +136,8 @@
   transition: all var(--transition-fast);
   color: var(--text-primary);
   backdrop-filter: blur(10px);
+  z-index: 1001;
+  position: relative;
 }
 
 .toggle-btn:hover {
@@ -572,5 +574,19 @@
 
   .nav-title {
     margin-right: 1rem;
+  }
+}
+@media (max-width: 768px) {
+  .sidebar {
+    width: 70px; /* بدلاً من 0 */
+    transform: none;
+  }
+  
+  .sidebar.open {
+    width: var(--sidebar-width);
+  }
+  
+  .toggle-btn {
+    display: block !important; /* تأكد أن الزر مرئي */
   }
 }

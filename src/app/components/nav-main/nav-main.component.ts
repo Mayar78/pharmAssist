@@ -245,16 +245,16 @@ export class NavMainComponent implements OnInit, OnDestroy {
     }
   }
 
-  private checkScreenSize(): void {
-    this.isMobile = window.innerWidth <= 768;
+  // private checkScreenSize(): void {
+  //   this.isMobile = window.innerWidth <= 768;
     
-    if (this.isMobile) {
-      this.isSidebarOpen = false;
-      document.body.classList.remove('sidebar-open');
-    } else if (window.innerWidth > 1024) {
-      this.isSidebarOpen = true;
-    }
-  }
+  //   if (this.isMobile) {
+  //     this.isSidebarOpen = false;
+  //     document.body.classList.remove('sidebar-open');
+  //   } else if (window.innerWidth > 1024) {
+  //     this.isSidebarOpen = true;
+  //   }
+  // }
 
   getAnimationDelay(index: number): string {
     return `${(index + 1) * 0.1}s`;
@@ -301,4 +301,30 @@ export class NavMainComponent implements OnInit, OnDestroy {
       item.badge = count > 0 ? count : undefined;
     }
   }
+
+  // أضف هذه الخاصية للتحكم بعرض النافبار في الهاتف
+isMobileMenuOpen: boolean = false;
+
+// عدل دالة checkScreenSize
+private checkScreenSize(): void {
+  this.isMobile = window.innerWidth <= 768;
+  
+  if (this.isMobile) {
+    this.isSidebarOpen = false;
+    this.isMobileMenuOpen = false;
+    document.body.classList.remove('sidebar-open');
+  } else if (window.innerWidth > 1024) {
+    this.isSidebarOpen = true;
+  }
+}
+
+// أضف هذه الدالة لتبديل حالة القائمة في الهاتف
+toggleMobileMenu(): void {
+  this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  if (this.isMobileMenuOpen) {
+    document.body.classList.add('mobile-menu-open');
+  } else {
+    document.body.classList.remove('mobile-menu-open');
+  }
+}
 }

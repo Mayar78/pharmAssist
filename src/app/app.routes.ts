@@ -27,6 +27,9 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { EditProfileComponent } from './components/edit-profile/edit-profile.component';
 import { OrderstatusComponent } from './components/orderstatus/orderstatus.component';
 import { FeatureCardComponent } from './components/feature-card/feature-card.component';
+import { SafetyRecComponent } from './components/safety-rec/safety-rec.component';
+import { CheckSafetyComponent } from './components/check-safety/check-safety.component';
+import { ConflictComponent } from './components/conflict/conflict.component';
 
 
 export const routes: Routes = [
@@ -86,6 +89,11 @@ export const routes: Routes = [
             { path: 'productdetails/:PId', component: SpecficProductComponent, title: 'Details' },
             { path: 'cart', component: CartComponent, title: 'Cart' },
             { path: 'MyRecommendation', component: GetMyRecommendationsComponent, title: 'MyRecommendation' },
+            { path: 'safety', component: SafetyRecComponent, title: 'safety summray' },
+            { path: 'CheckSafety/:PId', component: CheckSafetyComponent, title: 'Check Safety' },
+            { path: 'Conflict', component: ConflictComponent, title: 'Conflict' },
+
+
 
            
             
@@ -98,7 +106,7 @@ export const routes: Routes = [
              //  Profile routes
       { path: 'profile', component: ProfileComponent, title: 'Profile' },
       { path: 'edit-profile', component: EditProfileComponent, title: 'Edit Profile' },
-          { path: 'RecommendedMedications', component: FeatureCardComponent, title: 'Recommended Medications' },
+          { path: 'FeatureCard', component: FeatureCardComponent, title: 'Feature Card' },
 
    
 

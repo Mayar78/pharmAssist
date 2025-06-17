@@ -25,7 +25,6 @@ import { AuthService } from '../../core/services/auth.service';
   styleUrl: './login.component.css',
 })
 export class LoginComponent {
-  // @ViewChild('layer') questionLayer!: ElementRef<HTMLDivElement>;
   loading: boolean = false;
   responseMssg!: string;
   errorOrSuccess!: String;
@@ -62,8 +61,7 @@ export class LoginComponent {
             console.log(res.displayName);
             console.log(res.token);
 
-            // this.questionLayer.nativeElement.classList.remove('d-none');
-            // this.questionLayer.nativeElement.classList.add('d-flex');
+          
             sessionStorage.setItem('token', res.token);
             sessionStorage.setItem('displayName', res.displayName);
             sessionStorage.setItem('email', res.email);
@@ -87,19 +85,9 @@ export class LoginComponent {
       this.loginForm.markAllAsTouched();
     }
   }
-  // next() {
-  //   if (this.currentIndex < this.questions.length - 1) {
-  //     this.currentIndex++;
-  //   }
-  // }
 
-  // prev() {
-  //   if (this.currentIndex > 0) {
-  //     this.currentIndex--;
-  //   }
-  // }
   submit() {
-    // this.sendQuestionAnswers();
+ 
     this._Router.navigate(['/main/AllProducts']);
   }
   ngOnDestroy(): void {

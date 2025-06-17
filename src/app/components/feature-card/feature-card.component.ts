@@ -1,10 +1,12 @@
 import { Component, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
+import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
+
 interface CarouselItem {
   id: number;
   imageUrl: string;
-  title?: string;
-  description?: string;
+  title: string;
+  description: string;
 }
 
 interface FeatureCard {
@@ -14,46 +16,47 @@ interface FeatureCard {
   buttonText: string;
   iconClass: string;
   gradientClass: string;
-
   action: () => void;
 }
+
 @Component({
   selector: 'app-feature-card',
   standalone: true,
-  imports: [RouterModule],
+  imports: [RouterModule, CarouselModule],
   templateUrl: './feature-card.component.html',
   styleUrl: './feature-card.component.css'
 })
 export class FeatureCardComponent {
   constructor(private router: Router) {}
-currentSlide = signal(0);
+
+  currentSlide = signal(0);
   autoSlideInterval: any;
 
-  // Carousel items - you can replace these with your actual images
+  // Enhanced carousel items with better content
   carouselItems: CarouselItem[] = [
     {
       id: 1,
-      imageUrl: './../../../assets/imgs/car1.jpeg',
+      imageUrl: 'assets/imgs/car1.jpeg',
       title: 'Welcome to Our Pharmacy',
-      description: 'Your health is our priority'
+      description: 'Your health is our priority - we provide the best medicines and medical services'
     },
     {
       id: 2,
-      imageUrl: './../../../assets/imgs/car1 (2).jpeg',
-      title: 'Quality Medicines',
-      description: 'Trusted brands and products'
+      imageUrl: 'assets/imgs/car1 (2).jpeg',
+      title: 'High-Quality Medicines',
+      description: 'We guarantee original medicines from the best international companies'
     },
     {
       id: 3,
-      imageUrl: './../../../assets/imgs/car3.jpeg',
-      title: 'Expert Consultation',
-      description: 'Professional healthcare advice'
+      imageUrl: 'assets/imgs/car3.jpeg',
+      title: 'Expert Medical Consultation',
+      description: 'Team of specialized pharmacists to provide appropriate medical advice'
     },
     {
       id: 4,
-      imageUrl: './../../../assets/imgs/medicines.png',
-      title: 'Fast Delivery',
-      description: 'Quick and reliable service'
+      imageUrl: 'assets/imgs/car4.jpeg',
+      title: 'Fast & Secure Delivery',
+      description: 'Reliable and fast delivery service to ensure medicine arrives on time'
     }
   ];
 
@@ -62,38 +65,29 @@ currentSlide = signal(0);
     {
       id: 1,
       title: 'My Recommendations',
-      description: 'Get recommended medicines',
-      buttonText: 'Get recommendation',
+      description: 'Get personalized medical recommendations for your health condition',
+      buttonText: 'Get Recommendations',
       iconClass: 'fa-solid fa-pills',
       gradientClass: 'gradient-blue',
-       action: () => this.router.navigate(['/main/MyRecommendation'])
+      action: () => this.router.navigate(['/main/MyRecommendation'])
     },
+   
     {
       id: 2,
-      title: 'Check product safety',
-      description: 'Check product safety and get detailed information',
-      buttonText: 'Product safety',
-      iconClass: 'fa-solid fa-shield-heart',
-      gradientClass: 'gradient-orange',
-        action: () => this.router.navigate(['/recommendations'])
+      title: 'Conflict medicines',
+  description: 'Conflict medicines are medicines that may interact with each other',      buttonText: 'Check Interactions',
+      iconClass: 'fa-solid fa-triangle-exclamation',
+      gradientClass: 'gradient-purple',
+      action: () => this.router.navigate(['/main/Conflict'])
     },
     {
       id: 3,
-      title: 'Conflict medicines',
-      description: 'Conflict medicines are medicines that may interact with each other',
-      buttonText: 'Conflict medicines',
-      iconClass: 'fa-solid fa-triangle-exclamation',
-      gradientClass: 'gradient-purple',
-    action: () => this.router.navigate(['/recommendations'])
-    },
-    {
-      id: 4,
-      title: 'Safety summary',
-      description: 'Safety summary provides a quick overview of important safety information',
-      buttonText: 'Safety summary',
+      title: 'Safety Summary',
+      description: 'Quick overview of important medication safety information',
+      buttonText: 'View Summary',
       iconClass: 'fa-solid fa-clipboard-check',
       gradientClass: 'gradient-cyan',
-    action: () => this.router.navigate(['/recommendations'])
+      action: () => this.router.navigate(['/main/safety'])
     }
   ];
 
@@ -109,7 +103,7 @@ currentSlide = signal(0);
   startAutoSlide(): void {
     this.autoSlideInterval = setInterval(() => {
       this.nextSlide();
-    }, 4000);
+    }, 5000); // Increased interval for better UX
   }
 
   stopAutoSlide(): void {
@@ -134,25 +128,43 @@ currentSlide = signal(0);
     this.currentSlide.set(index);
   }
 
-  // Feature card actions
-  getRecommendations(): void {
-    console.log('Getting recommendations...');
-    
-    // Navigate to recommendations page or open modal
+  // Enhanced error handling for images
+  onImageError(event: any): void {
+    console.error('Failed to load image:', event.target.src);
+    event.target.src = 'assets/images/placeholder.jpg';
+    event.target.onerror = null; // Prevent infinite error loop
   }
 
-  checkProductSafety(): void {
-    console.log('Checking product safety...');
-    // Navigate to product safety page
+  onImageLoad(event: any): void {
+    console.log('Image loaded successfully:', event.target.src);
   }
 
-  checkConflictMedicines(): void {
-    console.log('Checking conflict medicines...');
-    // Navigate to conflict medicines page
-  }
-
-  getSafetySummary(): void {
-    console.log('Getting safety summary...');
-    // Navigate to safety summary page
-  }
+  // Owl Carousel options
+  customOptions: OwlOptions = {
+    loop: true,
+    mouseDrag: true,
+    touchDrag: true,
+    pullDrag: true,
+    dots: false,
+    navSpeed: 600,
+    navText: ['', ''],
+    autoplay: true,
+    autoplayTimeout: 5000,
+    autoplayHoverPause: true,
+    responsive: {
+      0: {
+        items: 1
+      },
+      400: {
+        items: 1
+      },
+      740: {
+        items: 1
+      },
+      940: {
+        items: 1
+      }
+    },
+    nav: true
+  };
 }

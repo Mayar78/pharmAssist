@@ -81,12 +81,11 @@ export class ResetCodeComponent implements OnInit {
               console.log('Received resetToken:', res.resetToken);
               sessionStorage.setItem('resetToken', res.resetToken);
 
-              // تأكد من أن المسار صحيح تماماً
+             
               this._Router.navigate(['/auth/reset-password'], {
                 replaceUrl: true
               }).then(() => {
                 console.log('Navigation completed successfully');
-                // أضف هذا السطر لمنع أي إعادة تحميل غير مرغوب فيها
                 window.location.href = '/auth/reset-password';
               }).catch(err => {
                 console.error('Navigation failed:', err);

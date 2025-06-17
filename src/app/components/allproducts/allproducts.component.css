@@ -41,7 +41,7 @@
 }
 
 .search-box .form-control:focus {
-  border-color: #667eea;
+  border:  linear-gradient(135deg, #667eea 0%, #19b896dc 100%);
   box-shadow: 0 0 0 0.2rem rgba(6, 48, 234, 0.25);
 }
 
@@ -52,14 +52,18 @@
   display: block;
 }
 
+.serchgrad{
+    background: linear-gradient(135deg, #667eea 0%, #19b896dc 100%);
+    color: wheat;
+}
 .btn-group .btn {
   font-size: 0.875rem;
   padding: 0.5rem 1rem;
 }
 
 .btn-group .btn.active {
-  background-color: #2d94ea;
-  border-color: #1084e3;
+  background: linear-gradient(135deg, #667eea 0%, #19b896dc 100%);
+  border: linear-gradient(135deg, #667eea 0%, #19b896dc 100%);
   color: white;
 }
 
@@ -188,12 +192,12 @@
   color: #6c757d;
 }
 
-.product-footer {
+/* .product-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-top: auto;
-}
+} */
 
 .price {
   font-weight: 700;
@@ -207,13 +211,26 @@
 .add-to-cart-btn {
   font-size: 0.875rem;
   padding: 0.5rem 1rem;
-  background-color: #2d94ea;
+  background:linear-gradient(135deg, #667eea 0%, #19b896dc 100%);
   border-color: #2d94ea;
 }
-
+.safeBtn{
+    font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+  background:linear-gradient(135deg, #f7f757 0%, #f9f925 100%);
+  border-color: #f9f925;
+  color: black;
+}
+.safeBtn:hover {
+  background: linear-gradient(135deg, #e4e423 0%, rgb(188, 188, 12) 100%);
+  border-color: #e4e423;
+  transition: all 0.5s ;
+}
 .add-to-cart-btn:hover {
-  background-color: rgb(43, 66, 180);
+  background: linear-gradient(135deg, #4462e7 0%, #0a886ddc 100%);
   border-color: #5a6fd9;
+  transition: all 0.5s ease;
+
 }
 
 .add-to-cart-btn i {
@@ -300,6 +317,7 @@
 .pagination .page-item.active .page-link {
   background-color: #667eea;
   border-color: #667eea;
+  color: white;
 }
 
 .pagination .page-item.disabled .page-link {
@@ -453,4 +471,29 @@
 .product-image img[src],
 .product-image-list img[src] {
   opacity: 1;
+}
+.product-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* optional */
+  height: 100%;
+}
+
+.product-info {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.product-footer {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.product-footer-list {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }

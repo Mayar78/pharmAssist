@@ -9,7 +9,6 @@
           {{ errorMsg }}
         </p>
       }
-
       <form [formGroup]="resetCodeForm" (ngSubmit)="resetCode()">
         <div class="my-2">
           <input
@@ -27,7 +26,6 @@
             }"
           />
         </div>
-
         @if(resetCodeForm.get('otp')?.errors && resetCodeForm.get('otp')?.touched) {
           <div class="alert alert-danger my-2 p-2 fs-6 fw-bold rounded">
             @if(resetCodeForm.get('otp')?.getError('required')) {

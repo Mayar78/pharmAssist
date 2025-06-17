@@ -1,372 +1,91 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Recommendation, RecommendationFilter, RecommendationService, RecommendationsResponse } from '../../services/recommendation.service';
-import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
+import {
+  IncompleteProfileResponse,
+  RecommendationService,
+  RecommendationsResponse,
+  Recommendation
+} from '../../services/recommendation.service';
+import { Router, RouterLink } from '@angular/router';
+import { CartService } from '../../services/cart.service';
+import { ToastrService } from 'ngx-toastr';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-get-my-recommendations',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,RouterLink],
   templateUrl: './get-my-recommendations.component.html',
-  styleUrl: './get-my-recommendations.component.css'
+  styleUrls: ['./get-my-recommendations.component.css']
 })
-export class GetMyRecommendationsComponent implements OnInit, OnDestroy {
-  recommendationsData: RecommendationsResponse | null = null;
+export class GetMyRecommendationsComponent implements OnInit {
+  fullResponse!: RecommendationsResponse;
   recommendations: Recommendation[] = [];
-  filteredRecommendations: Recommendation[] = [];
-  availableIngredients: RecommendationFilter[] = [];
-  
-  // Loading and error states
-  isLoading = false;
-  isLoadingIngredients = false;
+  summary = '';
+  isLoading = true;
   error: string | null = null;
-  
-  // Search and filter properties
-  searchTerm = '';
-  selectedConflictStatus = 'all'; // 'all', 'safe', 'conflicted'
-  selectedIngredients: string[] = [];
-  sortBy = 'finalScore'; // 'finalScore', 'safetyScore', 'effectivenessScore', 'productPrice', 'productName'
-  sortDirection: 'asc' | 'desc' = 'desc';
-  
-  // Score range filter
-  scoreRange = {
-    min: 0,
-    max: 5,
-    selectedMin: 0,
-    selectedMax: 5
-  };
-  
-  // Pagination properties
-  currentPage = 0;
-  pageSize = 12;
-  totalItems = 0;
-  
-  // View mode
-  viewMode: 'table' | 'list' = 'table';
-  
-  // RxJS
-  private destroy$ = new Subject<void>();
-  private searchSubject = new Subject<string>();
-  
-  // Sort options
-  sortOptions = [
-    { value: 'finalScore', label: 'Final Score', icon: '⭐' },
-    { value: 'safetyScore', label: 'Safety Score', icon: '🛡️' },
-    { value: 'effectivenessScore', label: 'Effectiveness Score', icon: '⚡' },
-    { value: 'productPrice', label: 'Price', icon: '💰' },
-    { value: 'productName', label: 'Name', icon: '📋' }
-  ];
+    productSub!:Subscription;
 
-  incompleteProfileData: {
-  message: string;
-  title: string;
-  missingFields: string[];
-  actionRequired: string;
-} | null = null;
-  constructor(private recommendationsService: RecommendationService) {}
+  profileComplete = true;
+  incompleteProfileData: IncompleteProfileResponse | null = null;
+
+  constructor(private recommendationsService: RecommendationService) { }
+   private readonly _CartService = inject(CartService);
+    private readonly _ToastrService = inject(ToastrService);
+    private readonly _Router = inject(Router);
 
   ngOnInit(): void {
-    this.initializeComponent();
-    this.setupSearch();
-  this.loadRecommendations();
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  // Computed properties for template
-  get safeItemsCount(): number {
-    return this.recommendations.filter(rec => !rec.hasConflict).length;
-  }
-
-  get conflictedItemsCount(): number {
-    return this.recommendations.filter(rec => rec.hasConflict).length;
-  }
-
-  private initializeComponent(): void {
     this.loadRecommendations();
-    this.loadIngredients();
   }
 
-  private setupSearch(): void {
-    this.searchSubject.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      takeUntil(this.destroy$)
-    ).subscribe(searchTerm => {
-      this.searchTerm = searchTerm;
-      this.currentPage = 0;
-      this.applyFilters();
-    });
-  }
+  loadRecommendations(): void {
+    this.error = null;
+    this.isLoading = true;
 
-loadRecommendations(): void {
-  this.isLoading = true;
-  this.error = null;
-  
-  this.recommendationsService.getMyRecommendations()
-    .pipe(takeUntil(this.destroy$))
-    .subscribe({
+    this.recommendationsService.getMyRecommendations().subscribe({
       next: (response) => {
-        console.log('API Response:', response); // إضافة هذا السطر
-        if (response.isProfileComplete === false) {
-          this.handleIncompleteProfile(response);
-          return;
+        if ('isProfileComplete' in response && !response.isProfileComplete) {
+          this.profileComplete = false;
+          this.incompleteProfileData = response as IncompleteProfileResponse;
+        } else {
+          this.profileComplete = true;
+          this.fullResponse = response as RecommendationsResponse;
+          this.recommendations = this.fullResponse.recommendations;
+          this.summary = this.fullResponse.summary;
         }
-        this.handleCompleteProfile(response);
+        this.isLoading = false;
       },
-      error: (error) => {
-        console.error('Error loading recommendations:', error);
-        this.error = 'Failed to load recommendations. Please try again.';
+      error: (err) => {
+        console.error(err);
+        this.error = 'Failed to load recommendations. Please try again later.';
         this.isLoading = false;
       }
     });
-}
+  }
 
-private handleIncompleteProfile(response: any): void {
-  this.isLoading = false;
+  completeProfile(): void {
+    this._Router.navigate(['/main/side-effects']);
+    console.log('Redirect to profile completion');
+  }
+     addToCart(pId: number): void {
+
   
-  // Store the incomplete profile message to display in template
-  this.incompleteProfileData = {
-    message: response.message,
-    title: response.title,
-    missingFields: response.missingFields,
-    actionRequired: response.actionRequired
-  };
-  
-  // You might want to navigate to profile completion page
-  // this.router.navigate(['/complete-profile']);
-}
-
-private handleCompleteProfile(response: RecommendationsResponse): void {
-  this.recommendationsData = response;
-  this.recommendations = response.recommendations;
-  this.totalItems = response.recommendations.length;
-  this.applyFilters();
-  this.isLoading = false;
-}
-
-  loadIngredients(): void {
-    this.isLoadingIngredients = true;
+  this.productSub = this._CartService.addProductToCart(pId).subscribe({
+    next: (res) => {
+   
+ this._ToastrService.success('Product added to cart successfully', 'Success');
+      // Update cart count
+      console.log('Cart updated:', res.items);
+    },
+    error: (err) => {
     
-    this.recommendationsService.getRecommendationIngredients()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (ingredients) => {
-          this.availableIngredients = ingredients;
-          this.isLoadingIngredients = false;
-        },
-        error: (error) => {
-          console.error('Error loading ingredients:', error);
-          this.isLoadingIngredients = false;
-        }
-      });
-  }
-
-  onSearch(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    this.searchSubject.next(target.value);
-  }
-
-  onConflictStatusChange(status: string): void {
-    this.selectedConflictStatus = status;
-    this.currentPage = 0;
-    this.applyFilters();
-  }
-
-  onIngredientToggle(ingredient: string): void {
-    const index = this.selectedIngredients.indexOf(ingredient);
-    if (index > -1) {
-      this.selectedIngredients.splice(index, 1);
-    } else {
-      this.selectedIngredients.push(ingredient);
-    }
-    this.currentPage = 0;
-    this.applyFilters();
-  }
-
-  onSortChange(sortBy: string): void {
-    if (this.sortBy === sortBy) {
-      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
-    } else {
-      this.sortBy = sortBy;
-      this.sortDirection = 'desc';
-    }
-    this.applyFilters();
-  }
-
-  onScoreRangeChange(): void {
-    this.currentPage = 0;
-    this.applyFilters();
-  }
-
-  onPageChange(page: number): void {
-    this.currentPage = page;
-  }
-
-  onPageSizeChange(size: string): void {
-    this.pageSize = parseInt(size, 10);
-    this.currentPage = 0;
-    this.applyFilters();
-  }
-
-  toggleViewMode(): void {
-    this.viewMode = this.viewMode === 'table' ? 'list' : 'table';
-  }
-
-  private applyFilters(): void {
-    let filtered = [...this.recommendations];
-
-    // Apply search filter
-    if (this.searchTerm.trim()) {
-      const searchLower = this.searchTerm.toLowerCase();
-      filtered = filtered.filter(rec => 
-        rec.productName.toLowerCase().includes(searchLower) ||
-        rec.productDescription.toLowerCase().includes(searchLower) ||
-        rec.activeIngredient.toLowerCase().includes(searchLower)
+      this._ToastrService.error(
+        err.error?.message || 'Failed to add product to cart', 
+        "Error"
       );
+      console.error('Error adding to cart:', err);
     }
-
-    // Apply conflict status filter
-    if (this.selectedConflictStatus !== 'all') {
-      const isConflicted = this.selectedConflictStatus === 'conflicted';
-      filtered = filtered.filter(rec => rec.hasConflict === isConflicted);
-    }
-
-    // Apply ingredients filter
-    if (this.selectedIngredients.length > 0) {
-      filtered = filtered.filter(rec => 
-        this.selectedIngredients.some(ingredient => 
-          rec.activeIngredient.toLowerCase().includes(ingredient.toLowerCase())
-        )
-      );
-    }
-
-    // Apply score range filter
-    filtered = filtered.filter(rec => 
-      rec.finalScore >= this.scoreRange.selectedMin && 
-      rec.finalScore <= this.scoreRange.selectedMax
-    );
-
-    // Apply sorting
-    filtered.sort((a, b) => {
-      let valueA: any = (a as any)[this.sortBy];
-      let valueB: any = (b as any)[this.sortBy];
-
-      if (typeof valueA === 'string') {
-        valueA = valueA.toLowerCase();
-        valueB = valueB.toLowerCase();
-      }
-
-      if (this.sortDirection === 'asc') {
-        return valueA < valueB ? -1 : valueA > valueB ? 1 : 0;
-      } else {
-        return valueA > valueB ? -1 : valueA < valueB ? 1 : 0;
-      }
-    });
-
-    // Update filtered results
-    this.filteredRecommendations = filtered;
-    this.totalItems = filtered.length;
-  }
-
-  getPaginatedRecommendations(): Recommendation[] {
-    const startIndex = this.currentPage * this.pageSize;
-    return this.filteredRecommendations.slice(startIndex, startIndex + this.pageSize);
-  }
-
-  getTotalPages(): number {
-    return Math.ceil(this.totalItems / this.pageSize);
-  }
-
-  getScoreColor(score: number): string {
-    if (score >= 4.5) return '#10b981'; // green
-    if (score >= 4.0) return '#3b82f6'; // blue
-    if (score >= 3.5) return '#f59e0b'; // amber
-    if (score >= 3.0) return '#f97316'; // orange
-    return '#ef4444'; // red
-  }
-
-  getScoreIcon(score: number): string {
-    if (score >= 4.5) return '🌟';
-    if (score >= 4.0) return '⭐';
-    if (score >= 3.5) return '✨';
-    if (score >= 3.0) return '💫';
-    return '⚡';
-  }
-
-  clearFilters(): void {
-    this.searchTerm = '';
-    this.selectedConflictStatus = 'all';
-    this.selectedIngredients = [];
-    this.scoreRange.selectedMin = this.scoreRange.min;
-    this.scoreRange.selectedMax = this.scoreRange.max;
-    this.currentPage = 0;
-    this.applyFilters();
-  }
-
-  retryLoadRecommendations(): void {
-    this.loadRecommendations();
-  }
-
-  // Utility methods
-  formatPrice(price: number): string {
-    return `${price.toFixed(2)}`;
-  }
-
-  formatScore(score: number): string {
-    return score.toFixed(1);
-  }
-
-  formatDate(dateString: string): string {
-    return new Date(dateString).toLocaleDateString();
-  }
-
-  truncateText(text: string, maxLength: number): string {
-    if (text.length <= maxLength) return text;
-    return text.substring(0, maxLength) + '...';
-  }
-
-  // Helper methods for template properties that may not exist
-  getRecordDate(rec: Recommendation): string {
-    // Check for various possible date properties
-    const dateValue = (rec as any).dateAdded || (rec as any).createdAt || (rec as any).updatedAt || new Date().toISOString();
-    return this.formatDate(dateValue);
-  }
-
-  getRecordCategory(rec: Recommendation): string {
-    // Return category if it exists, otherwise determine from activeIngredient
-    if ((rec as any).category) {
-      return (rec as any).category;
-    }
-    
-    // Fallback: determine category from active ingredient
-    const ingredient = rec.activeIngredient.toLowerCase();
-    if (ingredient.includes('retinol') || ingredient.includes('vitamin c')) return 'serum';
-    if (ingredient.includes('acid') || ingredient.includes('peel')) return 'treatment';
-    if (ingredient.includes('hyaluronic') || ingredient.includes('moistur')) return 'hydrator';
-    if (ingredient.includes('natural') || ingredient.includes('botanical')) return 'natural';
-    if (ingredient.includes('supplement') || ingredient.includes('vitamin')) return 'supplement';
-    return 'treatment'; // default
-  }
-
-  getCategoryIcon(category: string): string {
-    const iconMap: { [key: string]: string } = {
-      'serum': 'fa-flask',
-      'treatment': 'fa-spa',
-      'hydrator': 'fa-tint',
-      'natural': 'fa-leaf',
-      'supplement': 'fa-pills'
-    };
-    return iconMap[category] || 'fa-spa';
-  }
-  showDetails(recommendation: Recommendation): void {
-  // You can implement a modal or expandable row here
-  console.log('Showing details for:', recommendation);
-  // Or implement a modal service:
-  // this.modalService.showRecommendationDetails(recommendation);
+  });
 }
 }

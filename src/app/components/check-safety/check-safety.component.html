@@ -1,0 +1,111 @@
+<!-- check-safety.component.html -->
+<div class="safety-check-container">
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Checking product safety...</p>
+  </div>
+
+  <div *ngIf="error" class="error-message">
+    <p>{{ error }}</p>
+    <button (click)="checkProductSafety()" class="retry-button">Try Again</button>
+  </div>
+
+  <div *ngIf="!isLoading && !error">
+    <!-- Incomplete profile case -->
+    <div *ngIf="productInfo?.isProfileComplete === false" class="incomplete-profile">
+      <div class="alert-header">
+        <h2>{{ productInfo.title }}</h2>
+      </div>
+      <div class="alert-content">
+        <p>{{ productInfo.message }}</p>
+        
+        <div class="missing-fields">
+          <h3>Missing Information:</h3>
+          <ul>
+            <li *ngFor="let field of productInfo.missingFields">{{ field }}</li>
+          </ul>
+        </div>
+        
+        <p class="action-required">{{ productInfo.actionRequired }}</p>
+        
+        <a routerLink="/profile" class="complete-profile-button">
+          Complete My Profile
+        </a>
+      </div>
+    </div>
+
+    <!-- Complete profile case -->
+    <div *ngIf="productInfo?.isProfileComplete !== false" class="product-safety-info">
+      <div class="product-header">
+        <h2>Product Safety Information</h2>
+        <p class="generated-at">Generated at: {{ productInfo?.createdAt | date:'medium' }}</p>
+      </div>
+
+      <div class="product-card">
+        <div class="product-image">
+          <img [src]="productInfo?.productPictureUrl" [alt]="productInfo?.productName" 
+               >
+        </div>
+        <div class="product-details">
+          <h3>{{ productInfo?.productName }}</h3>
+          <p>{{ productInfo?.productDescription }}</p>
+          
+          <div class="product-meta">
+            <div class="meta-item">
+              <span class="meta-label">Active Ingredient:</span>
+              <span class="meta-value">{{ productInfo?.activeIngredient }}</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Price:</span>
+              <span class="meta-value">{{ productInfo?.productPrice | currency : 'EGP'}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="safety-scores">
+        <div class="score-card safety">
+          <h4>Safety Score</h4>
+          <div class="score-value">{{ productInfo?.safetyScore }}/5</div>
+          <div class="score-bar">
+            <div class="bar-fill" [style.width.%]="(productInfo?.safetyScore / 5) * 100"></div>
+          </div>
+        </div>
+        <div class="score-card effectiveness">
+          <h4>Effectiveness</h4>
+          <div class="score-value">{{ productInfo?.effectivenessScore }}/5</div>
+          <div class="score-bar">
+            <div class="bar-fill" [style.width.%]="(productInfo?.effectivenessScore / 5) * 100"></div>
+          </div>
+        </div>
+        <div class="score-card value">
+          <h4>Value</h4>
+          <div class="score-value">{{ productInfo?.valueScore | number:'1.1-1' }}/5</div>
+          <div class="score-bar">
+            <div class="bar-fill" [style.width.%]="(productInfo?.valueScore / 5) * 100"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="final-score">
+        <h3>Overall Score</h3>
+        <div class="score-circle">
+          {{ productInfo?.finalScore | number:'1.1-1' }}
+        </div>
+      </div>
+
+      <div class="conflict-info" *ngIf="productInfo?.hasConflict">
+        <div class="conflict-alert">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <h3>Potential Conflict Detected</h3>
+        </div>
+        <p>{{ productInfo?.conflictDetails }}</p>
+      </div>
+
+      <div class="recommendation-reason">
+        <h3>Recommendation</h3>
+        <p>{{ productInfo?.recommendationReason }}</p>
+      </div>
+    </div>
+  </div>
+</div>
