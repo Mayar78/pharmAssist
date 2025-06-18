@@ -40,11 +40,12 @@
           Skip
         </button>
 
-      <button class="btn btn-primary"
-        (click)="onNext()"
-        [disabled]="!currentAnswer.trim() || isSubmitted">
+<button class="btn btn-primary"
+    (click)="onNext()"
+    [disabled]="isSubmitted">
   {{ isLastQuestion ? 'Submit' : 'Next' }}
 </button>
+
 
       </div>
     </div>

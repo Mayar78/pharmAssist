@@ -80,12 +80,10 @@ export class QuestionsComponent implements AfterViewInit {
 
 onNext(): void {
   const answer = this.currentAnswer.trim();
-  if (!answer) {
-    Swal.fire('Please write an answer or click Skip.', '', 'warning');
-    return;
-  }
 
+ 
   this.answers[this.currentQuestion.id] = answer;
+
   this.currentAnswer = '';
 
   if (!this.isLastQuestion) {
@@ -95,9 +93,8 @@ onNext(): void {
   }
 }
 
-
- onSkip(): void {
-  this.answers[this.currentQuestion.id] = 'Skipped';
+onSkip(): void {
+  this.answers[this.currentQuestion.id] = '';
   this.currentAnswer = '';
 
   if (!this.isLastQuestion) {
@@ -106,7 +103,6 @@ onNext(): void {
     this.submitAnswers();
   }
 }
-
 
 private submitAnswers(): void {
   this.isSubmitted = true;
@@ -125,7 +121,6 @@ private submitAnswers(): void {
         title: 'Your answers have been submitted successfully!',
         showConfirmButton: true
       }).then(() => {
-        // Navigate to profile  :
         this.router.navigate(['/main/profile']);
       });
     },
