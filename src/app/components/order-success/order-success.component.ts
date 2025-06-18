@@ -17,6 +17,6 @@ export class OrderSuccessComponent {
   this.router.navigate(['/main/AllProducts']);
 }
  goToOrderStatus(): void {
-    this.router.navigate(['/main/orderstatus']);
+    this.router.navigate(['/main/orders-list']);
   }
 }

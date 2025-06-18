@@ -3,59 +3,48 @@
 
 <!-- Loading -->
 <div *ngIf="isLoading" class="text-center my-4">
-  Loading orders...
+  Loading order...
 </div>
 
- 
-<div *ngIf="!isLoading && orders.length === 0" class="text-center my-4">
-  No orders found.
+<div *ngIf="!isLoading && !order" class="text-center my-4">
+  Order not found.
 </div>
 
-<!-- Orders Section -->
-<div *ngIf="!isLoading && orders.length > 0" class="container d-flex flex-column align-items-center justify-content-center my-3">
-  <div *ngFor="let order of orders" class="d-flex align-items-center justify-content-between border rounded p-3 mb-3 shadow-sm w-75">
-    
+<!-- Order Section -->
+<div *ngIf="!isLoading && order" class="container d-flex flex-column align-items-center justify-content-center my-3">
+  <div class="d-flex align-items-center justify-content-between border rounded p-3 mb-3 shadow-sm w-75">
     <div class="d-flex align-items-center gap-3">
       <img src="assets/imgs/truc-icon.jpg" alt="Truck" style="width: 50px; height: 50px;">
-      
       <div>
         <div class="fw-bold text-muted small">Shipping ID</div>
         <div class="fw-bold text-primary fs-5">##E000{{ order.id }}</div>
       </div>
     </div>
-     
     <div class="text-end">
       <div class="text-muted mb-1 fs-6">
         {{ order.orderDate | date: 'dd MMMM yyyy, HH:mm' }}
       </div>
-      
       <span [ngClass]="getOrderStatusClass(order.status)" class="px-3 py-1 rounded-pill">
         {{ getOrderStatusText(order.status) }}
       </span>
     </div>
-    
   </div>
 </div>
 
-<!-- Cart Section -->
-<div class="container mt-4">
-
-  <div *ngIf="items.length === 0" class="alert alert-info text-center mb-3">
-    Your cart is empty.
+<!-- Items Section -->
+<div class="container mt-4" *ngIf="order">
+  <div *ngIf="!order.items || order.items.length === 0" class="alert alert-info text-center mb-3">
+    No items in this order.
   </div>
 
-  <div *ngFor="let item of items" class="d-flex justify-content-center">
+  <div *ngFor="let item of order.items" class="d-flex justify-content-center">
     <div class="cart-item-box d-flex align-items-center shadow-sm rounded mb-2 p-3" style="width: 75%;">
- 
-      <img [src]="item.pictureUrl || 'https://via.placeholder.com/90'"
+      <img [src]="item.pictureUrl || item.product?.pictureUrl || 'https://via.placeholder.com/90'"
            class="img-thumbnail me-3 cart-image"
-           alt="{{ item.name }}"
+           alt="{{ item.productName || item.product?.productName }}"
            style="width: 90px; height: 90px; object-fit: cover;">
-
-      
       <div>
-        <h5 class="mb-1 text-primary fw-semibold">{{ item.name }}</h5>
-        <p class="mb-1 text-muted small">Ingredient: {{ item.activeIngredient || 'N/A' }}</p>
+        <h5 class="mb-1 text-primary fw-semibold">{{ item.productName || item.product?.productName }}</h5>
         <p class="mb-1 text-muted small">Qty: {{ item.quantity }}</p>
         <p class="mb-0 text-muted small">Price: {{ item.price | currency:' EGP' }}</p>
       </div>
@@ -65,8 +54,8 @@
   <!-- Order Summary -->
   <div class="bg-light border rounded p-3 shadow-sm mt-3" style="width: 75%; margin: 0 auto;">
     <h5 class="fw-bold mb-2">🧾 Order Summary</h5>
-    <p class="mb-1">Total items: <strong>{{ itemCount }}</strong></p>
-    <p class="mb-0">Total price: <strong>{{ total | currency:'EGP' }}</strong></p>
+    <p class="mb-1">Total items: <strong>{{ order.items?.length }}</strong></p>
+    <p class="mb-0">Total price: <strong>{{ order.total || order.getTotal | currency:'EGP' }}</strong></p>
   </div>
   <br>
 </div>
