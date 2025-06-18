@@ -14,11 +14,11 @@ export interface Order {
   providedIn: 'root'
 })
 export class OrderService {
- private baseUrl = enviroments.baseUrl;
+private baseUrl = enviroments.baseUrl;
 
   constructor(private http: HttpClient) {}
 
- 
+
  getUserOrders(): Observable<Order[]> {
     const token = sessionStorage.getItem('token');
     const headers = {
@@ -28,13 +28,23 @@ export class OrderService {
     return this.http.get<Order[]>(`${this.baseUrl}/api/orders`, { headers });
   }
 
-getOrderById(id: number): Observable<Order> {
+getOrderById(id: number): Observable<any> {
+  const token = sessionStorage.getItem('token');
+  const headers = { Authorization: `Bearer ${token}` };
+  return this.http.get(`${this.baseUrl}/api/orders/${id}`, { headers });
+}
+createOrder(orderData: any): Observable<any> {
   const token = sessionStorage.getItem('token');
   const headers = {
-    Authorization: `Bearer ${token}`
+    Authorization: `Bearer ${token}`,
+    'Content-Type': 'application/json'
   };
-
-  return this.http.get<Order>(`${this.baseUrl}/api/orders/${id}`, { headers });
+  return this.http.post(`${this.baseUrl}/api/orders`, orderData, { headers });
 }
-
+getDeliveryMethods(): Observable<any[]> {
+  const token = sessionStorage.getItem('token');
+  const headers = { Authorization: `Bearer ${token}` };
+  return this.http.get<any[]>(`${this.baseUrl}/api/orders/DeliveryMethods`, { headers });
 }
+}
+//

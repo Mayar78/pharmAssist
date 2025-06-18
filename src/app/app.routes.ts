@@ -128,6 +128,7 @@ export const routes: Routes = [
                     import('./components/diagnosis-chat/diagnosis-chat.component').then(m => m.DiagnosisChatComponent),
                 title: 'Chatbot'
             },
+            { path: 'orders-list', loadComponent: () => import('./components/orders-list/orders-list.component').then(m => m.OrdersListComponent) }
         ]
     },
     { path: '**', component: NotFoundComponent },
