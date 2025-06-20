@@ -44,17 +44,12 @@ export class NavMainComponent implements OnInit, OnDestroy {
     },
     {
       id: 'request',
-      label: 'Request',
+      label: 'Orders',
       icon: 'fa-solid fa-file-medical',
-      route: '/main/orderstatus',
+      route: '/main/orders-list',
       badge: 3
     },
-    {
-      id: 'orders',
-      label: 'Orders',
-      icon: 'fa-solid fa-clipboard-list',
-      route: '/main/orders'
-    },
+  
     {
       id: 'cart',
       label: 'Cart',

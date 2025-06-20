@@ -64,6 +64,7 @@ export class LoginComponent {
           
             sessionStorage.setItem('token', res.token);
             sessionStorage.setItem('displayName', res.displayName);
+            
             sessionStorage.setItem('email', res.email);
 
 

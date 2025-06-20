@@ -91,7 +91,7 @@ export class CodeVerficationComponent implements AfterViewInit, OnInit {
       this.otpSub = this._AuthService.otp(data).subscribe({
         next: (res) => {
           this._ToastrService.success('Successfully', 'OTP verified');
-          this.router.navigate(['/auth/questions'], {
+          this.router.navigate(['/auth/login'], {
             queryParams: { email: this.email }
           });
         },

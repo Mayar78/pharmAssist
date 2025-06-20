@@ -38,6 +38,8 @@ export class OrderstatusComponent implements OnInit {
           next: (order) => {
             this.order = order;
             this.isLoading = false;
+            console.log('Order loaded successfully', this.order);
+            
           },
           error: (err) => {
             console.error('Error loading order', err);
