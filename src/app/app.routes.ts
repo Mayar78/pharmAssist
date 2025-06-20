@@ -30,6 +30,7 @@ import { FeatureCardComponent } from './components/feature-card/feature-card.com
 import { SafetyRecComponent } from './components/safety-rec/safety-rec.component';
 import { CheckSafetyComponent } from './components/check-safety/check-safety.component';
 import { ConflictComponent } from './components/conflict/conflict.component';
+import { OrdersListComponent } from './components/orders-list/orders-list.component';
 
 
 export const routes: Routes = [
@@ -106,6 +107,8 @@ export const routes: Routes = [
              //  Profile routes
       { path: 'profile', component: ProfileComponent, title: 'Profile' },
       { path: 'edit-profile', component: EditProfileComponent, title: 'Edit Profile' },
+      { path: 'orders-list', component: OrdersListComponent, title: 'orders list' },
+
 
           { path: 'FeatureCard', component: FeatureCardComponent, title: 'Feature Card' },
 

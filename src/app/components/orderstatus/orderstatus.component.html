@@ -1,5 +1,16 @@
-<br>
-<h3 class="text-center mb-3 fw-bold">Your Order Details 🛒</h3>
+<div class="ms-5 min-vh-100">
+  
+ <div class="products-header">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-md-6">
+            <h1 class="page-title">Your Order status</h1>
+           
+          </div>
+          
+        </div>
+      </div>
+    </div>
 
 <!-- Loading -->
 <div *ngIf="isLoading" class="text-center my-4">
@@ -16,7 +27,7 @@
     <div class="d-flex align-items-center gap-3">
       <img src="assets/imgs/truc-icon.jpg" alt="Truck" style="width: 50px; height: 50px;">
       <div>
-        <div class="fw-bold text-muted small">Shipping ID</div>
+        <div class="fw-bold text-muted small">Order ID</div>
         <div class="fw-bold text-primary fs-5">##E000{{ order.id }}</div>
       </div>
     </div>
@@ -55,7 +66,11 @@
   <div class="bg-light border rounded p-3 shadow-sm mt-3" style="width: 75%; margin: 0 auto;">
     <h5 class="fw-bold mb-2">🧾 Order Summary</h5>
     <p class="mb-1">Total items: <strong>{{ order.items?.length }}</strong></p>
+    <p class="mb-1">Shipping Price: <strong>{{ order.deliveryMethodCost | currency:'EGP'  }}</strong></p>
+    <p class="mb-0">Price: <strong>{{ order.subTotal | currency:'EGP' }}</strong></p> 
+    <div style="border-top:1px solid grey; margin:10px 0;"></div>
     <p class="mb-0">Total price: <strong>{{ order.total || order.getTotal | currency:'EGP' }}</strong></p>
   </div>
   <br>
+</div>
 </div>

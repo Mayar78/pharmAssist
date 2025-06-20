@@ -19,3 +19,14 @@ nav{
     border-radius:20px;
     background-color: var(--light-color);
 }
+.nav-links.active .navdot a::after{
+    width: 20px;
+    height: 20px;
+    top:40px;
+    left: -7px;
+    background-color: var(--primary-color);
+    
+}
+.active-link:hover{
+    color: white !important;
+}

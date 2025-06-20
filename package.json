@@ -29,6 +29,8 @@
     "ngx-pagination": "^6.0.3",
     "ngx-spinner": "^17.0.0",
     "ngx-toastr": "^17.0.2",
+    "primeicons": "^7.0.0",
+    "primeng": "^17.0.0",
     "rxjs": "~7.8.0",
     "sweetalert2": "^11.22.0",
     "tslib": "^2.3.0",

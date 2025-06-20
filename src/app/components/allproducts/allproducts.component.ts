@@ -1,5 +1,4 @@
 import { NgxSpinnerService } from 'ngx-spinner';
-
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -15,7 +14,7 @@ import { CartService } from '../../services/cart.service';
 @Component({
   selector: 'app-allproducts',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, CurrencyPipe, SearchPipe,],
+  imports: [CommonModule, FormsModule, RouterModule, CurrencyPipe, SearchPipe],
   templateUrl: './allproducts.component.html',
   styleUrl: './allproducts.component.css',
 })
@@ -25,6 +24,7 @@ export class AllproductsComponent implements OnInit, OnDestroy {
   private readonly _searchSubject = new Subject<string>();
 
   productsData: Iproduct[] = [];
+  filteredProducts: Iproduct[] = [];
   searchValue: string = '';
   isLoading: boolean = false;
   currentPage: number = 1;
@@ -38,6 +38,10 @@ export class AllproductsComponent implements OnInit, OnDestroy {
   viewMode: 'grid' | 'list' = 'grid';
   sortBy: 'name' | 'price' | 'rating' = 'name';
   sortOrder: 'asc' | 'desc' = 'asc';
+
+  // Active ingredient filter properties
+  activeIngredientFilter: string = '';
+  uniqueActiveIngredients: string[] = [];
 
   constructor(
     private _productsService: ProductsService,
@@ -62,12 +66,11 @@ export class AllproductsComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this._NgxSpinnerService.show();
 
-    // إنشاء parameters للـ API call مع إضافة البحث
     const params = {
       pageIndex: this.currentPage,
       pageSize: this.pageSize,
       sort: this.getSortParameter(),
-      search: this.searchValue.trim() // إضافة قيمة البحث
+      search: this.searchValue.trim()
     };
 
     this._productsService
@@ -75,12 +78,14 @@ export class AllproductsComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroy$))
       .subscribe({
         next: (response) => {
-          console.log('Products loaded:', response);
-
           this.productsData = response.data || [];
+          this.filteredProducts = [...this.productsData];
           this.totalProducts = response.count || 0;
           this.totalPages = Math.ceil(this.totalProducts / this.pageSize);
-
+          
+          // Extract unique active ingredients
+          this.extractUniqueActiveIngredients();
+          
           this.isLoading = false;
           this._NgxSpinnerService.hide();
         },
@@ -92,6 +97,17 @@ export class AllproductsComponent implements OnInit, OnDestroy {
         },
       });
   }
+
+  private extractUniqueActiveIngredients(): void {
+    const ingredients = new Set<string>();
+    this.productsData.forEach(product => {
+      if (product.activeIngredient) {
+        ingredients.add(product.activeIngredient);
+      }
+    });
+    this.uniqueActiveIngredients = Array.from(ingredients).sort();
+  }
+
   private setupSearch(): void {
     this._searchSubject
       .pipe(
@@ -105,6 +121,7 @@ export class AllproductsComponent implements OnInit, OnDestroy {
         this.loadProducts();
       });
   }
+
   private getSortParameter(): string {
     const direction = this.sortOrder === 'asc' ? 'Asc' : 'Desc';
     switch (this.sortBy) {
@@ -118,6 +135,7 @@ export class AllproductsComponent implements OnInit, OnDestroy {
         return 'NameAsc';
     }
   }
+
   onSearchChange(): void {
     this._searchSubject.next(this.searchValue);
   }
@@ -126,6 +144,7 @@ export class AllproductsComponent implements OnInit, OnDestroy {
     this.currentPage = 1;
     this.loadProducts();
   }
+
   sortProducts(sortBy: 'name' | 'price' | 'rating'): void {
     if (this.sortBy === sortBy) {
       this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
@@ -137,52 +156,65 @@ export class AllproductsComponent implements OnInit, OnDestroy {
     this.currentPage = 1;
     this.loadProducts();
   }
+
   getRatingStars(rating: number = 4.5): boolean[] {
     return Array(5)
       .fill(false)
       .map((_, index) => index < Math.floor(rating));
   }
+
   private isAuthenticated(): boolean {
     return !!sessionStorage.getItem('token');
   }
+
   navigateToProduct(productId: string): void {
     // Navigation handled by routerLink in template
   }
-
 
   retryLoad(): void {
     this.loadProducts();
   }
 
-
   toggleViewMode(): void {
     this.viewMode = this.viewMode === 'grid' ? 'list' : 'grid';
   }
 
-  /**
-   * Go to specific page
-   */
+  // Filter by active ingredient
+  filterByActiveIngredient(ingredient: string): void {
+    this.activeIngredientFilter = ingredient;
+    this.applyFilters();
+  }
+
+  clearActiveIngredientFilter(): void {
+    this.activeIngredientFilter = '';
+    this.applyFilters();
+  }
+
+  public applyFilters(): void {
+    if (!this.activeIngredientFilter) {
+      this.filteredProducts = [...this.productsData];
+      return;
+    }
+
+    this.filteredProducts = this.productsData.filter(product => 
+      product.activeIngredient?.toLowerCase().includes(this.activeIngredientFilter.toLowerCase())
+    );
+  }
+
   goToPage(page: number): void {
     if (page >= 1 && page <= this.totalPages && page !== this.currentPage) {
       this.currentPage = page;
       this.loadProducts();
-
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }
 
-  /**
-   * Go to previous page
-   */
   goToPreviousPage(): void {
     if (this.currentPage > 1) {
       this.goToPage(this.currentPage - 1);
     }
   }
 
-  /**
-   * Go to next page
-   */
   goToNextPage(): void {
     if (this.currentPage < this.totalPages) {
       this.goToPage(this.currentPage + 1);
@@ -206,9 +238,11 @@ export class AllproductsComponent implements OnInit, OnDestroy {
 
     return pages;
   }
+
   shouldShowFirstPage(): boolean {
     return this.getPageNumbers()[0] > 1;
   }
+
   shouldShowLastPage(): boolean {
     const pageNumbers = this.getPageNumbers();
     return pageNumbers[pageNumbers.length - 1] < this.totalPages;
@@ -218,6 +252,7 @@ export class AllproductsComponent implements OnInit, OnDestroy {
     this.searchValue = '';
     this._searchSubject.next('');
   }
+
   getProductsCountText(): string {
     if (this.totalProducts === 0) {
       return this.searchValue ? `No products found for "${this.searchValue}"` : 'No products found';
@@ -231,18 +266,16 @@ export class AllproductsComponent implements OnInit, OnDestroy {
   }
 
   getCurrentProducts(): Iproduct[] {
-    return this.productsData;
+    return this.activeIngredientFilter ? this.filteredProducts : this.productsData;
   }
   
   addToCart(pId: number): void {
     this.productSub = this._CartService.addProductToCart(pId).subscribe({
       next: (res) => {
-
         this._ToastrService.success('Product added to cart successfully', 'Success');
         console.log('Cart updated:', res.items);
       },
       error: (err) => {
-
         this._ToastrService.error(
           err.error?.message || 'Failed to add product to cart',
           "Error"
