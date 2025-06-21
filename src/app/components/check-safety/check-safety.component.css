@@ -52,8 +52,8 @@
 }
 
 .incomplete-profile {
-  background-color: #fff8e1;
-  border-left: 5px solid #ffc107;
+  /* background-color: #fff8e1; */
+  /* border-left: 5px solid #ffc107; */
   padding: 20px;
   border-radius: 8px;
   margin-bottom: 20px;
@@ -259,3 +259,83 @@
   font-style: italic;
   color: #2e7d32;
 }
+
+        /* Incomplete Profile */
+        .incomplete-profile {
+            margin-bottom: 40px;
+        }
+
+        .alert {
+            background: linear-gradient(135deg, #667eea 0%, #19b896dc 100%);
+            color: white;
+            padding: 32px;
+            border-radius: 20px;
+            box-shadow: 0 12px 32px rgba(255, 216, 155, 0.3);
+        }
+
+        .alert h2 {
+            font-size: 24px;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+
+        .alert p {
+            font-size: 16px;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        .missing-fields {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .missing-fields h3 {
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+
+        .missing-fields ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .missing-fields li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+
+        .missing-fields li::before {
+            content: "•";
+            color: #ff6b6b;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        .action-required {
+            font-weight: 600;
+            margin: 20px 0;
+            font-size: 16px;
+        }
+
+        .btn-complete-profile {
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-complete-profile:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }

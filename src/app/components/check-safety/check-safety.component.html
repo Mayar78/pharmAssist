@@ -12,26 +12,26 @@
 
   <div *ngIf="!isLoading && !error">
     <!-- Incomplete profile case -->
-    <div *ngIf="productInfo?.isProfileComplete === false" class="incomplete-profile">
-      <div class="alert-header">
-        <h2>{{ productInfo.title }}</h2>
-      </div>
-      <div class="alert-content">
-        <p>{{ productInfo.message }}</p>
-        
-        <div class="missing-fields">
-          <h3>Missing Information:</h3>
-          <ul>
-            <li *ngFor="let field of productInfo.missingFields">{{ field }}</li>
-          </ul>
-        </div>
-        
-        <p class="action-required">{{ productInfo.actionRequired }}</p>
-        
-        <a routerLink="/profile" class="complete-profile-button">
-          Complete My Profile
-        </a>
-      </div>
+     <div *ngIf="productInfo?.isProfileComplete === false" class="incomplete-profile">
+  <div class="alert alert-warning ">
+   
+
+    <h2> <i class="fa-solid fa-warning me-1 text-warning fs-2"></i>{{ productInfo.title }}</h2>
+    <p>{{ productInfo.message }}</p>
+
+    <div class="missing-fields">
+      <h3>Missing Information:</h3>
+      <ul>
+        <li *ngFor="let field of productInfo.missingFields">{{ field }}</li>
+      </ul>
+    </div>
+
+    <p class="action-required">{{ productInfo.actionRequired }}</p>
+
+    <a routerLink="/main/side-effects-questions" class="btn-complete-profile">
+      Complete My Profile Now
+    </a>
+  </div>
     </div>
 
     <!-- Complete profile case -->

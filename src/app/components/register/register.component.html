@@ -13,15 +13,16 @@
                     @if (registerForm.get('name')?.getError('required')) {
                     <p class="m-0">Name is Required</p>
                     }
-                    @if (registerForm.get('name')?.getError('pattern')) {
-                    <p class="m-0">Username must start with a letter and can contain letters, numbers, or _</p>
-                    }
+
 
                     @else if (registerForm.get('name')?.getError('minlength')) {
                     <p class="m-0">Name length must be at least 3</p>
                     }
                     @else if (registerForm.get('name')?.getError('maxlength')) {
                     <p class="m-0">Name length must be maximum 15 </p>
+                    }
+                    @else if (registerForm.get('name')?.getError('pattern')) {
+                    <p class="m-0">Username must start with a letter and can contain letters, numbers, or _</p>
                     }
                 </div>
                 }

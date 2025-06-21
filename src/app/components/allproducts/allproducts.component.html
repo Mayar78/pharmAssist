@@ -176,7 +176,7 @@
 
                 <!-- Product Info -->
                 <div class="product-info">
-                  <h5 class="product-title" [routerLink]="['/product', product.id]">
+                  <h5 class="product-title" [routerLink]="['/main/productdetails', product.id]">
                     {{ product.name }}
                   </h5>
                   <h6 class="text-danger-emphasis">{{product.activeIngredient}}</h6>
@@ -192,6 +192,10 @@
                   </div>
                   <!-- Price and Actions -->
                   <div class="product-footer">
+                        <button class="btn text-white d-block w-100 alt-btn" [routerLink]="['/main/Alternatives', product.id]">
+                      <i class="fa-solid fa-repeat"></i>
+                      Alternatives
+                    </button>
                     <button class="btn safeBtn d-block w-100 my-2" [routerLink]="['/main/CheckSafety', product.id]">
                       <i class="fas fa-warning"></i>
                       Check safety
@@ -239,6 +243,10 @@
                       product.price | currency : "EGP" : "symbol" : "1.0-2"
                       }}</span>
                   </div>
+                     <button class="btn text-white d-block w-100 alt-btn" [routerLink]="['/main/Alternatives', product.id]">
+                      <i class="fa-solid fa-repeat"></i>
+                      Alternatives
+                    </button>
                   <button class="btn safeBtn d-block w-100 my-2" [routerLink]="['/main/CheckSafety', product.id]">
                     <i class="fas fa-warning"></i>
                     Check safety

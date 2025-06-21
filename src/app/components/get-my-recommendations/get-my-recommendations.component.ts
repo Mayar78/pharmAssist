@@ -65,7 +65,7 @@ export class GetMyRecommendationsComponent implements OnInit {
   }
 
   completeProfile(): void {
-    this._Router.navigate(['/main/side-effects']);
+    this._Router.navigate(['/main/side-effects-questions']);
     console.log('Redirect to profile completion');
   }
      addToCart(pId: number): void {

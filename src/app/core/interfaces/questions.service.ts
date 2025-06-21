@@ -12,14 +12,6 @@ import { AnswerData } from './Answer';
 })
 export class QuestionsService {
 
-    
-// private getAuthHeaders(): HttpHeaders {
-//  // const token = sessionStorage.getItem('token')!;
-//   return new HttpHeaders({
-//      "ngrok-skip-browser-warning": "true"
-//   });
-// }
-
  private apiUrl = enviroments.baseUrl;
 
   constructor(private http: HttpClient) {}
@@ -32,12 +24,6 @@ export class QuestionsService {
       'Content-Type': 'application/json',
       "ngrok-skip-browser-warning": "true",
     };
-
-    // const token = sessionStorage.getItem('token');
-    // if (token) {
-    //   headersConfig['Authorization'] = `Bearer ${token}`;
-    // }
-
     return new HttpHeaders(headersConfig);
   }
 

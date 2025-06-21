@@ -1,14 +1,13 @@
-<div class="chatbot-container">
+<div class="chatbot-container ">
   <div class="chat-header">
     <div class="header-content">
-      <!-- <img src="assets/medical-icon.svg" alt="Medical Assistant" class="bot-icon"> -->
       <h2>Medical Assistant</h2>
     </div>
     <div class="user-info" *ngIf="username">
       <span>Welcome, {{username}}</span>
     </div>
   </div>
-  
+
   <div class="chat-window">
     <div class="messages-container">
       <div *ngFor="let msg of messages" 
@@ -18,7 +17,7 @@
       </div>
     </div>
   </div>
-  
+
   <div class="input-area">
     <input 
       type="text" 
@@ -29,12 +28,10 @@
     />
     <button (click)="sendMessage()">
       <span class="button-text">Send</span>
-      <svg class="send-icon" viewBox="0 0 24 24">
-        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-      </svg>
+     
     </button>
   </div>
-  
+
   <div class="disclaimer-footer">
     <p>Note: This is for informational purposes only and not a substitute for professional medical advice.</p>
   </div>

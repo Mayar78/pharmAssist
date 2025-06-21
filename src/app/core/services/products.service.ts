@@ -39,43 +39,29 @@ export class ProductsService {
 
   constructor(private _HttpClient: HttpClient) {}
 
-  /**
-   * Get all products without pagination (original method)
-   */
   getAllProduct(): Observable<any> {
     return this._HttpClient.get(`${enviroments.baseUrl}/api/Products`, { 
       headers: this.headers 
     });
   }
 
-  /**
-   * Get all products with pagination
-   */
   getAllProductsPaginated(params: PaginationParams): Observable<PaginatedResponse<any>> {
     let httpParams = new HttpParams()
       .set('PageIndex', params.pageIndex.toString())
       .set('PageSize', params.pageSize.toString());
 
-    // إضافة الفرز إذا كان متوفراً
     if (params.sort) {
       httpParams = httpParams.set('Sort', params.sort);
     }
 
-    // إضافة البحث إذا كان متوفراً
     if (params.search && params.search.trim()) {
       httpParams = httpParams.set('Search', params.search.trim());
     }
 
-    // إضافة فلتر المكونات النشطة إذا كان متوفراً
     if (params.ingredients && params.ingredients.length > 0) {
-      // Send ingredients as comma-separated string or multiple parameters
-      // Method 1: Comma-separated
+   
       httpParams = httpParams.set('Ingredients', params.ingredients.join(','));
       
-      // Method 2: Multiple parameters (uncomment if your API expects this format instead)
-      // params.ingredients.forEach(ingredient => {
-      //   httpParams = httpParams.append('Ingredients', ingredient);
-      // });
     }
 
     return this._HttpClient.get<PaginatedResponse<any>>(
@@ -92,9 +78,6 @@ export class ProductsService {
     );
   }
 
-  /**
-   * Get all unique active ingredients for filtering
-   */
   getAllActiveIngredients(): Observable<IngredientFilter[]> {
     return this._HttpClient.get<IngredientFilter[]>(
       `${enviroments.baseUrl}/api/Products/active-ingredients`, 
@@ -109,9 +92,7 @@ export class ProductsService {
     );
   }
 
-  /**
-   * Get product details by ID
-   */
+
   getProductDetails(id: string | null): Observable<any> {
     return this._HttpClient.get(`${enviroments.baseUrl}/api/Products/${id}`, { 
       headers: this.headers 
@@ -123,9 +104,7 @@ export class ProductsService {
     );
   }
 
-  /**
-   * Search products with pagination
-   */
+
   searchProducts(searchTerm: string, params: PaginationParams): Observable<PaginatedResponse<any>> {
     const searchParams = { ...params, search: searchTerm };
     return this.getAllProductsPaginated(searchParams);

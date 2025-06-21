@@ -1,0 +1,233 @@
+<div class="alternatives-container">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p class="loading-text">Finding cost-effective alternatives...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !isLoading" class="error-container">
+    <div class="error-icon">⚠️</div>
+    <h3 class="error-title">Unable to Load Alternatives</h3>
+    <p class="error-message">{{ error }}</p>
+    <button class="retry-btn" (click)="retryLoading()">
+      <span class="retry-icon">🔄</span>
+      Try Again
+    </button>
+  </div>
+
+  <!-- Success State -->
+  <div *ngIf="alternativesData && !isLoading && !error" class="alternatives-content">
+    <!-- Header Section -->
+    <div class="header-section">
+      <div class="original-product-info">
+        <h1 class="page-title">💊 Cost-Effective Alternatives</h1>
+        <div class="original-product-card">
+          <h2 class="original-product-name">{{ alternativesData.originalProductName }}</h2>
+          <p class="original-price">Original Price: {{ formatPrice(alternativesData.originalProductPrice) }}</p>
+          <p class="original-ingredient">{{ alternativesData.originalActiveIngredient }}</p>
+        </div>
+      </div>
+      
+      <!-- AI Summary -->
+      <div class="ai-summary-card">
+        <div class="ai-icon">🤖</div>
+        <p class="ai-message">{{ alternativesData.aiPersonalizedMessage }}</p>
+      </div>
+    </div>
+
+    <!-- Cost Saving Highlights -->
+    <div class="highlights-section" *ngIf="alternativesData.costSavingHighlights?.length">
+      <h3 class="highlights-title">💡 Key Savings Highlights</h3>
+      <div class="highlights-grid">
+        <div class="highlight-card" *ngFor="let highlight of alternativesData.costSavingHighlights">
+          <span [innerHTML]="highlight"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Controls Section -->
+    <div class="controls-section">
+      <div class="sort-controls">
+        <h4>Sort by:</h4>
+        <div class="sort-buttons">
+          <button 
+            class="sort-btn" 
+            [class.active]="sortBy === 'savings'"
+            (click)="toggleSort('savings')">
+            💰 Savings
+            <span class="sort-arrow" *ngIf="sortBy === 'savings'">
+              {{ sortOrder === 'desc' ? '↓' : '↑' }}
+            </span>
+          </button>
+          <button 
+            class="sort-btn" 
+            [class.active]="sortBy === 'price'"
+            (click)="toggleSort('price')">
+            💵 Price
+            <span class="sort-arrow" *ngIf="sortBy === 'price'">
+              {{ sortOrder === 'desc' ? '↓' : '↑' }}
+            </span>
+          </button>
+          <button 
+            class="sort-btn" 
+            [class.active]="sortBy === 'effectiveness'"
+            (click)="toggleSort('effectiveness')">
+            ⭐ Effectiveness
+            <span class="sort-arrow" *ngIf="sortBy === 'effectiveness'">
+              {{ sortOrder === 'desc' ? '↓' : '↑' }}
+            </span>
+          </button>
+          <button 
+            class="sort-btn" 
+            [class.active]="sortBy === 'safety'"
+            (click)="toggleSort('safety')">
+            🛡️ Safety
+            <span class="sort-arrow" *ngIf="sortBy === 'safety'">
+              {{ sortOrder === 'desc' ? '↓' : '↑' }}
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <div class="filter-controls">
+        <button 
+          class="filter-btn"
+          [class.active]="showOnlySameIngredient"
+          (click)="toggleSameIngredientFilter()">
+          <span class="filter-icon">🔍</span>
+          Same Active Ingredient Only
+        </button>
+      </div>
+    </div>
+
+    <!-- Results Summary -->
+    <div class="results-summary">
+      <p class="results-count">
+        Showing {{ filteredAlternatives.length }} of {{ alternativesData.totalAlternatives }} alternatives
+      </p>
+    </div>
+
+    <!-- Alternatives Grid -->
+    <div class="alternatives-grid" *ngIf="filteredAlternatives.length > 0">
+      <div class="alternative-card" *ngFor="let alternative of filteredAlternatives; trackBy: trackByProductId">
+        <!-- Savings Badge -->
+        <div class="savings-badge" [class]="getSavingsBadgeColor(alternative.savingsPercentage)">
+          <span class="savings-percentage">{{ alternative.savingsPercentage }}%</span>
+          <span class="savings-text">OFF</span>
+        </div>
+
+        <!-- Same Ingredient Badge -->
+        <div class="same-ingredient-badge" *ngIf="alternative.isSameActiveIngredient">
+          ✓ Same Ingredient
+        </div>
+
+        <!-- Product Image -->
+        <div class="product-image-container">
+          <img 
+            [src]="alternative.productPictureUrl" 
+            [alt]="alternative.productName"
+            class="product-image"
+            >
+        </div>
+
+        <!-- Product Info -->
+        <div class="product-info">
+          <h3 class="product-name">{{ alternative.productName }}</h3>
+          <p class="product-description">{{ alternative.productDescription }}</p>
+          <p class="active-ingredient">
+            <span class="ingredient-label">Active Ingredient:</span>
+            {{ alternative.activeIngredient }}
+          </p>
+        </div>
+
+        <!-- Pricing Info -->
+        <div class="pricing-info">
+          <div class="price-comparison">
+            <span class="current-price">{{ formatPrice(alternative.productPrice) }}</span>
+            <span class="price-difference">Save {{ formatPrice(alternative.priceDifference) }}</span>
+          </div>
+        </div>
+
+        <!-- Scores Section -->
+        <div class="scores-section">
+          <div class="score-item">
+            <span class="score-label">Effectiveness:</span>
+            <div class="star-rating">
+              <span 
+                *ngFor="let star of getStarRating(alternative.effectivenessScore)" 
+                class="star"
+                [class.full]="star === 1"
+                [class.half]="star === 0.5"
+                [class.empty]="star === 0">
+                ⭐
+              </span>
+              <span class="score-value">({{ alternative.effectivenessScore }})</span>
+            </div>
+          </div>
+          
+          <div class="score-item">
+            <span class="score-label">Safety:</span>
+            <div class="safety-score" [class]="getSafetyScoreColor(alternative.safetyScore)">
+              <span class="safety-value">{{ alternative.safetyScore }}/5</span>
+              <span class="safety-icon">🛡️</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Safety Note -->
+        <div class="safety-note" *ngIf="alternative.safetyNote">
+          <span class="safety-note-icon">ℹ️</span>
+          <span class="safety-note-text">{{ alternative.safetyNote }}</span>
+        </div>
+
+        <!-- Alternative Reason -->
+        <div class="alternative-reason">
+          <span class="reason-label">Why this alternative:</span>
+          <span class="reason-text">{{ alternative.alternativeReason }}</span>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+          <button class="primary-btn" [routerLink]="['/main/productdetails', alternative.productId]">
+            <span class="btn-icon">👁️</span>
+            View Details
+          </button>
+          <button class="secondary-btn" [routerLink]="['/main/CheckSafety', alternative.productId]">
+            <span class="btn-icon">🔍</span>
+            Safety Check
+          </button>
+        </div>
+
+        <!-- Safety Status -->
+        <div class="safety-status" [class.safe]="alternative.isSafeForUser" [class.warning]="!alternative.isSafeForUser">
+          <span class="status-icon">{{ alternative.isSafeForUser ? '✅' : '⚠️' }}</span>
+          <span class="status-text">
+            {{ alternative.isSafeForUser ? 'Safe for you' : 'Requires caution' }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- No Results -->
+    <div class="no-results" *ngIf="filteredAlternatives.length === 0">
+      <div class="no-results-icon">🔍</div>
+      <h3 class="no-results-title">No alternatives found</h3>
+      <p class="no-results-message">
+        Try adjusting your filters or check back later for more options.
+      </p>
+      <button class="clear-filters-btn" (click)="showOnlySameIngredient = false" *ngIf="showOnlySameIngredient">
+        Clear Filters
+      </button>
+    </div>
+
+    <!-- Footer Info -->
+    <div class="footer-info">
+      <p class="generation-info">
+        <span class="info-icon">🕒</span>
+        Generated on {{ alternativesData.generatedAt | date:'medium' }}
+      </p>
+      <p class="summary-text">{{ alternativesData.summary }}</p>
+    </div>
+  </div>
+</div>

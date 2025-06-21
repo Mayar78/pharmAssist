@@ -31,6 +31,7 @@ import { SafetyRecComponent } from './components/safety-rec/safety-rec.component
 import { CheckSafetyComponent } from './components/check-safety/check-safety.component';
 import { ConflictComponent } from './components/conflict/conflict.component';
 import { OrdersListComponent } from './components/orders-list/orders-list.component';
+import { AlternativesComponent } from './components/alternatives/alternatives.component';
 
 
 export const routes: Routes = [
@@ -93,6 +94,8 @@ export const routes: Routes = [
             { path: 'safety', component: SafetyRecComponent, title: 'safety summray' },
             { path: 'CheckSafety/:PId', component: CheckSafetyComponent, title: 'Check Safety' },
             { path: 'Conflict', component: ConflictComponent, title: 'Conflict' },
+            { path: 'Alternatives/:PId', component: AlternativesComponent, title: 'Alternatives' },
+
 
 
 

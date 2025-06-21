@@ -29,7 +29,7 @@ export class QuestionsComponent implements AfterViewInit {
   questions = [
     {
       id: 'promptReason',
-      text: '1. What prompted you to seek medical support at this time?',
+      text: '1.What is your main reason for seeking medical advice today?',
       required: false,
       apiField: 'promptReason'
     },
@@ -41,13 +41,13 @@ export class QuestionsComponent implements AfterViewInit {
     },
     {
       id: 'conditionsImpact',
-      text: '3. How have these conditions been affecting your daily life or routines?',
+      text: '3. Are you currently taking any medications or treatments?',
       required: false,
       apiField: 'takesMedicationsOrTreatments'
     },
     {
       id: 'currentSymptoms',
-      text: '4. Are you experiencing any specific symptoms or concerns right now?',
+      text: '4. What symptoms are you currently experiencing?',
       required: false,
       apiField: 'currentSymptoms'
     }

@@ -26,7 +26,7 @@ export class DiagnosisChatComponent implements OnInit {
   getGreeting(): string {
     const hour = new Date().getHours();
     let greeting = '';
-    
+
     if (hour < 12) {
       greeting = 'Good morning';
     } else if (hour < 18) {
@@ -55,9 +55,12 @@ export class DiagnosisChatComponent implements OnInit {
   }
 
   generateBotReply(message: string): string {
+    console.log('Original message:', message);
     const lower = message.toLowerCase();
     const isArabic = /[\u0600-\u06FF]/.test(message);
     const detectedConditions = this.detectConditions(message);
+    console.log('Detected conditions:', detectedConditions);
+
 
     if (detectedConditions.length === 0) {
       return isArabic
@@ -76,27 +79,81 @@ export class DiagnosisChatComponent implements OnInit {
     const lower = message.toLowerCase();
     const conditions: string[] = [];
 
+    //     const conditionKeywords = [
+    //   // English conditions
+    //   'headache', 'migraine', 'fever', 'cough', 'cold', 'flu', 'sore throat',
+    //   'diarrhea', 'constipation', 'nausea', 'vomiting', 'heartburn', 'gerd',
+    //   'hypertension', 'high blood pressure', 'hypotension', 'low blood pressure',
+    //   'diabetes', 'high blood sugar', 'hypoglycemia', 'low blood sugar',
+    //   'asthma', 'shortness of breath', 'wheezing', 'allergy', 'rash', 'itching',
+    //   'anemia', 'fatigue', 'weakness', 'dizziness', 'chest pain', 'palpitations',
+    //   'depression', 'anxiety', 'insomnia', 'back pain', 'joint pain', 'arthritis',
+    //   'uti', 'urinary infection', 'kidney stones', 'menstrual cramps', 'pms',
+    //   'covid', 'coronavirus', 'pneumonia', 'bronchitis', 'sinusitis', 'conjunctivitis',
+    //   'eczema', 'acne', 'allergic rhinitis', 'hay fever', 'hypothyroidism', 
+    //   'gastritis', 'indigestion', 'earache', 'tinnitus', 'vertigo', 'head injury',
+    //   'sprain', 'strain', 'fracture', 'burn', 'sunburn', 'food poisoning',
+    //   'dehydration', 'heat stroke', 'hypothermia', 'anxiety attack', 'panic attack',
+    //   'psoriasis', 'hives', 'shingles', 'cold sore', 'athlete foot', 'ringworm',
+    //   'yeast infection', 'bacterial vaginosis', 'erectile dysfunction', 'premature ejaculation',
+    //   'pcos', 'endometriosis', 'menopause', 'hot flashes', 'osteoporosis', 'carpal tunnel',
+
+    //   // Arabic conditions
+    //   'صداع', 'صداع نصفي', 'حمى', 'سعال', 'برد', 'انفلونزا', 'التهاب الحلق',
+    //   'اسهال', 'امساك', 'غثيان', 'قيء', 'حرقة', 'ارتجاع', 'ضغط', 'ارتفاع ضغط',
+    //   'انخفاض ضغط', 'سكري', 'ارتفاع سكر', 'انخفاض سكر', 'ربو', 'ضيق تنفس',
+    //   'صفير', 'حساسية', 'طفح', 'حكة', 'أنيميا', 'فقر دم', 'دوخة', 'ضعف',
+    //   'آلام صدر', 'خفقان', 'اكتئاب', 'قلق', 'أرق', 'آلام ظهر', 'آلام مفاصل',
+    //   'التهاب مفاصل', 'عدوى بولية', 'حصوات كلوية', 'آلام الدورة', 'كورونا',
+    //   'حب الشباب', 'التهاب رئوي', 'التهاب شعبي', 'التهاب الجيوب', 'التهاب ملتحمة',
+    //   'إكزيما', 'حساسية الأنف', 'حمى القش', 'قصور الغدة الدرقية', 'التهاب المعدة',
+    //   'عسر هضم', 'ألم أذن', 'طنين', 'دوار', 'إصابة رأس', 'التواء', 'شد عضلي',
+    //   'كسر', 'حروق', 'حروق شمس', 'تسمم غذائي', 'جفاف', 'ضربة شمس', 'انخفاض حرارة',
+    //   'نوبة قلق', 'نوبة هلع', 'صدفية', 'شرى', 'هربس نطاقي', 'هربس فموي', 'قدم الرياضي',
+    //   'سعفة', 'عدوى فطرية', 'التهاب مهبلي بكتيري', 'ضعف انتصاب', 'قذف مبكر',
+    //   'ارق','تكيس المبايض', 'بطانة رحم مهاجرة', 'سن اليأس', 'هبات ساخنة', 'هشاشة عظام', 'متلازمة النفق الرسغي'
+    // ];
     const conditionKeywords = [
-      // English conditions
-      'headache', 'migraine', 'fever', 'cough', 'cold', 'flu', 'sore throat',
-      'diarrhea', 'constipation', 'nausea', 'vomiting', 'heartburn', 'gerd',
-      'hypertension', 'high blood pressure', 'hypotension', 'low blood pressure',
-      'diabetes', 'high blood sugar', 'hypoglycemia', 'low blood sugar',
-      'asthma', 'shortness of breath', 'wheezing', 'allergy', 'rash', 'itching',
-      'anemia', 'fatigue', 'weakness', 'dizziness', 'chest pain', 'palpitations',
-      'depression', 'anxiety', 'insomnia', 'back pain', 'joint pain', 'arthritis',
-      'uti', 'urinary infection', 'kidney stones', 'menstrual cramps', 'pms',
-      'covid', 'coronavirus', 'pneumonia', 'bronchitis', 'sinusitis', 'conjunctivitis',
-      
-      // Arabic conditions
-      'صداع', 'صداع نصفي', 'حمى', 'سعال', 'برد', 'انفلونزا', 'التهاب الحلق',
-      'اسهال', 'امساك', 'غثيان', 'قيء', 'حرقة', 'ارتجاع', 'ضغط', 'ارتفاع ضغط',
-      'انخفاض ضغط', 'سكري', 'ارتفاع سكر', 'انخفاض سكر', 'ربو', 'ضيق تنفس',
-      'صفير', 'حساسية', 'طفح', 'حكة', 'أنيميا', 'فقر دم', 'دوخة', 'ضعف',
-      'آلام صدر', 'خفقان', 'اكتئاب', 'قلق', 'أرق', 'آلام ظهر', 'آلام مفاصل',
-      'التهاب مفاصل', 'عدوى بولية', 'حصوات كلوية', 'آلام الدورة', 'كورونا',
-      'التهاب رئوي', 'التهاب شعبي', 'التهاب الجيوب', 'التهاب ملتحمة'
+      'headache', 'صداع',
+      'fever', 'حمى',
+      'diabetes', 'سكري', 'سكر',
+      'cough', 'سعال',
+      'asthma', 'ربو',
+      'diarrhea', 'إسهال',
+      'eczema', 'إكزيما',
+      'conjunctivitis', 'التهاب الملتحمة',
+      'uti', 'urinary tract infection', 'التهاب المسالك البولية',
+      'pms', 'متلازمة ما قبل الحيض',
+      'arthritis', 'التهاب المفاصل',
+      'hypertension', 'high blood pressure', 'ارتفاع ضغط الدم',
+      'depression', 'اكتئاب',
+      'hypothyroidism', 'قصور الغدة الدرقية',
+      'gerd', 'acid reflux', 'heartburn', 'ارتجاع', 'حرقة',
+      'allergic rhinitis', 'hay fever', 'حساسية الأنف', 'حمى القش',
+      'anemia', 'فقر دم', 'أنيميا',
+      'back pain', 'ألم ظهر', 'lower back pain',
+      'cold', 'common cold', 'نزلة برد', 'زكام',
+      'acne', 'حب الشباب',
+      'insomnia', 'الأرق', 'أرق',
+      'migraine', 'الصداع النصفي',
+      'osteoporosis', 'هشاشة العظام',
+      'gastritis', 'التهاب المعدة',
+      'hemorrhoids', 'البواسير',
+      'tinnitus', 'طنين الأذن',
+      'vertigo', 'دوار', 'dizziness',
+      'psoriasis', 'الصدفية',
+      'shingles', 'الهربس النطاقي',
+      'gout', 'النقرس',
+      'bronchitis', 'التهاب الشعب الهوائية',
+      'pink eye', 'التهاب الملتحمة', 'conjunctivitis',
+      'sinusitis', 'التهاب الجيوب الأنفية',
+      'allergic reactions', 'الحساسية',
+      'obesity', 'weight issues', 'السمنة',
+      'skin infections', 'عدوى جلدية',
+      'stroke', 'السكتة الدماغية',
+      'eye strain', 'إجهاد العين'
     ];
+
 
     for (const condition of conditionKeywords) {
       if (lower.includes(condition)) {
@@ -104,12 +161,12 @@ export class DiagnosisChatComponent implements OnInit {
       }
     }
 
-    return [...new Set(conditions)]; // Remove duplicates
+    return [...new Set(conditions)];
   }
 
   generateMultiConditionResponse(conditions: string[], isArabic: boolean): string {
     const responses: string[] = [];
-    
+
     for (const condition of conditions) {
       const response = this.getConditionResponse(condition, isArabic);
       if (response) {
@@ -143,7 +200,7 @@ export class DiagnosisChatComponent implements OnInit {
 
   generateSingleConditionResponse(condition: string, isArabic: boolean): string {
     const response = this.getConditionResponse(condition, isArabic);
-    
+
     if (!response) {
       return isArabic
         ? "عذرًا، لا أملك معلومات كافية عن هذه الحالة. يرجى استشارة الطبيب."
@@ -159,7 +216,7 @@ export class DiagnosisChatComponent implements OnInit {
 
   getConditionResponse(condition: string, isArabic: boolean): string | null {
     const knowledgeBase: { [key: string]: { en: string; ar: string } } = {
-      // Expanded knowledge base with more conditions and medications
+
       'headache, صداع': {
         en: `<div class="condition-response">
               <h4>HEADACHE TREATMENT</h4>
@@ -378,9 +435,9 @@ export class DiagnosisChatComponent implements OnInit {
               </div>
             </div>`
       },
-      // Continue with all other conditions...
+
       'cough, سعال': {
-      en: `<div class="condition-response">
+        en: `<div class="condition-response">
             <h4>COUGH TREATMENT</h4>
             <div class="medications">
               <h5>Common Medications:</h5>
@@ -409,7 +466,7 @@ export class DiagnosisChatComponent implements OnInit {
               </ul>
             </div>
           </div>`,
-      ar: `<div class="condition-response">
+        ar: `<div class="condition-response">
             <h4>علاج السعال</h4>
             <div class="medications">
               <h5>الأدوية الشائعة:</h5>
@@ -438,9 +495,9 @@ export class DiagnosisChatComponent implements OnInit {
               </ul>
             </div>
           </div>`
-    },
-    'asthma, ربو': {
-      en: `<div class="condition-response">
+      },
+      'asthma, ربو': {
+        en: `<div class="condition-response">
             <h4>ASTHMA MANAGEMENT</h4>
             <div class="medications">
               <h5>Common Medications:</h5>
@@ -469,7 +526,7 @@ export class DiagnosisChatComponent implements OnInit {
               </ul>
             </div>
           </div>`,
-      ar: `<div class="condition-response">
+        ar: `<div class="condition-response">
             <h4>إدارة الربو</h4>
             <div class="medications">
               <h5>الأدوية الشائعة:</h5>
@@ -498,11 +555,11 @@ export class DiagnosisChatComponent implements OnInit {
               </ul>
             </div>
           </div>`
-    },
+      },
 
-    // أمراض الجهاز الهضمي
-    'diarrhea, إسهال': {
-      en: `<div class="condition-response">
+
+      'diarrhea, إسهال': {
+        en: `<div class="condition-response">
             <h4>DIARRHEA TREATMENT</h4>
             <div class="medications">
               <h5>Common Medications:</h5>
@@ -531,7 +588,7 @@ export class DiagnosisChatComponent implements OnInit {
               </ul>
             </div>
           </div>`,
-      ar: `<div class="condition-response">
+        ar: `<div class="condition-response">
             <h4>علاج الإسهال</h4>
             <div class="medications">
               <h5>الأدوية الشائعة:</h5>
@@ -560,11 +617,11 @@ export class DiagnosisChatComponent implements OnInit {
               </ul>
             </div>
           </div>`
-    },
+      },
 
-    // أمراض الجلد
-    'eczema, إكزيما': {
-      en: `<div class="condition-response">
+
+      'eczema, إكزيما': {
+        en: `<div class="condition-response">
             <h4>ECZEMA MANAGEMENT</h4>
             <div class="medications">
               <h5>Common Treatments:</h5>
@@ -593,7 +650,7 @@ export class DiagnosisChatComponent implements OnInit {
               </ul>
             </div>
           </div>`,
-      ar: `<div class="condition-response">
+        ar: `<div class="condition-response">
             <h4>إدارة الإكزيما</h4>
             <div class="medications">
               <h5>العلاجات الشائعة:</h5>
@@ -622,11 +679,11 @@ export class DiagnosisChatComponent implements OnInit {
               </ul>
             </div>
           </div>`
-    },
+      },
 
-    // أمراض العيون
-    'conjunctivitis, التهاب الملتحمة': {
-      en: `<div class="condition-response">
+
+      'conjunctivitis, التهاب الملتحمة': {
+        en: `<div class="condition-response">
             <h4>CONJUNCTIVITIS TREATMENT</h4>
             <div class="medications">
               <h5>Common Treatments:</h5>
@@ -655,7 +712,7 @@ export class DiagnosisChatComponent implements OnInit {
               </ul>
             </div>
           </div>`,
-      ar: `<div class="condition-response">
+        ar: `<div class="condition-response">
             <h4>علاج التهاب الملتحمة</h4>
             <div class="medications">
               <h5>العلاجات الشائعة:</h5>
@@ -684,11 +741,11 @@ export class DiagnosisChatComponent implements OnInit {
               </ul>
             </div>
           </div>`
-    },
+      },
 
-    // أمراض المسالك البولية
-    'uti, urinary tract infection, التهاب المسالك البولية': {
-      en: `<div class="condition-response">
+
+      'uti, urinary tract infection, التهاب المسالك البولية': {
+        en: `<div class="condition-response">
             <h4>URINARY TRACT INFECTION TREATMENT</h4>
             <div class="medications">
               <h5>Common Antibiotics:</h5>
@@ -717,7 +774,7 @@ export class DiagnosisChatComponent implements OnInit {
               </ul>
             </div>
           </div>`,
-      ar: `<div class="condition-response">
+        ar: `<div class="condition-response">
             <h4>علاج التهاب المسالك البولية</h4>
             <div class="medications">
               <h5>المضادات الحيوية الشائعة:</h5>
@@ -746,11 +803,11 @@ export class DiagnosisChatComponent implements OnInit {
               </ul>
             </div>
           </div>`
-    },
+      },
 
-    // أمراض النساء
-    'pms, متلازمة ما قبل الحيض': {
-      en: `<div class="condition-response">
+
+      'pms, متلازمة ما قبل الحيض': {
+        en: `<div class="condition-response">
             <h4>PMS MANAGEMENT</h4>
             <div class="medications">
               <h5>Common Treatments:</h5>
@@ -779,7 +836,7 @@ export class DiagnosisChatComponent implements OnInit {
               </ul>
             </div>
           </div>`,
-      ar: `<div class="condition-response">
+        ar: `<div class="condition-response">
             <h4>إدارة متلازمة ما قبل الحيض</h4>
             <div class="medications">
               <h5>العلاجات الشائعة:</h5>
@@ -808,11 +865,11 @@ export class DiagnosisChatComponent implements OnInit {
               </ul>
             </div>
           </div>`
-    },
+      },
 
-    // أمراض العظام والمفاصل
-    'arthritis, التهاب المفاصل': {
-      en: `<div class="condition-response">
+
+      'arthritis, التهاب المفاصل': {
+        en: `<div class="condition-response">
             <h4>ARTHRITIS MANAGEMENT</h4>
             <div class="medications">
               <h5>Common Treatments:</h5>
@@ -841,7 +898,7 @@ export class DiagnosisChatComponent implements OnInit {
               </ul>
             </div>
           </div>`,
-      ar: `<div class="condition-response">
+        ar: `<div class="condition-response">
             <h4>إدارة التهاب المفاصل</h4>
             <div class="medications">
               <h5>العلاجات الشائعة:</h5>
@@ -870,11 +927,11 @@ export class DiagnosisChatComponent implements OnInit {
               </ul>
             </div>
           </div>`
-    },
+      },
 
-    // أمراض القلب والأوعية الدموية
-    'hypertension, high blood pressure, ارتفاع ضغط الدم': {
-      en: `<div class="condition-response">
+
+      'hypertension, high blood pressure, ارتفاع ضغط الدم': {
+        en: `<div class="condition-response">
             <h4>HYPERTENSION MANAGEMENT</h4>
             <div class="medications">
               <h5>Common Medications:</h5>
@@ -904,7 +961,7 @@ export class DiagnosisChatComponent implements OnInit {
               </ul>
             </div>
           </div>`,
-      ar: `<div class="condition-response">
+        ar: `<div class="condition-response">
             <h4>إدارة ارتفاع ضغط الدم</h4>
             <div class="medications">
               <h5>الأدوية الشائعة:</h5>
@@ -934,11 +991,9 @@ export class DiagnosisChatComponent implements OnInit {
               </ul>
             </div>
           </div>`
-    },
-
-    // الاضطرابات النفسية
-    'depression, اكتئاب': {
-      en: `<div class="condition-response">
+      },
+      'depression, اكتئاب': {
+        en: `<div class="condition-response">
             <h4>DEPRESSION TREATMENT</h4>
             <div class="medications">
               <h5>Common Medications:</h5>
@@ -968,7 +1023,7 @@ export class DiagnosisChatComponent implements OnInit {
               </ul>
             </div>
           </div>`,
-      ar: `<div class="condition-response">
+        ar: `<div class="condition-response">
             <h4>علاج الاكتئاب</h4>
             <div class="medications">
               <h5>الأدوية الشائعة:</h5>
@@ -998,11 +1053,11 @@ export class DiagnosisChatComponent implements OnInit {
               </ul>
             </div>
           </div>`
-    },
+      },
 
-    // أمراض الغدد الصماء
-    'hypothyroidism, قصور الغدة الدرقية': {
-      en: `<div class="condition-response">
+
+      'hypothyroidism, قصور الغدة الدرقية': {
+        en: `<div class="condition-response">
             <h4>HYPOTHYROIDISM TREATMENT</h4>
             <div class="medications">
               <h5>Common Medications:</h5>
@@ -1030,7 +1085,7 @@ export class DiagnosisChatComponent implements OnInit {
               </ul>
             </div>
           </div>`,
-      ar: `<div class="condition-response">
+        ar: `<div class="condition-response">
             <h4>علاج قصور الغدة الدرقية</h4>
             <div class="medications">
               <h5>الأدوية الشائعة:</h5>
@@ -1058,11 +1113,1494 @@ export class DiagnosisChatComponent implements OnInit {
               </ul>
             </div>
           </div>`
-    }
-  };
+      },
+      'gerd, acid reflux, heartburn, ارتجاع, حرقة': {
+        en: `<div class="condition-response">
+        <h4>ACID REFLUX (GERD) TREATMENT</h4>
+        <div class="medications">
+          <h5>Common Medications:</h5>
+          <ul>
+            <li><b>Antacids:</b> Tums, Maalox (as needed)</li>
+            <li><b>H2 blockers:</b> Famotidine 20-40mg daily</li>
+            <li><b>PPIs:</b> Omeprazole 20mg daily before breakfast</li>
+            <li><b>Alginate drugs:</b> Gaviscon after meals</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>Warnings:</h5>
+          <ul>
+            <li>Long-term PPI use may cause nutrient deficiencies</li>
+            <li>Avoid lying down 2-3 hours after eating</li>
+            <li>Rule out heart disease for chest pain</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>Lifestyle Changes:</h5>
+          <ul>
+            <li>Elevate head of bed 6-8 inches</li>
+            <li>Avoid trigger foods (spicy, fatty, citrus, caffeine)</li>
+            <li>Eat smaller, more frequent meals</li>
+            <li>Maintain healthy weight</li>
+          </ul>
+        </div>
+      </div>`,
+        ar: `<div class="condition-response">
+        <h4>علاج ارتجاع المريء</h4>
+        <div class="medications">
+          <h5>الأدوية الشائعة:</h5>
+          <ul>
+            <li><b>مضادات الحموضة:</b> تامس، مالوكس (حسب الحاجة)</li>
+            <li><b>حاصرات H2:</b> فاموتيدين 20-40 مجم يوميًا</li>
+            <li><b>مثبطات مضخة البروتون:</b> أوميبرازول 20 مجم يوميًا قبل الإفطار</li>
+            <li><b>أدوية الألجينات:</b> جافيسكون بعد الوجبات</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>تحذيرات:</h5>
+          <ul>
+            <li>الاستخدام طويل الأمد لمثبطات مضخة البروتون قد يسبب نقصًا في العناصر الغذائية</li>
+            <li>تجنب الاستلقاء بعد الأكل بـ 2-3 ساعات</li>
+            <li>استبعد أمراض القلب لألم الصدر</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>تغييرات نمط الحياة:</h5>
+          <ul>
+            <li>ارفع رأس السرير 6-8 بوصات</li>
+            <li>تجنب الأطعمة المحفزة (الحارة، الدهنية، الحمضيات، الكافيين)</li>
+            <li>تناول وجبات صغيرة متكررة</li>
+            <li>حافظ على وزن صحي</li>
+          </ul>
+        </div>
+      </div>`
+      },
+      'allergic rhinitis, hay fever, حساسية الأنف, حمى القش': {
+        en: `<div class="condition-response">
+        <h4>ALLERGIC RHINITIS TREATMENT</h4>
+        <div class="medications">
+          <h5>Common Medications:</h5>
+          <ul>
+            <li><b>Antihistamines:</b> Loratadine 10mg daily, Cetirizine 10mg daily</li>
+            <li><b>Nasal steroids:</b> Fluticasone nasal spray daily</li>
+            <li><b>Decongestants:</b> Pseudoephedrine (short-term use only)</li>
+            <li><b>Eye drops:</b> Ketotifen for allergic conjunctivitis</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>Warnings:</h5>
+          <ul>
+            <li>Nasal steroids may cause nosebleeds</li>
+            <li>Decongestants can raise blood pressure</li>
+            <li>First-gen antihistamines cause drowsiness</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>Prevention:</h5>
+          <ul>
+            <li>Use HEPA air filters</li>
+            <li>Wash bedding weekly in hot water</li>
+            <li>Keep windows closed during pollen season</li>
+            <li>Shower after outdoor exposure</li>
+          </ul>
+        </div>
+      </div>`,
+        ar: `<div class="condition-response">
+        <h4>علاج حساسية الأنف</h4>
+        <div class="medications">
+          <h5>الأدوية الشائعة:</h5>
+          <ul>
+            <li><b>مضادات الهيستامين:</b> لوراتادين 10 مجم يوميًا، سيتريزين 10 مجم يوميًا</li>
+            <li><b>بخاخات الأنف الستيرويدية:</b> فلوتيكازون يوميًا</li>
+            <li><b>مزيلات الاحتقان:</b> سودوإيفيدرين (للاستخدام قصير المدى فقط)</li>
+            <li><b>قطرات العين:</b> كيتوتيفين لالتهاب الملتحمة التحسسي</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>تحذيرات:</h5>
+          <ul>
+            <li>بخاخات الأنف الستيرويدية قد تسبب نزيف الأنف</li>
+            <li>مزيلات الاحتقان قد ترفع ضغط الدم</li>
+            <li>مضادات الهيستامين من الجيل الأول تسبب النعاس</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>الوقاية:</h5>
+          <ul>
+            <li>استخدم فلاتر هواء HEPA</li>
+            <li>اغسل الفراش أسبوعيًا بالماء الساخن</li>
+            <li>أغلق النوافذ خلال موسم حبوب اللقاح</li>
+            <li>استحم بعد التعرض للخارج</li>
+          </ul>
+        </div>
+      </div>`
+      },
+      'anemia, فقر دم, أنيميا': {
+        en: `<div class="condition-response">
+        <h4>ANEMIA TREATMENT</h4>
+        <div class="medications">
+          <h5>Common Treatments:</h5>
+          <ul>
+            <li><b>Iron supplements:</b> Ferrous sulfate 325mg 1-3 times daily</li>
+            <li><b>Vitamin C:</b> Enhances iron absorption (take with iron)</li>
+            <li><b>B12 injections:</b> For pernicious anemia</li>
+            <li><b>Folic acid:</b> For folate deficiency anemia</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>Warnings:</h5>
+          <ul>
+            <li>Iron causes dark stools and constipation</li>
+            <li>Take iron on empty stomach (unless GI upset occurs)</li>
+            <li>Avoid calcium/antacids with iron (space by 2 hours)</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>Dietary Advice:</h5>
+          <ul>
+            <li>Iron-rich foods: red meat, spinach, lentils</li>
+            <li>Vitamin C-rich foods with iron meals</li>
+            <li>Avoid tea/coffee with meals (inhibits iron absorption)</li>
+            <li>Cook in cast iron pans</li>
+          </ul>
+        </div>
+      </div>`,
+        ar: `<div class="condition-response">
+        <h4>علاج فقر الدم</h4>
+        <div class="medications">
+          <h5>العلاجات الشائعة:</h5>
+          <ul>
+            <li><b>مكملات الحديد:</b> سلفات الحديدوز 325 مجم 1-3 مرات يوميًا</li>
+            <li><b>فيتامين سي:</b> يعزز امتصاص الحديد (تناوله مع الحديد)</li>
+            <li><b>حقن B12:</b> لفقر الدم الخبيث</li>
+            <li><b>حمض الفوليك:</b> لفقر الدم الناتج عن نقص الفولات</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>تحذيرات:</h5>
+          <ul>
+            <li>الحديد يسبب براز داكن وإمساك</li>
+            <li>خذ الحديد على معدة فارغة (إلا إذا حدث اضطراب في المعدة)</li>
+            <li>تجنب الكالسيوم/مضادات الحموضة مع الحديد (افصل بينهما بساعتين)</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>نصائح غذائية:</h5>
+          <ul>
+            <li>أطعمة غنية بالحديد: اللحوم الحمراء، السبانخ، العدس</li>
+            <li>أطعمة غنية بفيتامين سي مع وجبات الحديد</li>
+            <li>تجنب الشاي/القهوة مع الوجبات (تثبط امتصاص الحديد)</li>
+            <li>اطبخ في أواني حديدية</li>
+          </ul>
+        </div>
+      </div>`
+      },
+      'back pain, ألم ظهر, lower back pain': {
+        en: `<div class="condition-response">
+        <h4>BACK PAIN MANAGEMENT</h4>
+        <div class="medications">
+          <h5>Common Medications:</h5>
+          <ul>
+            <li><b>NSAIDs:</b> Ibuprofen 400-800mg every 6-8 hours</li>
+            <li><b>Muscle relaxants:</b> Cyclobenzaprine 5-10mg at bedtime</li>
+            <li><b>Topical analgesics:</b> Diclofenac gel</li>
+            <li><b>Acetaminophen:</b> 500-1000mg every 6 hours</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>Red Flags (Seek Immediate Care):</h5>
+          <ul>
+            <li>Bowel/bladder incontinence</li>
+            <li>Leg weakness/numbness</li>
+            <li>History of cancer</li>
+            <li>Fever with back pain</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>Self-Care:</h5>
+          <ul>
+            <li>Stay active (avoid prolonged bed rest)</li>
+            <li>Apply heat/ice packs</li>
+            <li>Practice good posture</li>
+            <li>Core-strengthening exercises</li>
+          </ul>
+        </div>
+      </div>`,
+        ar: `<div class="condition-response">
+        <h4>إدارة آلام الظهر</h4>
+        <div class="medications">
+          <h5>الأدوية الشائعة:</h5>
+          <ul>
+            <li><b>مضادات الالتهاب:</b> ايبوبروفين 400-800 مجم كل 6-8 ساعات</li>
+            <li><b>مرخيات العضلات:</b> سيكلوبنزابرين 5-10 مجم عند النوم</li>
+            <li><b>مسكنات موضعية:</b> جل ديكلوفيناك</li>
+            <li><b>باراسيتامول:</b> 500-1000 مجم كل 6 ساعات</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>علامات خطر (اطلب الرعاية فورًا):</h5>
+          <ul>
+            <li>سلس البول/البراز</li>
+            <li>ضعف/تنميل الساق</li>
+            <li>تاريخ من السرطان</li>
+            <li>حمى مع ألم الظهر</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>العناية الذاتية:</h5>
+          <ul>
+            <li>حافظ على النشاط (تجنب الراحة في الفراش لفترات طويلة)</li>
+            <li>ضع كمادات ساخنة/باردة</li>
+            <li>مارس وضعية جيدة</li>
+            <li>تمارين تقوية العضلات الأساسية</li>
+          </ul>
+        </div>
+      </div>`
+      },
+      'cold, common cold, نزلة برد, زكام': {
+        en: `<div class="condition-response">
+        <h4>COMMON COLD TREATMENT</h4>
+        <div class="medications">
+          <h5>Symptom Relief:</h5>
+          <ul>
+            <li><b>Decongestants:</b> Pseudoephedrine (oral) or oxymetazoline (nasal spray)</li>
+            <li><b>Antihistamines:</b> Diphenhydramine at night (helps with sleep)</li>
+            <li><b>Cough suppressants:</b> Dextromethorphan</li>
+            <li><b>Pain relievers:</b> Acetaminophen or ibuprofen</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>Warnings:</h5>
+          <ul>
+            <li>Don't use antibiotics for viral colds</li>
+            <li>Limit nasal decongestant sprays to 3 days</li>
+            <li>Watch for secondary infections (ear/sinus)</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>Self-Care:</h5>
+          <ul>
+            <li>Rest and stay hydrated</li>
+            <li>Use saline nasal rinses</li>
+            <li>Honey for cough (not under 1 year)</li>
+            <li>Humidify the air</li>
+          </ul>
+        </div>
+      </div>`,
+        ar: `<div class="condition-response">
+        <h4>علاج نزلة البرد</h4>
+        <div class="medications">
+          <h5>تخفيف الأعراض:</h5>
+          <ul>
+            <li><b>مزيلات الاحتقان:</b> سودوإيفيدرين (فموي) أو أوكسيميتازولين (بخاخ أنفي)</li>
+            <li><b>مضادات الهيستامين:</b> دايفينهايدرامين ليلاً (يساعد على النوم)</li>
+            <li><b>مثبطات السعال:</b> ديكستروميثورفان</li>
+            <li><b>مسكنات الألم:</b> باراسيتامول أو ايبوبروفين</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>تحذيرات:</h5>
+          <ul>
+            <li>لا تستخدم المضادات الحيوية للبرد الفيروسي</li>
+            <li>قلل من استخدام بخاخات الأنف المزيلة للاحتقان إلى 3 أيام</li>
+            <li>راقب العدوى الثانوية (الأذن/الجيوب)</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>العناية الذاتية:</h5>
+          <ul>
+            <li>استرح واشرب السوائل</li>
+            <li>استخدم غسول الأنف المالح</li>
+            <li>العسل للسعال (ممنوع تحت سنة)</li>
+            <li>رطب الهواء</li>
+          </ul>
+        </div>
+      </div>`
+      },
+      'acne, حب الشباب': {
+        en: `<div class="condition-response">
+    <h4><i class="fas fa-bacteria icon-head"></i> Acne Treatment</h4>
 
-      // Make sure to include all your original conditions with expanded details
-    
+    <div class="medications">
+      <h5><i class="fas fa-capsules"></i> Medications:</h5>
+      <ul>
+        <li><b>Benzoyl Peroxide:</b> 2.5%-10% topical gel once or twice daily</li>
+        <li><b>Topical Retinoids:</b> Adapalene or Tretinoin (apply at night)</li>
+        <li><b>Oral Antibiotics:</b> Doxycycline, Minocycline (moderate/severe)</li>
+        <li><b>Oral Isotretinoin:</b> For severe cases (under medical supervision)</li>
+      </ul>
+    </div>
+
+    <div class="warnings">
+      <h5><i class="fas fa-triangle-exclamation"></i> Warnings:</h5>
+      <ul>
+        <li>Increased sun sensitivity</li>
+        <li>Do not pop pimples — may scar</li>
+        <li>Avoid isotretinoin during pregnancy</li>
+      </ul>
+    </div>
+
+    <div class="advice">
+      <h5><i class="fas fa-lightbulb"></i> Self-Care Tips:</h5>
+      <ul>
+        <li>Use gentle cleansers twice daily</li>
+        <li>Avoid oily products</li>
+        <li>Stay hydrated and reduce stress</li>
+      </ul>
+    </div>
+  </div>`,
+
+        ar: `<div class="condition-response">
+    <h4><i class="fas fa-bacteria icon-head"></i> علاج حب الشباب</h4>
+
+    <div class="medications">
+      <h5><i class="fas fa-capsules"></i> الأدوية:</h5>
+      <ul>
+        <li><b>بنزويل بيروكسيد:</b> جل موضعي بتركيز 2.5%-10%</li>
+        <li><b>الريتينويدات:</b> أدابالين أو تريتينوين (ليلاً)</li>
+        <li><b>مضادات حيوية فموية:</b> دوكسيسيكلين، مينوسيكلين</li>
+        <li><b>ايزوتريتينوين:</b> لحالات حب الشباب الشديدة</li>
+      </ul>
+    </div>
+
+    <div class="warnings">
+      <h5><i class="fas fa-triangle-exclamation"></i> تحذيرات:</h5>
+      <ul>
+        <li>حساسية للشمس مع بعض الأدوية</li>
+        <li>لا تفقع الحبوب</li>
+        <li>يمنع استخدام الايزوتريتينوين أثناء الحمل</li>
+      </ul>
+    </div>
+
+    <div class="advice">
+      <h5><i class="fas fa-lightbulb"></i> نصائح:</h5>
+      <ul>
+        <li>استخدم غسولًا لطيفًا مرتين يوميًا</li>
+        <li>تجنب المنتجات الدهنية</li>
+        <li>اشرب ماء وقلل التوتر</li>
+      </ul>
+    </div>
+  </div>`
+      },
+      'Insomnia , الأرق, insomnia, أرق ': {
+        en: `<div class="condition-response">
+        <h4>INSOMNIA TREATMENT</h4>
+        <div class="medications">
+          <h5>Common Medications:</h5>
+          <ul>
+            <li><b>Melatonin:</b> 1-5mg 1 hour before bedtime</li>
+            <li><b>Diphenhydramine:</b> 25-50mg at bedtime</li>
+            <li><b>Prescription sleep aids:</b> Zolpidem, Eszopiclone (short-term use)</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>Warnings:</h5>
+          <ul>
+            <li>Avoid alcohol with sleep medications</li>
+            <li>Don't use long-term without doctor supervision</li>
+            <li>May cause next-day drowsiness</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>Sleep Hygiene Tips:</h5>
+          <ul>
+            <li>Maintain regular sleep schedule</li>
+            <li>Create dark, quiet sleep environment</li>
+            <li>Avoid screens 1 hour before bed</li>
+            <li>Limit caffeine after noon</li>
+          </ul>
+        </div>
+      </div>`,
+        ar: `<div class="condition-response">
+        <h4>علاج الأرق</h4>
+        <div class="medications">
+          <h5>الأدوية الشائعة:</h5>
+          <ul>
+            <li><b>الميلاتونين:</b> 1-5 مجم قبل النوم بساعة</li>
+            <li><b>دايفينهايدرامين:</b> 25-50 مجم عند النوم</li>
+            <li><b>منومات موصوفة:</b> زولبيديم، إيزوبيكلون (استخدام قصير المدى)</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>تحذيرات:</h5>
+          <ul>
+            <li>تجنب الكحول مع الأدوية المنومة</li>
+            <li>لا تستخدم لفترات طويلة دون إشراف طبي</li>
+            <li>قد تسبب النعاس في اليوم التالي</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>نصائح لنوم صحي:</h5>
+          <ul>
+            <li>حافظ على جدول نوم منتظم</li>
+            <li>جهز بيئة نوم مظلمة وهادئة</li>
+            <li>تجنب الشاشات قبل النوم بساعة</li>
+            <li>قلل الكافيين بعد الظهر</li>
+          </ul>
+        </div>
+      </div>`
+      },
+      'Migraine, migraine, الصداع النصفي': {
+        en: `<div class="condition-response">
+        <h4>MIGRAINE TREATMENT</h4>
+        <div class="medications">
+          <h5>Acute Treatments:</h5>
+          <ul>
+            <li><b>Triptans:</b> Sumatriptan 50-100mg at onset</li>
+            <li><b>NSAIDs:</b> Ibuprofen 400-600mg</li>
+            <li><b>Anti-nausea:</b> Metoclopramide 10mg</li>
+          </ul>
+          <h5>Preventive Treatments:</h5>
+          <ul>
+            <li><b>Propranolol:</b> 40-240mg daily</li>
+            <li><b>Topiramate:</b> 25-100mg daily</li>
+            <li><b>Amitriptyline:</b> 10-75mg at bedtime</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>Warnings:</h5>
+          <ul>
+            <li>Limit triptans to 10 days/month</li>
+            <li>Avoid opioids/butalbital for migraine</li>
+            <li>Watch for medication-overuse headache</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>Trigger Management:</h5>
+          <ul>
+            <li>Identify and avoid personal triggers</li>
+            <li>Maintain regular sleep and meals</li>
+            <li>Stay hydrated</li>
+            <li>Consider relaxation techniques</li>
+          </ul>
+        </div>
+      </div>`,
+        ar: `<div class="condition-response">
+        <h4>علاج الصداع النصفي</h4>
+        <div class="medications">
+          <h5>علاجات حادة:</h5>
+          <ul>
+            <li><b>التريبتانات:</b> سوماتريبتان 50-100 مجم عند البدء</li>
+            <li><b>مضادات الالتهاب:</b> ايبوبروفين 400-600 مجم</li>
+            <li><b>مضادات القيء:</b> ميتوكلوبراميد 10 مجم</li>
+          </ul>
+          <h5>علاجات وقائية:</h5>
+          <ul>
+            <li><b>بروبرانولول:</b> 40-240 مجم يوميًا</li>
+            <li><b>توبيراميت:</b> 25-100 مجم يوميًا</li>
+            <li><b>أميتريبتيلين:</b> 10-75 مجم عند النوم</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>تحذيرات:</h5>
+          <ul>
+            <li>لا تستخدم التريبتانات أكثر من 10 أيام/شهر</li>
+            <li>تجنب المواد الأفيونية للصداع النصفي</li>
+            <li>احذر من صداع فرط استخدام الأدوية</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>إدارة المحفزات:</h5>
+          <ul>
+            <li>حدد وتجنب محفزاتك الشخصية</li>
+            <li>حافظ على نوم ووجبات منتظمة</li>
+            <li>اشرب كمية كافية من الماء</li>
+            <li>جرب تقنيات الاسترخاء</li>
+          </ul>
+        </div>
+      </div>`
+      },
+      'Osteoporosis , هشاشة العظام': {
+        en: `<div class="condition-response">
+        <h4>OSTEOPOROSIS TREATMENT</h4>
+        <div class="medications">
+          <h5>Common Medications:</h5>
+          <ul>
+            <li><b>Bisphosphonates:</b> Alendronate 70mg weekly</li>
+            <li><b>Calcium:</b> 1000-1200mg daily with Vitamin D</li>
+            <li><b>Vitamin D:</b> 800-2000 IU daily</li>
+            <li><b>Other options:</b> Denosumab, Teriparatide</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>Warnings:</h5>
+          <ul>
+            <li>Take bisphosphonates on empty stomach with water</li>
+            <li>Remain upright for 30-60 minutes after dose</li>
+            <li>Dental exams before starting treatment</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>Lifestyle Advice:</h5>
+          <ul>
+            <li>Weight-bearing exercise</li>
+            <li>Fall prevention strategies</li>
+            <li>Quit smoking</li>
+            <li>Limit alcohol</li>
+          </ul>
+        </div>
+      </div>`,
+        ar: `<div class="condition-response">
+        <h4>علاج هشاشة العظام</h4>
+        <div class="medications">
+          <h5>الأدوية الشائعة:</h5>
+          <ul>
+            <li><b>البايفوسفونيت:</b> أليندرونات 70 مجم أسبوعيًا</li>
+            <li><b>الكالسيوم:</b> 1000-1200 مجم يوميًا مع فيتامين د</li>
+            <li><b>فيتامين د:</b> 800-2000 وحدة دولية يوميًا</li>
+            <li><b>خيارات أخرى:</b> دينوسوماب، تيريباراتايد</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>تحذيرات:</h5>
+          <ul>
+            <li>خذ البايفوسفونيت على معدة فارغة مع الماء</li>
+            <li>ابق منتصبًا لمدة 30-60 دقيقة بعد الجرعة</li>
+            <li>فحص الأسنان قبل بدء العلاج</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>نصائح لنمط الحياة:</h5>
+          <ul>
+            <li>تمارين تحمل الوزن</li>
+            <li>استراتيجيات منع السقوط</li>
+            <li>الإقلاع عن التدخين</li>
+            <li>الحد من الكحول</li>
+          </ul>
+        </div>
+      </div>`
+      },
+      'Gastritis , التهاب المعدة': {
+        en: `<div class="condition-response">
+        <h4>GASTRITIS TREATMENT</h4>
+        <div class="medications">
+          <h5>Common Medications:</h5>
+          <ul>
+            <li><b>PPIs:</b> Omeprazole 20-40mg daily</li>
+            <li><b>H2 blockers:</b> Famotidine 20-40mg twice daily</li>
+            <li><b>Antacids:</b> For symptom relief</li>
+            <li><b>Antibiotics:</b> For H. pylori infection</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>Warnings:</h5>
+          <ul>
+            <li>Avoid NSAIDs and alcohol</li>
+            <li>Watch for signs of bleeding</li>
+            <li>Complete antibiotic course if prescribed</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>Dietary Advice:</h5>
+          <ul>
+            <li>Eat smaller, more frequent meals</li>
+            <li>Avoid spicy, acidic, fried foods</li>
+            <li>Limit caffeine and carbonated drinks</li>
+            <li>Manage stress</li>
+          </ul>
+        </div>
+      </div>`,
+        ar: `<div class="condition-response">
+        <h4>علاج التهاب المعدة</h4>
+        <div class="medications">
+          <h5>الأدوية الشائعة:</h5>
+          <ul>
+            <li><b>مثبطات مضخة البروتون:</b> أوميبرازول 20-40 مجم يوميًا</li>
+            <li><b>حاصرات H2:</b> فاموتيدين 20-40 مجم مرتين يوميًا</li>
+            <li><b>مضادات الحموضة:</b> لتخفيف الأعراض</li>
+            <li><b>المضادات الحيوية:</b> لعدوى الملوية البوابية</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>تحذيرات:</h5>
+          <ul>
+            <li>تجنب مضادات الالتهاب والكحول</li>
+            <li>راقب علامات النزيف</li>
+            <li>أكمل دورة المضادات الحيوية إذا وصفها الطبيب</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>نصائح غذائية:</h5>
+          <ul>
+            <li>تناول وجبات صغيرة متكررة</li>
+            <li>تجنب الأطعمة الحارة والحامضة والمقلية</li>
+            <li>قلل من الكافيين والمشروبات الغازية</li>
+            <li>تحكم في التوتر</li>
+          </ul>
+        </div>
+      </div>`
+      },
+      'Hemorrhoids , البواسير': {
+        en: `<div class="condition-response">
+        <h4>HEMORRHOID TREATMENT</h4>
+        <div class="medications">
+          <h5>Common Treatments:</h5>
+          <ul>
+            <li><b>Topical creams:</b> Hydrocortisone 1% or pramoxine</li>
+            <li><b>Stool softeners:</b> Docusate sodium</li>
+            <li><b>Oral pain relievers:</b> Acetaminophen (avoid NSAIDs)</li>
+            <li><b>Sitz baths:</b> Warm water 10-15 minutes 2-3 times daily</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>Warnings:</h5>
+          <ul>
+            <li>Don't use topical steroids >1 week</li>
+            <li>Seek help for rectal bleeding</li>
+            <li>Avoid straining during bowel movements</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>Prevention:</h5>
+          <ul>
+            <li>High fiber diet (25-30g daily)</li>
+            <li>Stay hydrated</li>
+            <li>Regular exercise</li>
+            <li>Don't delay bowel movements</li>
+          </ul>
+        </div>
+      </div>`,
+        ar: `<div class="condition-response">
+        <h4>علاج البواسير</h4>
+        <div class="medications">
+          <h5>العلاجات الشائعة:</h5>
+          <ul>
+            <li><b>كريمات موضعية:</b> هيدروكورتيزون 1% أو براموكسين</li>
+            <li><b>ملينات البراز:</b> دوكوسات الصوديوم</li>
+            <li><b>مسكنات الألم الفموية:</b> باراسيتامول (تجنب مضادات الالتهاب)</li>
+            <li><b>حمامات المقعدة:</b> ماء دافئ 10-15 دقيقة 2-3 مرات يوميًا</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>تحذيرات:</h5>
+          <ul>
+            <li>لا تستخدم الستيرويدات الموضعية لأكثر من أسبوع</li>
+            <li>اطلب المساعدة للنزيف الشرجي</li>
+            <li>تجنب الإجهاد أثناء التبرز</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>الوقاية:</h5>
+          <ul>
+            <li>نظام غذائي غني بالألياف (25-30 جم يوميًا)</li>
+            <li>اشرب كمية كافية من الماء</li>
+            <li>ممارسة الرياضة بانتظام</li>
+            <li>لا تؤجل التبرز</li>
+          </ul>
+        </div>
+      </div>`
+      },
+      'Tinnitus , طنين الأذن': {
+        en: `<div class="condition-response">
+        <h4>TINNITUS MANAGEMENT</h4>
+        <div class="medications">
+          <h5>Possible Treatments:</h5>
+          <ul>
+            <li><b>Hearing aids:</b> If hearing loss present</li>
+            <li><b>Sound therapy:</b> White noise machines</li>
+            <li><b>Cognitive behavioral therapy:</b> For distress</li>
+            <li><b>Medications:</b> Sometimes antidepressants or anxiolytics</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>Warnings:</h5>
+          <ul>
+            <li>Avoid ototoxic medications if possible</li>
+            <li>Protect ears from loud noise</li>
+            <li>Rule out serious underlying causes</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>Self-Care:</h5>
+          <ul>
+            <li>Background noise/music</li>
+            <li>Stress reduction techniques</li>
+            <li>Limit caffeine and alcohol</li>
+            <li>Support groups</li>
+          </ul>
+        </div>
+      </div>`,
+        ar: `<div class="condition-response">
+        <h4>إدارة طنين الأذن</h4>
+        <div class="medications">
+          <h5>العلاجات الممكنة:</h5>
+          <ul>
+            <li><b>سماعات الأذن:</b> إذا كان هناك فقدان سمع</li>
+            <li><b>العلاج بالصوت:</b> أجهزة الضوضاء البيضاء</li>
+            <li><b>العلاج السلوكي المعرفي:</b> للضيق النفسي</li>
+            <li><b>الأدوية:</b> أحيانًا مضادات الاكتئاب أو مضادات القلق</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>تحذيرات:</h5>
+          <ul>
+            <li>تجنب الأدوية السامة للأذن إذا أمكن</li>
+            <li>احمي أذنيك من الضوضاء العالية</li>
+            <li>استبعد الأسباب الكامنة الخطيرة</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>العناية الذاتية:</h5>
+          <ul>
+            <li>ضوضاء/موسيقى خلفية</li>
+            <li>تقنيات تقليل التوتر</li>
+            <li>قلل من الكافيين والكحول</li>
+            <li>مجموعات الدعم</li>
+          </ul>
+        </div>
+      </div>`
+      },
+      'Vertigo , دوار, dizziness':
+      {
+        en: `<div class="condition-response">
+        <h4>VERTIGO TREATMENT</h4>
+        <div class="medications">
+          <h5>Common Medications:</h5>
+          <ul>
+            <li><b>Antihistamines:</b> Meclizine 25mg every 6 hours</li>
+            <li><b>Anti-nausea:</b> Promethazine or ondansetron</li>
+            <li><b>Benzodiazepines:</b> Short-term for severe cases</li>
+            <li><b>Epley maneuver:</b> For BPPV</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>Warnings:</h5>
+          <ul>
+            <li>Medications may cause drowsiness</li>
+            <li>Don't drive while dizzy</li>
+            <li>Rule out stroke in acute onset</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>Self-Care:</h5>
+          <ul>
+            <li>Move slowly, especially head movements</li>
+            <li>Stay hydrated</li>
+            <li>Sleep with head slightly elevated</li>
+            <li>Vestibular rehabilitation exercises</li>
+          </ul>
+        </div>
+      </div>`,
+        ar: `<div class="condition-response">
+        <h4>علاج الدوار</h4>
+        <div class="medications">
+          <h5>الأدوية الشائعة:</h5>
+          <ul>
+            <li><b>مضادات الهيستامين:</b> ميكليزين 25 مجم كل 6 ساعات</li>
+            <li><b>مضادات القيء:</b> بروميثازين أو أوندانسيترون</li>
+            <li><b>البنزوديازيبينات:</b> قصيرة المدى للحالات الشديدة</li>
+            <li><b>مناورة إبلي:</b> للدوار الوضعي الحميد</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>تحذيرات:</h5>
+          <ul>
+            <li>الأدوية قد تسبب النعاس</li>
+            <li>لا تقود أثناء الدوخة</li>
+            <li>استبعد السكتة الدماغية في البداية الحادة</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>العناية الذاتية:</h5>
+          <ul>
+            <li>تحرك ببطء، خاصة حركات الرأس</li>
+            <li>اشرب كمية كافية من الماء</li>
+            <li>نم ورأسك مرتفع قليلاً</li>
+            <li>تمارين إعادة تأهيل دهليزي</li>
+          </ul>
+        </div>
+      </div>`
+      },
+      'Psoriasis , الصدفية': {
+        en: `<div class="condition-response">
+        <h4>PSORIASIS TREATMENT</h4>
+        <div class="medications">
+          <h5>Common Treatments:</h5>
+          <ul>
+            <li><b>Topical steroids:</b> For mild cases</li>
+            <li><b>Vitamin D analogs:</b> Calcipotriene</li>
+            <li><b>Phototherapy:</b> UVB or PUVA</li>
+            <li><b>Systemic medications:</b> Methotrexate, cyclosporine</li>
+            <li><b>Biologics:</b> For moderate-severe cases</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>Warnings:</h5>
+          <ul>
+            <li>Don't overuse topical steroids</li>
+            <li>Regular skin checks needed</li>
+            <li>Monitor for psoriatic arthritis</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>Self-Care:</h5>
+          <ul>
+            <li>Moisturize skin regularly</li>
+            <li>Limit alcohol</li>
+            <li>Manage stress</li>
+            <li>Quit smoking</li>
+          </ul>
+        </div>
+      </div>`,
+        ar: `<div class="condition-response">
+        <h4>علاج الصدفية</h4>
+        <div class="medications">
+          <h5>العلاجات الشائعة:</h5>
+          <ul>
+            <li><b>الستيرويدات الموضعية:</b> للحالات الخفيفة</li>
+            <li><b>نظائر فيتامين د:</b> كالسيبوتريين</li>
+            <li><b>العلاج الضوئي:</b> UVB أو PUVA</li>
+            <li><b>أدوية جهازية:</b> ميثوتريكسات، سيكلوسبورين</li>
+            <li><b>البيولوجية:</b> للحالات المتوسطة-الشديدة</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>تحذيرات:</h5>
+          <ul>
+            <li>لا تفرط في استخدام الستيرويدات الموضعية</li>
+            <li>مطلوب فحوصات جلدية منتظمة</li>
+            <li>راقب التهاب المفاصل الصدفي</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>العناية الذاتية:</h5>
+          <ul>
+            <li>رطب بشرتك بانتظام</li>
+            <li>قلل من الكحول</li>
+            <li>تحكم في التوتر</li>
+            <li>الإقلاع عن التدخين</li>
+          </ul>
+        </div>
+      </div>`
+      },
+      'Shingles , الهربس النطاقي': {
+        en: `<div class="condition-response">
+        <h4>SHINGLES TREATMENT</h4>
+        <div class="medications">
+          <h5>Common Medications:</h5>
+          <ul>
+            <li><b>Antivirals:</b> Acyclovir, valacyclovir (start within 72 hours)</li>
+            <li><b>Pain control:</b> NSAIDs, gabapentin, or opioids if severe</li>
+            <li><b>Topical treatments:</b> Calamine lotion, capsaicin cream</li>
+            <li><b>Vaccine:</b> Shingrix for prevention</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>Warnings:</h5>
+          <ul>
+            <li>Antivirals most effective when started early</li>
+            <li>Watch for secondary infection</li>
+            <li>May develop postherpetic neuralgia</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>Self-Care:</h5>
+          <ul>
+            <li>Keep rash clean and dry</li>
+            <li>Cool compresses for pain</li>
+            <li>Loose clothing</li>
+            <li>Don't scratch blisters</li>
+          </ul>
+        </div>
+      </div>`,
+        ar: `<div class="condition-response">
+        <h4>علاج الهربس النطاقي</h4>
+        <div class="medications">
+          <h5>الأدوية الشائعة:</h5>
+          <ul>
+            <li><b>مضادات الفيروسات:</b> أسيكلوفير، فالاسيكلوفير (ابدأ خلال 72 ساعة)</li>
+            <li><b>التحكم في الألم:</b> مضادات الالتهاب، جابابنتين، أو المواد الأفيونية إذا كان شديدًا</li>
+            <li><b>علاجات موضعية:</b> كالامين لوشن، كريم كبسايسين</li>
+            <li><b>اللقاح:</b> شينجريكس للوقاية</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>تحذيرات:</h5>
+          <ul>
+            <li>مضادات الفيروسات أكثر فعالية عند البدء مبكرًا</li>
+            <li>راقب العدوى الثانوية</li>
+            <li>قد يتطور إلى ألم عصبي تال للهربس</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>العناية الذاتية:</h5>
+          <ul>
+            <li>حافظ على الطفح نظيفًا وجافًا</li>
+            <li>كمادات باردة للألم</li>
+            <li>ملابس فضفاضة</li>
+            <li>لا تخدش البثور</li>
+          </ul>
+        </div>
+      </div>`
+      },
+      'Gout , النقرس': {
+        en: `<div class="condition-response">
+        <h4>GOUT TREATMENT</h4>
+        <div class="medications">
+          <h5>Acute Attack Treatment:</h5>
+          <ul>
+            <li><b>NSAIDs:</b> Indomethacin or naproxen</li>
+            <li><b>Colchicine:</b> 1.2mg initially, then 0.6mg 1 hour later</li>
+            <li><b>Steroids:</b> Prednisone if NSAIDs contraindicated</li>
+          </ul>
+          <h5>Preventive Treatment:</h5>
+          <ul>
+            <li><b>Allopurinol:</b> Start at 100mg daily</li>
+            <li><b>Febuxostat:</b> Alternative to allopurinol</li>
+            <li><b>Probenecid:</b> For underexcretors</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>Warnings:</h5>
+          <ul>
+            <li>Avoid alcohol during attacks</li>
+            <li>Don't start allopurinol during acute attack</li>
+            <li>Stay hydrated</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>Dietary Advice:</h5>
+          <ul>
+            <li>Limit red meat and seafood</li>
+            <li>Avoid high-fructose corn syrup</li>
+            <li>Low-fat dairy may be protective</li>
+            <li>Cherries may help lower uric acid</li>
+          </ul>
+        </div>
+      </div>`,
+        ar: `<div class="condition-response">
+        <h4>علاج النقرس</h4>
+        <div class="medications">
+          <h5>علاج النوبة الحادة:</h5>
+          <ul>
+            <li><b>مضادات الالتهاب:</b> إندوميثاسين أو نابروكسين</li>
+            <li><b>كولشيسين:</b> 1.2 مجم أولاً، ثم 0.6 مجم بعد ساعة</li>
+            <li><b>الستيرويدات:</b> بريدنيزون إذا كانت مضادات الالتهاب ممنوعة</li>
+          </ul>
+          <h5>العلاج الوقائي:</h5>
+          <ul>
+            <li><b>ألوبيورينول:</b> ابدأ بـ 100 مجم يوميًا</li>
+            <li><b>فيبوكسوستات:</b> بديل لألوبيورينول</li>
+            <li><b>بروبينسيد:</b> لمن يعانون من نقص إفراز</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>تحذيرات:</h5>
+          <ul>
+            <li>تجنب الكحول أثناء النوبات</li>
+            <li>لا تبدأ ألوبيورينول أثناء النوبة الحادة</li>
+            <li>اشرب كمية كافية من الماء</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>نصائح غذائية:</h5>
+          <ul>
+            <li>قلل من اللحوم الحمراء والمأكولات البحرية</li>
+            <li>تجنب شراب الذرة عالي الفركتوز</li>
+            <li>منتجات الألبان قليلة الدسم قد تكون وقائية</li>
+            <li>الكرز قد يساعد في خفض حمض اليوريك</li>
+          </ul>
+        </div>
+      </div>`
+      },
+      'Bronchitis , التهاب الشعب الهوائية': {
+        en: `<div class="condition-response">
+        <h4>BRONCHITIS TREATMENT</h4>
+        <div class="medications">
+          <h5>Common Treatments:</h5>
+          <ul>
+            <li><b>Cough suppressants:</b> Dextromethorphan for dry cough</li>
+            <li><b>Expectorants:</b> Guaifenesin for productive cough</li>
+            <li><b>Bronchodilators:</b> For wheezing (albuterol inhaler)</li>
+            <li><b>Pain relievers:</b> Acetaminophen or ibuprofen</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>Warnings:</h5>
+          <ul>
+            <li>Antibiotics usually not helpful (viral cause)</li>
+            <li>Seek care if symptoms worsen or last >3 weeks</li>
+            <li>Smokers at higher risk for complications</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>Self-Care:</h5>
+          <ul>
+            <li>Stay hydrated</li>
+            <li>Use humidifier</li>
+            <li>Rest</li>
+            <li>Avoid irritants (smoke, pollution)</li>
+          </ul>
+        </div>
+      </div>`,
+        ar: `<div class="condition-response">
+        <h4>علاج التهاب الشعب الهوائية</h4>
+        <div class="medications">
+          <h5>العلاجات الشائعة:</h5>
+          <ul>
+            <li><b>مثبطات السعال:</b> ديكستروميثورفان للسعال الجاف</li>
+            <li><b>مذيبات البلغم:</b> جوايفينيسين للسعال المنتج</li>
+            <li><b>موسعات الشعب الهوائية:</b> للصفير (بخاخ ألبوتيرول)</li>
+            <li><b>مسكنات الألم:</b> باراسيتامول أو ايبوبروفين</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>تحذيرات:</h5>
+          <ul>
+            <li>المضادات الحيوية عادة غير مفيدة (سبب فيروسي)</li>
+            <li>اطلب الرعاية إذا ساءت الأعراض أو استمرت >3 أسابيع</li>
+            <li>المدخنون أكثر عرضة للمضاعفات</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>العناية الذاتية:</h5>
+          <ul>
+            <li>اشرب كمية كافية من الماء</li>
+            <li>استخدم مرطب الهواء</li>
+            <li>استرح</li>
+            <li>تجنب المهيجات (الدخان، التلوث)</li>
+          </ul>
+        </div>
+      </div>`
+      },
+      'Pink Eye , التهاب الملتحمة, conjunctivitis': {
+        en: `<div class="condition-response">
+        <h4>PINK EYE (CONJUNCTIVITIS) TREATMENT</h4>
+        <div class="medications">
+          <h5>Common Treatments:</h5>
+          <ul>
+            <li><b>Bacterial:</b> Antibiotic drops (erythromycin, ciprofloxacin)</li>
+            <li><b>Viral:</b> Artificial tears, cold compresses</li>
+            <li><b>Allergic:</b> Antihistamine drops (ketotifen)</li>
+            <li><b>Artificial tears:</b> For comfort</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>Warnings:</h5>
+          <ul>
+            <li>Don't share towels/pillows</li>
+            <li>Don't wear contacts until resolved</li>
+            <li>Seek care for vision changes/severe pain</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>Self-Care:</h5>
+          <ul>
+            <li>Wash hands frequently</li>
+            <li>Clean eyelids with warm water</li>
+            <li>Discard eye makeup after infection</li>
+            <li>Don't rub eyes</li>
+          </ul>
+        </div>
+      </div>`,
+        ar: `<div class="condition-response">
+        <h4>علاج العين الوردية (التهاب الملتحمة)</h4>
+        <div class="medications">
+          <h5>العلاجات الشائعة:</h5>
+          <ul>
+            <li><b>البكتيري:</b> قطرات مضاد حيوي (إريثروميسين، سيبروفلوكساسين)</li>
+            <li><b>الفيروسي:</b> دموع اصطناعية، كمادات باردة</li>
+            <li><b>التحسسي:</b> قطرات مضاد الهيستامين (كيتوتيفين)</li>
+            <li><b>الدموع الاصطناعية:</b> للراحة</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>تحذيرات:</h5>
+          <ul>
+            <li>لا تشارك المناشف/الوسائد</li>
+            <li>لا ترتدي العدسات حتى الشفاء</li>
+            <li>اطلب الرعاية لتغيرات الرؤية/ألم شديد</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>العناية الذاتية:</h5>
+          <ul>
+            <li>اغسل يديك frequently</li>
+            <li>نظف الجفون بالماء الدافئ</li>
+            <li>تخلص من مكياج العيون بعد العدوى</li>
+            <li>لا تفرك عينيك</li>
+          </ul>
+        </div>
+      </div>`
+      },
+      'Sinusitis , التهاب الجيوب الأنفية': {
+        en: `<div class="condition-response">
+        <h4>SINUSITIS TREATMENT</h4>
+        <div class="medications">
+          <h5>Common Treatments:</h5>
+          <ul>
+            <li><b>Nasal saline irrigation:</b> Neti pot or spray</li>
+            <li><b>Nasal steroids:</b> Fluticasone nasal spray</li>
+            <li><b>Decongestants:</b> Pseudoephedrine (short-term)</li>
+            <li><b>Antibiotics:</b> Only for bacterial sinusitis</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>Warnings:</h5>
+          <ul>
+            <li>Don't use decongestant sprays >3 days</li>
+            <li>Seek care for severe headache/fever</li>
+            <li>Complete antibiotic course if prescribed</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>Self-Care:</h5>
+          <ul>
+            <li>Stay hydrated</li>
+            <li>Use humidifier</li>
+            <li>Warm compresses for pain</li>
+            <li>Elevate head while sleeping</li>
+          </ul>
+        </div>
+      </div>`,
+        ar: `<div class="condition-response">
+        <h4>علاج التهاب الجيوب الأنفية</h4>
+        <div class="medications">
+          <h5>العلاجات الشائعة:</h5>
+          <ul>
+            <li><b>غسيل الأنف المالح:</b> وعاء نيتي أو بخاخ</li>
+            <li><b>بخاخات الأنف الستيرويدية:</b> فلوتيكازون</li>
+            <li><b>مزيلات الاحتقان:</b> سودوإيفيدرين (قصير المدى)</li>
+            <li><b>المضادات الحيوية:</b> فقط للالتهاب البكتيري</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>تحذيرات:</h5>
+          <ul>
+            <li>لا تستخدم بخاخات مزيلة للاحتقان لأكثر من 3 أيام</li>
+            <li>اطلب الرعاية للصداع الشديد/الحمى</li>
+            <li>أكمل دورة المضادات الحيوية إذا وصفها الطبيب</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>العناية الذاتية:</h5>
+          <ul>
+            <li>اشرب كمية كافية من الماء</li>
+            <li>استخدم مرطب الهواء</li>
+            <li>كمادات دافئة للألم</li>
+            <li>ارفع رأسك أثناء النوم</li>
+          </ul>
+        </div>
+      </div>`
+      },
+      'Allergic Reactions , الحساسية': {
+        en: `<div class="condition-response">
+        <h4>ALLERGIC REACTION TREATMENT</h4>
+        <div class="medications">
+          <h5>Common Treatments:</h5>
+          <ul>
+            <li><b>Antihistamines:</b> Diphenhydramine 25-50mg, Loratadine 10mg</li>
+            <li><b>Epinephrine auto-injector:</b> For anaphylaxis (0.3mg IM)</li>
+            <li><b>Corticosteroids:</b> Prednisone for severe reactions</li>
+            <li><b>Bronchodilators:</b> Albuterol for respiratory symptoms</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>Emergency Signs:</h5>
+          <ul>
+            <li>Difficulty breathing/swallowing</li>
+            <li>Swelling of face/tongue</li>
+            <li>Dizziness or fainting</li>
+            <li>Use epinephrine and call emergency</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>Prevention:</h5>
+          <ul>
+            <li>Identify and avoid triggers</li>
+            <li>Carry emergency medications</li>
+            <li>Wear medical alert bracelet</li>
+          </ul>
+        </div>
+      </div>`,
+        ar: `<div class="condition-response">
+        <h4>علاج الحساسية</h4>
+        <div class="medications">
+          <h5>العلاجات الشائعة:</h5>
+          <ul>
+            <li><b>مضادات الهيستامين:</b> دايفينهايدرامين 25-50 مجم، لوراتادين 10 مجم</li>
+            <li><b>الحقن التلقائي للإبينفرين:</b> لالتأق (0.3 مجم عضلي)</li>
+            <li><b>الكورتيكوستيرويدات:</b> بريدنيزون للحالات الشديدة</li>
+            <li><b>موسعات الشعب الهوائية:</b> ألبوتيرول لأعراض الجهاز التنفسي</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>علامات الطوارئ:</h5>
+          <ul>
+            <li>صعوبة في التنفس/البلع</li>
+            <li>تورم الوجه/اللسان</li>
+            <li>دوار أو إغماء</li>
+            <li>استخدم الإبينفرين واتصل بالطوارئ</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>الوقاية:</h5>
+          <ul>
+            <li>حدد وتجنب المحفزات</li>
+            <li>احمل أدوية الطوارئ</li>
+            <li>ارتد سوار تنبيه طبي</li>
+          </ul>
+        </div>
+      </div>`
+      },
+      'Obesity , Weight Issues ,السمنة': {
+        en: `<div class="condition-response">
+        <h4>WEIGHT MANAGEMENT</h4>
+        <div class="medications">
+          <h5>Medical Options:</h5>
+          <ul>
+            <li><b>GLP-1 agonists:</b> Semaglutide (Wegovy®)</li>
+            <li><b>Other medications:</b> Orlistat, Phentermine-Topiramate</li>
+            <li><b>Bariatric surgery:</b> For BMI >40 or >35 with comorbidities</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>Health Risks:</h5>
+          <ul>
+            <li>Diabetes, hypertension, heart disease</li>
+            <li>Sleep apnea, joint problems</li>
+            <li>Avoid crash diets</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>Lifestyle Changes:</h5>
+          <ul>
+            <li>Calorie deficit (500-1000 kcal/day)</li>
+            <li>150+ mins exercise weekly</li>
+            <li>Behavioral therapy for eating habits</li>
+            <li>High-protein, high-fiber diet</li>
+          </ul>
+        </div>
+      </div>`,
+        ar: `<div class="condition-response">
+        <h4>إدارة الوزن</h4>
+        <div class="medications">
+          <h5>الخيارات الطبية:</h5>
+          <ul>
+            <li><b>ناهضات GLP-1:</b> سيماجلوتايد (ويجوفي)</li>
+            <li><b>أدوية أخرى:</b> أورليستات، فينترمين-توبيراميت</li>
+            <li><b>جراحة السمنة:</b> لمؤشر كتلة الجسم >40 أو >35 مع أمراض مصاحبة</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>المخاطر الصحية:</h5>
+          <ul>
+            <li>السكري، ارتفاع الضغط، أمراض القلب</li>
+            <li>انقطاع النفس النومي، مشاكل المفاصل</li>
+            <li>تجنب الحميات القاسية</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>تغييرات نمط الحياة:</h5>
+          <ul>
+            <li>عجز حراري (500-1000 سعرة/يوم)</li>
+            <li>150+ دقيقة تمارين أسبوعيًا</li>
+            <li>العلاج السلوكي لعادات الأكل</li>
+            <li>نظام عالي البروتين والألياف</li>
+          </ul>
+        </div>
+      </div>`
+      },
+      'Skin Infections , عدوى جلدية': {
+        en: `<div class="condition-response">
+        <h4>SKIN INFECTION TREATMENT</h4>
+        <div class="medications">
+          <h5>Common Treatments:</h5>
+          <ul>
+            <li><b>Cellulitis:</b> Cephalexin 500mg QID, Dicloxacillin</li>
+            <li><b>Impetigo:</b> Mupirocin ointment or oral antibiotics</li>
+            <li><b>Fungal:</b> Clotrimazole cream, terbinafine</li>
+            <li><b>MRSA:</b> Bactrim, Doxycycline, Clindamycin</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>Warning Signs:</h5>
+          <ul>
+            <li>Spreading redness, fever</li>
+            <li>Pus or abscess formation</li>
+            <li>Diabetic foot infections</li>
+            <li>Complete full antibiotic course</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>Prevention:</h5>
+          <ul>
+            <li>Proper wound care</li>
+            <li>Hand hygiene</li>
+            <li>Don't share personal items</li>
+            <li>Moisturize dry skin</li>
+          </ul>
+        </div>
+      </div>`,
+        ar: `<div class="condition-response">
+        <h4>علاج العدوى الجلدية</h4>
+        <div class="medications">
+          <h5>العلاجات الشائعة:</h5>
+          <ul>
+            <li><b>التهاب النسيج الخلوي:</b> سيفاليكسين 500 مجم 4 مرات يوميًا، ديكلوكساسيلين</li>
+            <li><b>القوباء:</b> مرهم موبيروسين أو مضادات حيوية فموية</li>
+            <li><b>الفطريات:</b> كريم كلوتريمازول، تيربينافين</li>
+            <li><b>MRSA:</b> باكتريم، دوكسيسيكلين، كليندامايسين</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>علامات التحذير:</h5>
+          <ul>
+            <li>احمرار منتشر، حمى</li>
+            <li>تكون صديد أو خراج</li>
+            <li>عدوى قدم مريض السكري</li>
+            <li>أكمل دورة المضاد الحيوي كاملة</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>الوقاية:</h5>
+          <ul>
+            <li>العناية المناسبة بالجروح</li>
+            <li>نظافة اليدين</li>
+            <li>لا تشارك الأدوات الشخصية</li>
+            <li>رطب البشرة الجافة</li>
+          </ul>
+        </div>
+      </div>`
+      },
+      'Stroke , السكتة الدماغية': {
+        en: `<div class="condition-response">
+        <h4>STROKE/TIA MANAGEMENT</h4>
+        <div class="medications">
+          <h5>Acute Treatment:</h5>
+          <ul>
+            <li><b>tPA:</b> Within 4.5 hours of ischemic stroke</li>
+            <li><b>Aspirin:</b> 325mg initially (after ruling out hemorrhage)</li>
+            <li><b>Blood pressure control:</b> Labetalol, Nicardipine IV</li>
+          </ul>
+          <h5>Prevention:</h5>
+          <ul>
+            <li><b>Antiplatelets:</b> Aspirin, Clopidogrel</li>
+            <li><b>Anticoagulants:</b> For AFib (Warfarin, DOACs)</li>
+            <li><b>Statins:</b> High-intensity for secondary prevention</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>FAST Recognition:</h5>
+          <ul>
+            <li>Face drooping</li>
+            <li>Arm weakness</li>
+            <li>Speech difficulty</li>
+            <li>Time to call emergency</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>Risk Reduction:</h5>
+          <ul>
+            <li>Blood pressure control</li>
+            <li>Smoking cessation</li>
+            <li>Atrial fibrillation management</li>
+            <li>Carotid endarterectomy if indicated</li>
+          </ul>
+        </div>
+      </div>`,
+        ar: `<div class="condition-response">
+        <h4>إدارة الجلطة/NMO</h4>
+        <div class="medications">
+          <h5>العلاج الحاد:</h5>
+          <ul>
+            <li><b>منشط البلازمينوجين النسيجي:</b> خلال 4.5 ساعة من الجلطة</li>
+            <li><b>أسبرين:</b> 325 مجم أولياً (بعد استبعاد النزيف)</li>
+            <li><b>التحكم في ضغط الدم:</b> لابيتالول، نيكارديبين وريدي</li>
+          </ul>
+          <h5>الوقاية:</h5>
+          <ul>
+            <li><b>مضادات الصفائح:</b> أسبرين، كلوبيدوجريل</li>
+            <li><b>مضادات التخثر:</b> للرجفان الأذيني (وارفارين، DOACs)</li>
+            <li><b>الستاتينات:</b> عالية الكثافة للوقاية الثانوية</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>التعرف السريع (FAST):</h5>
+          <ul>
+            <li>تدلي الوجه</li>
+            <li>ضعف الذراع</li>
+            <li>صعوبة الكلام</li>
+            <li>حان وقت الاتصال بالطوارئ</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>تقليل المخاطر:</h5>
+          <ul>
+            <li>التحكم في ضغط الدم</li>
+            <li>الإقلاع عن التدخين</li>
+            <li>إدارة الرجفان الأذيني</li>
+            <li>استئصال باطنة الشريان السباتي إذا لزم الأمر</li>
+          </ul>
+        </div>
+      </div>`
+      },
+      'Eye Strain, إجهاد العين': {
+        en: `<div class="condition-response">
+        <h4>EYE STRAIN RELIEF</h4>
+        <div class="medications">
+          <h5>Symptom Relief:</h5>
+          <ul>
+            <li><b>Artificial tears:</b> Preservative-free for dry eyes</li>
+            <li><b>Antihistamine drops:</b> For allergy-related strain</li>
+            <li><b>Blue light glasses:</b> May help with screen use</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>Warning Signs:</h5>
+          <ul>
+            <li>Persistent vision changes</li>
+            <li>Severe eye pain</li>
+            <li>Light sensitivity</li>
+            <li>Rule out glaucoma/other conditions</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>Prevention:</h5>
+          <ul>
+            <li>20-20-20 rule: Every 20 mins, look 20 feet away for 20 sec</li>
+            <li>Proper screen distance (arm's length)</li>
+            <li>Adjust lighting to reduce glare</li>
+            <li>Blink frequently</li>
+          </ul>
+        </div>
+      </div>`,
+        ar: `<div class="condition-response">
+        <h4>تخفيف إجهاد العين</h4>
+        <div class="medications">
+          <h5>تخفيف الأعراض:</h5>
+          <ul>
+            <li><b>الدموع الاصطناعية:</b> خالية من المواد الحافظة للعين الجافة</li>
+            <li><b>قطرات مضاد الهيستامين:</b> للإجهاد المرتبط بالحساسية</li>
+            <li><b>نظارات الضوء الأزرق:</b> قد تساعد مع استخدام الشاشة</li>
+          </ul>
+        </div>
+        <div class="warnings">
+          <h5>علامات التحذير:</h5>
+          <ul>
+            <li>تغيرات مستمرة في الرؤية</li>
+            <li>ألم شديد في العين</li>
+            <li>الحساسية للضوء</li>
+            <li>استبعد الزرق/حالات أخرى</li>
+          </ul>
+        </div>
+        <div class="advice">
+          <h5>الوقاية:</h5>
+          <ul>
+            <li>قاعدة 20-20-20: كل 20 دقيقة، انظر لمسافة 20 قدمًا لمدة 20 ثانية</li>
+            <li>مسافة شاشة مناسبة (طول الذراع)</li>
+            <li>اضبط الإضاءة لتقليل الوهج</li>
+            <li>اغمض عينيك frequently</li>
+          </ul>
+        </div>
+      </div>`
+      },
+
+
+
+    };
+
+
+
 
     for (const key in knowledgeBase) {
       const keywords = key.split(',').map(k => k.trim());

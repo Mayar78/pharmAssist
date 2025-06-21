@@ -1,8 +1,8 @@
-
 import { Injectable, signal, WritableSignal } from '@angular/core';
 import { enviroments } from '../core/enviroments/enviroment';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { catchError, map, Observable, tap, throwError } from 'rxjs';
+
 export interface ProductSafetyResponse {
   id: number;
   productId: number;
@@ -20,6 +20,7 @@ export interface ProductSafetyResponse {
   recommendationReason: string;
   createdAt: string;
 }
+
 export interface Recommendation {
   id: number;
   productId: number;
@@ -86,14 +87,6 @@ export interface SafetySummaryResponse {
   safetyHighlights: string[];
   recommendedAction: string;
 }
-export interface SafetySummaryResponse {
-  isProfileComplete: boolean;
-  message: string;
-  title: string;
-  missingFields: string[];
-  actionRequired: string;
-  generatedAt: string;
-}
 
 export interface CompleteSafetySummaryResponse {
   totalSafeRecommendations: number;
@@ -122,6 +115,7 @@ export interface CompleteSafetySummaryResponse {
   safetyHighlights: string[];
   recommendedAction: string;
 }
+
 export interface Product {
   id: number;
   name: string;
@@ -131,7 +125,6 @@ export interface Product {
   activeIngredient: string;
 }
 
-// src/app/shared/models/medication-recommendation.model.ts
 export interface MedicationRecommendation {
   id: number;
   productId: number;
@@ -150,7 +143,6 @@ export interface MedicationRecommendation {
   createdAt: string;
 }
 
-// src/app/shared/models/profile-incomplete.model.ts
 export interface ProfileIncompleteResponse {
   isProfileComplete: false;
   message: string;
@@ -159,10 +151,11 @@ export interface ProfileIncompleteResponse {
   actionRequired: string;
   generatedAt: string;
 }
+
 export interface ConflictingMedication extends Recommendation {
- 
   conflictDetails: string;
 }
+
 export interface ConflictingMedicationsResponse {
   conflictingMedications: ConflictingMedication[];
   totalConflictingItems: number;
@@ -173,14 +166,43 @@ export interface ConflictingMedicationsResponse {
   safetyAdvice: string[];
 }
 
+// Product Alternatives Interfaces
+export interface ProductAlternative {
+  productId: number;
+  productName: string;
+  productDescription: string;
+  productPrice: number;
+  productPictureUrl: string;
+  activeIngredient: string;
+  priceDifference: number;
+  savingsPercentage: number;
+  effectivenessScore: number;
+  safetyScore: number;
+  alternativeReason: string;
+  isSameActiveIngredient: boolean;
+  isSafeForUser: boolean;
+  safetyNote: string;
+}
+
+export interface ProductAlternativesResponse {
+  originalProductId: number;
+  originalProductName: string;
+  originalProductPrice: number;
+  originalActiveIngredient: string;
+  alternatives: ProductAlternative[];
+  totalAlternatives: number;
+  summary: string;
+  generatedAt: string;
+  aiPersonalizedMessage: string;
+  costSavingHighlights: string[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
-
-
 export class RecommendationService {
   
-   constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) { }
 
   private getAuthHeaders(): HttpHeaders {
     const token = sessionStorage.getItem('token')!;
@@ -202,7 +224,8 @@ export class RecommendationService {
     return this.http.get(`${enviroments.baseUrl}/api/Recommendations/GetMyRecommendations/`, 
       { headers: this.getAuthHeaders() });
   }
-    getConflictingMedications(maxResults: number = 50): Observable<IncompleteProfileResponse | ConflictingMedicationsResponse> {
+
+  getConflictingMedications(maxResults: number = 50): Observable<IncompleteProfileResponse | ConflictingMedicationsResponse> {
     return this.http.get<IncompleteProfileResponse | ConflictingMedicationsResponse>(
       `${enviroments.baseUrl}/api/Recommendations/GetConflictingMedications`,
       { 
@@ -212,16 +235,23 @@ export class RecommendationService {
     );
   }
 
-  // In RecommendationService
-// In RecommendationService
-checkProductSafety(productId: number): Observable<any> {
-  return this.http.get(
-    `${enviroments.baseUrl}/api/Recommendations/CheckProductSafety/${productId}`,
-    { 
-      headers: this.getAuthHeaders(),
-      observe: 'response' // Get full response for debugging
-    }
-  );
+  checkProductSafety(productId: number): Observable<any> {
+    return this.http.get(
+      `${enviroments.baseUrl}/api/Recommendations/CheckProductSafety/${productId}`,
+      { 
+        headers: this.getAuthHeaders(),
+        observe: 'response'
+      }
+    );
+  }
 
-}
+  getProductAlternatives(productId: number): Observable<any> {
+    return this.http.get(
+      `${enviroments.baseUrl}/api/Recommendations/GetProductAlternatives/${productId}`,
+      { 
+        headers: this.getAuthHeaders(),
+        observe: 'response'
+      }
+    );
+  }
 }
